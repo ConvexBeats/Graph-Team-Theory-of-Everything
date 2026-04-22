@@ -1,12 +1,13 @@
 ---
 type: source
 title: <Source Title>
+kind: meeting | spec | diagram | wiki | screengrab | api-doc | article | other
 created: <YYYY-MM-DD>
 updated: <YYYY-MM-DD>
 tags: []
 raw: raw/<source-filename>.md
-author: <author(s)>
-published: <YYYY or YYYY-MM-DD>
+author: <author(s) / attendees>
+date_of_source: <YYYY-MM-DD>
 url: <original url, if any>
 status: draft
 ---
@@ -17,29 +18,36 @@ status: draft
 2–4 sentences. What this source is and why it matters to the wiki.
 
 ## Bibliographic info
-- **Author(s)**: …
-- **Published**: …
-- **Venue / publisher**: …
+- **Author(s) / attendees**: …
+- **Date**: …
+- **Venue / source system**: …
 - **URL**: …
-- **Raw file**: [[../../raw/<source-filename>]]
+- **Raw file**: [[raw/<source-filename>]]
 
 ## Key claims
 1. Claim — _direct quote or paraphrase_ (page / timestamp if available).
 2. …
 
-## Notable quotes
-> "…" — p. X
+## Decisions made _(meeting sources only)_
+- …  → filed as [[decisions/<slug>]]
+
+## Actions _(meeting sources only)_
+| Action | Owner | Application | State |
+|---|---|---|---|
+| … | [[team-or-person]] | [[applications/...]] | open |
+
+## Applications mentioned
+- [[applications/...]] — how
 
 ## Entities mentioned
-- [[entity-a]] — role in this source
+- [[entity-a]] — role
 - [[entity-b]]
 
 ## Concepts mentioned
 - [[concept-a]] — how it's treated
-- [[concept-b]]
 
 ## Contradicts
-- [[sources/other-source]] — on claim X (this source says Y; other says Z)
+- [[sources/other-source]] — on claim X
 
 ## Reinforces
 - [[sources/other-source]] — agrees on claim Q

@@ -28,26 +28,36 @@ If an answer to a user's question is valuable enough to keep, **file it back int
 
 ```
 .
-├── AGENTS.md                 # this schema
-├── index.md                  # content catalog (read this first on queries)
-├── log.md                    # chronological record (append-only)
-├── raw/                      # immutable source documents
-│   ├── assets/               # images, PDFs, data files referenced by sources
-│   └── <source-files>.md     # articles, clippings, transcripts, notes
+├── AGENTS.md                    # this schema
+├── index.md                     # content catalog (read this first on queries)
+├── log.md                       # chronological record (append-only)
+├── raw/                         # immutable source documents
+│   ├── assets/                  # images, PDFs, data files referenced by sources
+│   └── <source-files>.md        # meeting notes, specs, diagrams, clippings
 └── wiki/
-    ├── overview.md           # top-level synthesis / evolving thesis
-    ├── entities/             # people, orgs, products, places, systems
-    ├── concepts/             # abstract ideas, topics, themes, frameworks
-    ├── sources/              # one summary page per ingested source
-    ├── analyses/             # query-derived outputs worth keeping
-    └── _templates/           # page templates you copy from
+    ├── overview.md              # top-level synthesis / evolving thesis
+    ├── applications/            # one page per application (current/target/transitional state)
+    ├── decisions/               # architectural decision records (ADR-style)
+    ├── entities/                # people, teams/working units, orgs, vendors
+    ├── concepts/                # abstract ideas, frameworks, themes
+    ├── sources/                 # one summary page per ingested source
+    ├── analyses/                # query-derived outputs + standing analyses
+    │   ├── dependency-map.md    # standing: inter-application dependencies (current + target)
+    │   └── ownership-matrix.md  # standing: change items × working units
+    └── _templates/              # page templates you copy from
 ```
 
 ### Filename rules
-- Lowercase, kebab-case: `hidden-markov-models.md`, `alice-chen.md`.
+- Lowercase, kebab-case: `party-application.md`, `graph-team.md`.
 - One page = one noun. Don't merge unrelated ideas onto one page.
-- Source summary filenames mirror the raw filename: `raw/attention-is-all-you-need.md` → `wiki/sources/attention-is-all-you-need.md`.
-- Use `[[wiki-links]]` (Obsidian-style) for cross-references. Always link by page name, not path: `[[hidden-markov-models]]`.
+- Source summary filenames mirror the raw filename: `raw/2026-04-22-party-arch-meeting.md` → `wiki/sources/2026-04-22-party-arch-meeting.md`.
+- Use `[[wiki-links]]` (Obsidian-style) for cross-references. Prefer bare page name: `[[party-application]]`. Use folder-qualified form only to disambiguate when two pages share a slug.
+
+### Vocabulary (project-specific)
+To avoid "party" overload in this project:
+- **business party** — the insurance-domain entity (broker, client, underwriter, etc.) that the `party-application` manages.
+- **application** — a piece of software (e.g. `party-application`, `inrisk`). Always a page under `wiki/applications/`.
+- **working unit** (or **team**) — a delivery group (e.g. `graph-team`). Lives under `wiki/entities/` with `tags: [team]`.
 
 ---
 
@@ -57,14 +67,19 @@ Every wiki page starts with frontmatter. This powers Obsidian Dataview and lets 
 
 ```markdown
 ---
-type: entity | concept | source | analysis | overview
+type: application | decision | entity | concept | source | analysis | overview
 title: Human-readable Title
+aliases: [alt-name-1, acronym]            # optional — for apps/entities with legacy names
 created: 2026-04-22
 updated: 2026-04-22
 tags: [tag-1, tag-2]
+owner: <team-slug>                        # working unit accountable (apps, decisions, change items)
+application: [<app-slug>]                 # which app(s) a decision / analysis touches
+state: current | target | transitional    # for application pages only
 sources: [source-slug-1, source-slug-2]   # for entity/concept/analysis pages
 source_count: 2                            # optional, for sorting by evidence weight
-status: stub | draft | mature              # your honest assessment of the page
+status: stub | draft | mature             # general pages
+                                           # for decisions: proposed | accepted | rejected | superseded-by-<slug>
 ---
 
 # Title
@@ -87,9 +102,11 @@ status: stub | draft | mature              # your honest assessment of the page
 
 ### Page-type-specific sections
 
-- **Entity** (`wiki/entities/`): `Key facts`, `Timeline`, `Relationships`, `Claims (with citations)`.
+- **Application** (`wiki/applications/`): `Aliases`, `Purpose`, `Current state`, `Target state`, `Transitional states`, `Change ownership`, `Pending / unknown`, `Related decisions`.
+- **Decision** (`wiki/decisions/`): `Context`, `Options considered`, `Decision`, `Consequences`, `Supersedes / superseded by`.
+- **Entity** (`wiki/entities/`): `Key facts`, `Timeline`, `Relationships`, `Claims (with citations)`. Teams additionally: `Applications owned`, `Current workstreams`.
 - **Concept** (`wiki/concepts/`): `Definition`, `Mechanics / how it works`, `Variants`, `Contradictions or open debates`.
-- **Source** (`wiki/sources/`): `Bibliographic info`, `Key claims`, `Notable quotes`, `Entities/concepts mentioned`, `Contradicts`, `Reinforces`.
+- **Source** (`wiki/sources/`): `Bibliographic info`, `Key claims`, `Decisions made` (if meeting), `Actions` (if meeting, with owner + state), `Entities/concepts mentioned`, `Contradicts`, `Reinforces`.
 - **Analysis** (`wiki/analyses/`): `Question asked`, `Method`, `Findings`, `Confidence`, `Follow-ups`.
 - **Overview** (`wiki/overview.md`): `Thesis`, `Pillars`, `Tensions`, `What I'd want to know next`.
 
@@ -107,12 +124,22 @@ Steps:
 1. **Read** the full source. If it references images in `raw/assets/`, view them.
 2. **Discuss**: briefly tell the human (≤5 bullets) the key takeaways, what surprised you, and which existing wiki pages this will touch. Wait for their steer before writing, unless they've said "batch mode".
 3. **Write the source summary** at `wiki/sources/<slug>.md` using the source template.
-4. **Update affected pages**: create or revise entity/concept pages. A single source commonly touches 5–15 pages. Bias toward updating many small pages rather than dumping everything into one.
+4. **Update affected pages**: create or revise application/decision/entity/concept pages. A single source commonly touches 5–15 pages. Bias toward updating many small pages rather than dumping everything into one.
 5. **Add cross-links** both directions (if page A mentions B, link A→B; also make sure B has a "Related" entry back to A where warranted).
 6. **Flag contradictions**: if this source contradicts an existing claim, add a `> ⚠ Contradiction:` callout on the affected page with citations to both sources. Do not silently overwrite.
-7. **Update `index.md`** — add the new source, new pages, updated counts.
-8. **Update `wiki/overview.md`** if the thesis shifts.
-9. **Append to `log.md`** using the exact format in §7.
+7. **Refresh standing analyses** — update `wiki/analyses/dependency-map.md` and `wiki/analyses/ownership-matrix.md` if anything in scope changed.
+8. **Update `index.md`** — add the new source, new pages, updated counts.
+9. **Update `wiki/overview.md`** if the thesis shifts.
+10. **Append to `log.md`** using the exact format in §7.
+
+#### 5.1a Meeting-note sub-workflow
+
+Meeting notes are a first-class source type. When the source is a meeting note / transcript / call summary:
+
+- Extract **attendees** — link each to their team entity if identifiable; create stub entity pages for unknown attendees.
+- Extract **decisions made** — if any decision is architecturally meaningful, promote it to a `wiki/decisions/<slug>.md` page rather than leaving it only in the source summary.
+- Extract **actions assigned** — each action: `owner` (working unit or individual), `application` it concerns, one-line description, `state: open`. Fold actions into `ownership-matrix.md`.
+- Extract **open questions** — add to the relevant page's `Pending / unknown` section, and to `overview.md → What I'd want to know next`.
 
 ### 5.2 Query (human asks a question)
 
@@ -219,7 +246,23 @@ Never edit past log entries. If you need to correct one, append a new `note` ent
 
 ---
 
-## 10. Bootstrap state
+## 10. Project scope
 
-- Wiki is empty. First ingest will populate `wiki/sources/`, create initial entity/concept pages, and seed `wiki/overview.md`.
-- Domain is not yet declared. On the first ingest, ask the human to confirm the project's scope (one sentence) so the overview has a thesis to grow from.
+**Subject**: re-architecture of the **Party Application** (aka *Graph* / *Party MDM* / *MDM*) and its supporting **Party Curation Tool** (PCT). The Party Application is the authoritative store for *business parties* (brokers, clients, underwriters, etc.) consumed across the insurance-deal lifecycle.
+
+**Core shift**: from delivering large party payloads that downstream systems snapshot-cache, to delivering **versioned party IDs** that downstream systems resolve near-real-time against the Party Application.
+
+**Key milestone**: new architecture must be landed ahead of the **High Volume** application's go-live, which will be a major consumer of parties.
+
+**Applications in scope** (seeded in `wiki/applications/`):
+- `party-application` — core store and routing (owner: [[graph-team]])
+- `party-curation-tool` — PCT, curation frontend on Jira workflow (owner: [[graph-team]], primary user: [[dataops-team]])
+- `inrisk` — IR2, live Policy Admin System for prebind (owner: [[prebind-team]], aka *Strikers*)
+- `inrisk-engine` — API-first InRisk rewrite, co-defines target Party data model (owner: [[devx-team]])
+- `high-volume` — HV, high-throughput deal processing, future Party consumer (owner: **unknown**, flag)
+
+**Human's role**: project oversight, detailed design, timeline management. Bias summaries toward cross-cutting visibility, ownership clarity, and decision/risk tracking rather than deep implementation detail — unless a source is itself deep implementation.
+
+**Insurance lines** the Party Application ultimately serves (for context, not primary wiki subjects): Specialty, Lloyd's Market, Reinsurance, Aerospace, Accident & Health, Marine, Casualty, Crisis Management, ELA, Energy, FAS, Political Risk & Surety, Property, Whole Account. *ELA and FAS expansions pending confirmation.*
+
+**Source mix expected**: meeting notes, architecture diagrams (image files in `raw/assets/`), internal wiki exports, UI screengrabs, specs, API documentation.
