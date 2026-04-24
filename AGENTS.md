@@ -36,15 +36,19 @@ If an answer to a user's question is valuable enough to keep, **file it back int
 │   └── <source-files>.md        # meeting notes, specs, diagrams, clippings
 └── wiki/
     ├── overview.md              # top-level synthesis / evolving thesis
+    ├── open-questions.md        # standing register of unresolved questions (OQ-NNN IDs)
     ├── applications/            # one page per application (current/target/transitional state)
     ├── decisions/               # architectural decision records (ADR-style)
-    ├── entities/                # people, teams/working units, orgs, vendors
+    ├── entities/                # every first-class non-software actor or system in this wiki
+    │   ├── people/              # every human (one page per person)
+    │   ├── teams/               # every working unit (one page per team)
+    │   └── platforms/           # platforms / vendor systems / external sources that aren't in-scope applications
     ├── concepts/                # abstract ideas, frameworks, themes
     ├── sources/                 # one summary page per ingested source
     ├── analyses/                # query-derived outputs + standing analyses
     │   ├── dependency-map.md    # standing: inter-application dependencies (current + target)
     │   └── ownership-matrix.md  # standing: change items × working units
-    └── _templates/              # page templates you copy from
+    └── _templates/              # page templates you copy from (person.md · team.md · platform.md · application.md · decision.md · concept.md · source.md · analysis.md)
 ```
 
 ### Filename rules
@@ -52,12 +56,26 @@ If an answer to a user's question is valuable enough to keep, **file it back int
 - One page = one noun. Don't merge unrelated ideas onto one page.
 - Source summary filenames mirror the raw filename: `raw/2026-04-22-party-arch-meeting.md` → `wiki/sources/2026-04-22-party-arch-meeting.md`.
 - Use `[[wiki-links]]` (Obsidian-style) for cross-references. Prefer bare page name: `[[party-application]]`. Use folder-qualified form only to disambiguate when two pages share a slug.
+- **Filenames must be globally unique across entity subfolders** (`people/`, `teams/`, `platforms/`). Two files with the same slug in different subfolders would make `[[slug]]` ambiguous to Obsidian; if a collision is unavoidable, disambiguate both filenames (e.g. `sam-smith.md` instead of `sam.md`).
+- Raw-file references from wiki pages use an **inline code-span with a relative path** (e.g. `` `raw/20260422 - Meeting Transcript.md` ``), not a wiki link. This keeps the raw layer out of Obsidian's graph view.
 
 ### Vocabulary (project-specific)
 To avoid "party" overload in this project:
 - **business party** — the insurance-domain entity (broker, client, underwriter, etc.) that the `party-application` manages.
 - **application** — a piece of software (e.g. `party-application`, `inrisk`). Always a page under `wiki/applications/`.
-- **working unit** (or **team**) — a delivery group (e.g. `graph-team`). Lives under `wiki/entities/` with `tags: [team]`.
+- **working unit** (or **team**) — a delivery group (e.g. `graph-team`). Lives under `wiki/entities/teams/` with `tags: [team]`.
+- **person** — a named human. Lives under `wiki/entities/people/` with `tags: [person]` and a `team:` frontmatter field pointing at their team slug.
+- **platform** — a first-class system that isn't an in-scope application in this programme: analytics platforms (e.g. `data-universe`), vendor systems (e.g. D&B, S&P, NTT), shared services. Lives under `wiki/entities/platforms/` with `tags: [platform]` and an `owner:` frontmatter field pointing at the owning team.
+
+### Choosing an entities subfolder
+When creating a new entity page, decide with this cascade:
+
+1. Is it a named human? → `wiki/entities/people/`. Template: `_templates/person.md`.
+2. Is it a delivery/working unit (has members, owns work)? → `wiki/entities/teams/`. Template: `_templates/team.md`.
+3. Is it a system that isn't an in-scope application on this programme (data platform, vendor, external feed, shared service)? → `wiki/entities/platforms/`. Template: `_templates/platform.md`.
+4. Is it a piece of software actively re-architected or affected by this programme? → **Not an entity** — it's an `application`, goes in `wiki/applications/`.
+
+If a candidate fits none of these (e.g. a physical place, a regulatory body) and no existing subfolder makes sense, flag it in the ingest as a schema question rather than inventing a new subfolder silently.
 
 ---
 
@@ -104,7 +122,10 @@ status: stub | draft | mature             # general pages
 
 - **Application** (`wiki/applications/`): `Aliases`, `Purpose`, `Current state`, `Target state`, `Transitional states`, `Change ownership`, `Pending / unknown`, `Related decisions`.
 - **Decision** (`wiki/decisions/`): `Context`, `Options considered`, `Decision`, `Consequences`, `Supersedes / superseded by`.
-- **Entity** (`wiki/entities/`): `Key facts`, `Timeline`, `Relationships`, `Claims (with citations)`. Teams additionally: `Applications owned`, `Current workstreams`.
+- **Entity** — three sub-types, each with its own template:
+  - **Person** (`wiki/entities/people/`): `Key facts` (Role, Team, Role in programme), `Relationships`, `Claims (with citations)`, `Open questions`. Frontmatter includes a `team:` slug.
+  - **Team** (`wiki/entities/teams/`): `Key facts`, `Members (known in this wiki)` (table), `Applications / platforms owned`, `Current workstreams`, `Deferred / future decisions owned`, `Relationships`, `Claims`.
+  - **Platform** (`wiki/entities/platforms/`): `Key facts` (Owning team, Core technology, Role in programme), `Current shape (today)`, `Target-state exposure (from this programme)`, `Relationships`, `Claims`. Frontmatter includes an `owner:` slug.
 - **Concept** (`wiki/concepts/`): `Definition`, `Mechanics / how it works`, `Variants`, `Contradictions or open debates`.
 - **Source** (`wiki/sources/`): `Bibliographic info`, `Key claims`, `Decisions made` (if meeting), `Actions` (if meeting, with owner + state), `Entities/concepts mentioned`, `Contradicts`, `Reinforces`.
 - **Analysis** (`wiki/analyses/`): `Question asked`, `Method`, `Findings`, `Confidence`, `Follow-ups`.
@@ -127,7 +148,7 @@ Steps:
 4. **Update affected pages**: create or revise application/decision/entity/concept pages. A single source commonly touches 5–15 pages. Bias toward updating many small pages rather than dumping everything into one.
 5. **Add cross-links** both directions (if page A mentions B, link A→B; also make sure B has a "Related" entry back to A where warranted).
 6. **Flag contradictions**: if this source contradicts an existing claim, add a `> ⚠ Contradiction:` callout on the affected page with citations to both sources. Do not silently overwrite.
-7. **Refresh standing analyses** — update `wiki/analyses/dependency-map.md` and `wiki/analyses/ownership-matrix.md` if anything in scope changed.
+7. **Refresh standing analyses** — update `wiki/analyses/dependency-map.md`, `wiki/analyses/ownership-matrix.md`, **and `wiki/open-questions.md`** if anything in scope changed. See §5.1b for open-questions rules.
 8. **Update `index.md`** — add the new source, new pages, updated counts.
 9. **Update `wiki/overview.md`** if the thesis shifts.
 10. **Append to `log.md`** using the exact format in §7.
@@ -139,7 +160,19 @@ Meeting notes are a first-class source type. When the source is a meeting note /
 - Extract **attendees** — link each to their team entity if identifiable; create stub entity pages for unknown attendees.
 - Extract **decisions made** — if any decision is architecturally meaningful, promote it to a `wiki/decisions/<slug>.md` page rather than leaving it only in the source summary.
 - Extract **actions assigned** — each action: `owner` (working unit or individual), `application` it concerns, one-line description, `state: open`. Fold actions into `ownership-matrix.md`.
-- Extract **open questions** — add to the relevant page's `Pending / unknown` section, and to `overview.md → What I'd want to know next`.
+- Extract **open questions** — add to [[open-questions]] register (see §5.1b) and to `overview.md → What I'd want to know next`. Reference the `OQ-NNN` ID from any affected page's `Pending / unknown` section rather than duplicating the question text.
+
+#### 5.1b Open-questions sub-workflow
+
+`wiki/open-questions.md` is the **single source of truth** for unresolved questions across the programme. Do not scatter open questions across many pages — reference IDs from this register.
+
+On every ingest:
+
+1. **Resolutions first.** For each question the new source answers or refines, move it from the Open table to the Resolved table at the bottom, adding `Answer`, `Resolved` (date), and `Source` columns. Never silently delete.
+2. **New questions.** Append any new unresolved questions raised by the source, with the next unused `OQ-NNN` (IDs are never reused; see the register's own Conventions section).
+3. **Cross-references.** On affected wiki pages, replace ad-hoc "open question: …" prose with `see [[open-questions#OQ-NNN]]`. Pages summarise; the register holds the canonical wording.
+4. **Contradictions.** If a new source contradicts a prior _resolution_, create a new ID (e.g. `OQ-014-R`) in the Open table and add a `⚠ Contradiction` callout to the page where the original answer lives.
+5. **Categorisation.** Use the register's category tables (`scope / architecture calls`, `timeline / cadence`, `design open calls`, `people identification`, `adr-candidate`). Split a question across categories only if it's genuinely two questions.
 
 ### 5.2 Query (human asks a question)
 
