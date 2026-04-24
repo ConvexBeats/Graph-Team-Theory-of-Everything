@@ -8,6 +8,7 @@ tags: [meeting, architecture-review, session-2]
 raw: raw/20260422 - Meeting Transcript - Session 2.md
 date_of_source: 2026-04-22
 status: draft
+project: party-rearch
 ---
 
 # Meeting Transcript — Session 2 (2026-04-22)
@@ -101,7 +102,7 @@ Still unresolved:
 | InRisk widget / SDK / Chakra discussion (V2 vs V3 render strategy) | [[rory-beattie]] + [[alex-sillars]] | [[party-curation-tool]] · [[inrisk]] | open | Not to be solved in-team; needs InRisk in the room |
 | Confirm broker retrieval moves InRisk-direct (removes URD path) | [[rory-beattie]] | [[inrisk]] | open | Part of the broker workshop |
 
-Open action count: **12**. These are the input to the next [[ownership-matrix]] refresh.
+Open action count: **12**. These are the input to the next [[party-rearch-ownership-matrix]] refresh.
 
 ## Applications mentioned
 - [[party-application]] — re-architecture subject; most of the session.
@@ -151,6 +152,6 @@ _First real source — nothing to reinforce yet. Future ingests should reference
 12. **Remaining unidentified referenced people** — Sam (HV-side), Bob (InRisk neighbourhood), Josie (company-matching tool).
 
 ## Related
-- [[overview]] · [[dependency-map]] · [[ownership-matrix]]
+- [[party-rearch]] · [[party-rearch-dependency-map]] · [[party-rearch-ownership-matrix]]
 - [[strangle-the-graph-via-proxy-events]] · [[pct-and-mdm-go-live-together]] · [[d-and-b-caching-and-auto-parent]] · [[uuid-system-id-with-display-id]]
 - [[party-application]] · [[party-curation-tool]] · [[inrisk]] · [[inrisk-engine]] · [[high-volume]]

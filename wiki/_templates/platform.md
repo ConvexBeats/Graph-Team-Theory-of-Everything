@@ -44,7 +44,7 @@ Every claim should cite a source.
 ## Related
 - [[<team-slug>]] · [[key-person]]
 - [[application-or-decision]]
-- [[dependency-map]] · [[ownership-matrix]]
+- [[party-rearch-dependency-map]] · [[party-rearch-ownership-matrix]]
 
 ## Sources
 - [[sources/src-1]]

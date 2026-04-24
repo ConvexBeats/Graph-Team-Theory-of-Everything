@@ -1,15 +1,16 @@
 ---
 type: analysis
-title: Ownership Matrix
+title: Party Re-Architecture — Ownership Matrix
 created: 2026-04-22
 updated: 2026-04-22
 tags: [analysis, standing, ownership, actions]
+project: party-rearch
 sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2]
 source_count: 2
 status: draft
 ---
 
-# Ownership Matrix
+# Party Re-Architecture — Ownership Matrix
 
 A standing analysis of workstreams, owners, and open actions for the Party Application re-architecture programme. Refreshed on every ingest. Open-action count is the headline metric.
 
@@ -32,7 +33,7 @@ A standing analysis of workstreams, owners, and open actions for the Party Appli
 | **DataOps business-case framing for PCT rollout** | [[will-bone]] | [[hugh-lobban]] ([[data-quality-team]]) | Sponsor-level messaging |
 | **Bulk-migration CLI (Phase 1)** | [[graph-team]] | [[dataops-team]] (user) | [[bulk-migrations-owned-by-mdm-phase-1]]; Phase 2+ self-serve UX: [[open-questions#OQ-006]] |
 | **D&B scheduled-refresh cadence + revision-on-change** | [[graph-team]] ([[joe-worsfold]]) | "enriched team" ([[open-questions#OQ-012]]) | Session 1 addition to [[d-and-b-caching-and-auto-parent]]; cadence: [[open-questions#OQ-011]] |
-| **Graph API consumer audit (spike)** | [[graph-team]] ([[joe-worsfold]], [[billy-calladine]]) | — | [[open-questions#OQ-004]]; feeds [[dependency-map]] and answers [[open-questions#OQ-001]] |
+| **Graph API consumer audit (spike)** | [[graph-team]] ([[joe-worsfold]], [[billy-calladine]]) | — | [[open-questions#OQ-004]]; feeds [[party-rearch-dependency-map]] and answers [[open-questions#OQ-001]] |
 | **PCT functional-requirements walkthrough** | [[graph-team]] ([[joe-worsfold]]) + [[sergiu-postolachi]] | — | Session 1: confirms no functional gap vs new PCT; walks against [[tomas-sivo]]'s authoring workstream |
 | **PCT functional-requirements authoring** | [[tomas-sivo]] ([[graph-team]]) | — | Resolved Pass B |
 | **Feature-tagging — Phase 2+ migration to [[inrisk]]** | [[prebind-team]] (Phase 2+) · [[graph-team]] (current host) | Michael Hay ([[open-questions#OQ-027]]) | [[feature-tagging-moves-to-inrisk]]; timing: [[open-questions#OQ-019]] |

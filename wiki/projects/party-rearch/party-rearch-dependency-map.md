@@ -1,15 +1,16 @@
 ---
 type: analysis
-title: Dependency Map
+title: Party Re-Architecture — Dependency Map
 created: 2026-04-22
 updated: 2026-04-22
 tags: [analysis, standing, dependencies]
+project: party-rearch
 sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2]
 source_count: 2
 status: draft
 ---
 
-# Dependency Map
+# Party Re-Architecture — Dependency Map
 
 A standing analysis of inter-application dependencies for the Party Application re-architecture programme. Current-state vs target-state, called out separately. Refreshed on every ingest.
 

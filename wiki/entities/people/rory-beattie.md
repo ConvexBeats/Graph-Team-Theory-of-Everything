@@ -33,7 +33,7 @@ Tech Tooling programme lead for the Party Application re-architecture. Holds pro
 - Is running the InRisk engagement track in parallel with the MDM build: _"we're having that conversation with InRisk themselves, and Joe and I are helping out at the integration, but it is an InRisk problem"_ — [[sources/20260422-meeting-transcript-session-2]].
 
 ## Current actions (open)
-- Align with [[high-volume-team]] (main contact [[simon-hulbert]]) on Party integration shape and any timeline risks to 1 Sep. _(See [[ownership-matrix]].)_
+- Align with [[high-volume-team]] (main contact [[simon-hulbert]]) on Party integration shape and any timeline risks to 1 Sep. _(See [[party-rearch-ownership-matrix]].)_
 - Schedule follow-up InRisk architecture session for week after Romania trip.
 - Coordinate broker workshop with [[inrisk]] team, including Scott.
 - Confirm broker retrieval moves InRisk-direct (removes URD path).

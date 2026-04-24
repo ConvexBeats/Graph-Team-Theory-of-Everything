@@ -9,6 +9,8 @@ owner: graph-team
 sources: [20260422-meeting-transcript-session-1]
 source_count: 1
 status: accepted
+project: party-rearch
+phase: [phase-1]
 ---
 
 # No Jira audit-history backfill into the new PCT

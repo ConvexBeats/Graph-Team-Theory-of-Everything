@@ -10,9 +10,12 @@ state: current
 sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2]
 source_count: 2
 status: draft
+projects: [party-rearch]
 ---
 
 # Party Curation Tool
+
+> **Architecture:** detailed current-state tech, touchpoints, and constraints live on [[party-curation-tool-architecture]]. Phase-target shapes live under [[party-rearch]] as `party-rearch-<phase-id>-party-curation-tool-architecture` pages (created when targets are authored).
 
 ## Summary
 A Next.js-based human interface for curating party data in the [[party-application]]. Today: a front-end on top of a Jira workflow, mapping parties onto third-party services (D&B), resolving spelling, merging near-duplicates, version updates. Target: a rebuilt Next.js UI auto-generated from the new MDM open-API spec, shipping **together** with MDM per [[pct-and-mdm-go-live-together]].
@@ -97,13 +100,14 @@ All PCT-facing open items are tracked in [[open-questions]]:
 - [[d-and-b-caching-and-auto-parent]]
 
 ## Related
+- [[party-curation-tool-architecture]] — detailed current-state architecture
 - [[party-application]] — co-ships
 - [[inrisk]] — widget embedder
 - [[dataops-team]] — user
 - [[graph-team]] — owner
 - [[tomas-sivo]] — functional-requirements BA
 - [[contract-buckets]] — operational-bucket member
-- [[ownership-matrix]] · [[dependency-map]] · [[open-questions]]
+- [[party-rearch-ownership-matrix]] · [[party-rearch-dependency-map]] · [[open-questions]]
 
 ## Sources
 - [[sources/20260422-meeting-transcript-session-1]] — morning; single-flag rollout, audit-history line, bulk-migration CLI scope, create-timing edge case

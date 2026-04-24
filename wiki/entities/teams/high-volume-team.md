@@ -34,7 +34,7 @@ _Other name referenced in-session:_ "Sam" — possibly an HV-side delivery role,
 - Integration with the new MDM's API via Boomi (no widget dependency).
 
 ## Relationships
-- **Integrates with**: [[party-application]] (via Boomi) — see [[dependency-map]].
+- **Integrates with**: [[party-application]] (via Boomi) — see [[party-rearch-dependency-map]].
 - **Coordinates with**: [[graph-team]] on the MDM API contract; [[tech-tooling]] ([[rory-beattie]]) on timeline and integration shape.
 
 ## Claims

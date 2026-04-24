@@ -36,7 +36,7 @@ What was chosen and the core rationale.
 - …
 
 ## Related
-- [[applications/...]]
+- [[app-slug]]
 - [[decisions/...]]
 
 ## Sources

@@ -53,7 +53,7 @@ MDM emits events **in the existing Knowledge Graph event shape**, via a proxy ad
 
 ## Contradictions / open debates
 - **Backfill cut-off policy.** The point-in-time from which MDM history starts is "cutover forward" per [[no-historic-client-backfill-into-mdm]] — for Party data. Knowledge Graph history itself is fully backfilled (by definition of step 2). Make sure these two scopes are not conflated in future conversations.
-- **Bidirectional round-trip test authorship.** The test that asserts event → MDM → event equivalence is a single choke-point of correctness for the whole migration; no explicit owner yet (tracked at [[ownership-matrix]]).
+- **Bidirectional round-trip test authorship.** The test that asserts event → MDM → event equivalence is a single choke-point of correctness for the whole migration; no explicit owner yet (tracked at [[party-rearch-ownership-matrix]]).
 
 ## Related
 - [[strangle-the-graph-via-proxy-events]] — the overarching strategic decision this pattern implements.
@@ -61,7 +61,7 @@ MDM emits events **in the existing Knowledge Graph event shape**, via a proxy ad
 - [[pct-and-mdm-go-live-together]] — the cutover moment that consumes all three steps.
 - [[no-historic-client-backfill-into-mdm]] · [[no-pct-audit-backfill]] — scope-bound non-requirements of the backfill step.
 - [[uuid-system-id-with-display-id]] — the ID scheme that makes backfill addressing tractable.
-- [[dependency-map]] · [[ownership-matrix]]
+- [[party-rearch-dependency-map]] · [[party-rearch-ownership-matrix]]
 
 ## Sources
 - [[sources/20260422-meeting-transcript-session-2]] — the trio is named explicitly; acceptance criterion on step 3 is [[ben-joseph]]'s.

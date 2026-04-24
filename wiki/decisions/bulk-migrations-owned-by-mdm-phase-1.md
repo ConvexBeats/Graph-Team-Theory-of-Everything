@@ -9,6 +9,8 @@ owner: graph-team
 sources: [20260422-meeting-transcript-session-1]
 source_count: 1
 status: accepted
+project: party-rearch
+phase: [phase-1]
 ---
 
 # Bulk migrations owned by the MDM team in Phase 1 (CLI-first)
@@ -26,7 +28,7 @@ However, a full self-serve UI for bulk migrations is **not a small feature**:
 - It requires a revert-button-on-a-revision model that is robust to intermediate user actions.
 - It requires an RBAC decision about who can actually _execute_ bulk changes vs. only propose them.
 
-Each of those is its own implementation and UX conversation. Taken together, they would be substantial scope addition in a Phase 1 that is already bounded by the 1 September HV deadline (see [[overview#Pillars]]).
+Each of those is its own implementation and UX conversation. Taken together, they would be substantial scope addition in a Phase 1 that is already bounded by the 1 September HV deadline (see [[party-rearch#Pillars]] and [[party-rearch-phase-1]]).
 
 At the same time, bulk-migration capability _is_ needed in Phase 1 — the migration itself (backfill, corrections during stabilisation, ad-hoc fixes) is a bulk-migration use case by nature.
 

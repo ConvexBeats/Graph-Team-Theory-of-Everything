@@ -34,10 +34,10 @@ status: draft
 ## Actions _(meeting sources only)_
 | Action | Owner | Application | State |
 |---|---|---|---|
-| … | [[team-or-person]] | [[applications/...]] | open |
+| … | [[team-or-person]] | [[app-slug]] | open |
 
 ## Applications mentioned
-- [[applications/...]] — how
+- [[app-slug]] — how
 
 ## Entities mentioned
 - [[entity-a]] — role

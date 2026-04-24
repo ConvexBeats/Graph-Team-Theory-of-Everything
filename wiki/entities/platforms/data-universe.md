@@ -57,7 +57,7 @@ Not a builder on this programme, but a first-class consumer whose tolerance for 
 - [[party-application]] — primary data feed
 - [[inrisk]] — joined on client-ID today
 - [[strangle-the-graph-via-proxy-events]] — preserves the DU's current consumption contract
-- [[dependency-map]] · [[ownership-matrix]]
+- [[party-rearch-dependency-map]] · [[party-rearch-ownership-matrix]]
 
 ## Sources
 - [[sources/20260422-meeting-transcript-session-2]]

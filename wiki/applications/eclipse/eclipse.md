@@ -7,6 +7,7 @@ updated: 2026-04-22
 tags: [application, enrichment-source, stub]
 sources: [20260422-meeting-transcript-session-2]
 source_count: 1
+projects: [party-rearch]
 ---
 
 # Eclipse

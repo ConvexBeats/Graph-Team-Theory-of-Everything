@@ -8,6 +8,7 @@ tags: [meeting, architecture-review, session-1, origin-of-strangle-graph]
 raw: raw/20260422 - Meeting Transcript - Session 1.md
 date_of_source: 2026-04-22
 status: draft
+project: party-rearch
 ---
 
 # Meeting Transcript — Session 1 (2026-04-22)
@@ -81,7 +82,7 @@ Two references previously treated as unidentified people were **transcription mi
 
 12. **Eclipse enrichment is dropped.** Sergiu flags Eclipse ingestion; Alex confirms it has no current consumers — the data has not been updating for months, Eclipse IDs are already resolved via the InRisk-client-ID path. Decision: no Eclipse ingestion in the new world. (Will be added to current-state diagram and struck through for documentation only.)
 
-13. **Feature-tagging is an InRisk domain responsibility.** Joe: _"it's an InRisk responsibility, really, it's their domain. They just asked us to do it because we had a nice widget."_ In Phase 1, leave feature-tagging in its existing Postgres table untouched. In Phase 2 / end-state, migrate the Postgres table and the search widget component to InRisk; they own it thereafter. This formalises the scope call that was flagged in [[ownership-matrix]].
+13. **Feature-tagging is an InRisk domain responsibility.** Joe: _"it's an InRisk responsibility, really, it's their domain. They just asked us to do it because we had a nice widget."_ In Phase 1, leave feature-tagging in its existing Postgres table untouched. In Phase 2 / end-state, migrate the Postgres table and the search widget component to InRisk; they own it thereafter. This formalises the scope call that was flagged in [[party-rearch-ownership-matrix]].
 
 14. **D&B cache TTL is scheduled, not reactive.** Joe's update on the D&B flow: cache in Dynamo with a TTL; a scheduled job (monthly / quarterly — to be agreed) triggers a re-call of D&B and spawns a curation revision if the record has changed. Extends but does not contradict [[d-and-b-caching-and-auto-parent]]; adds the _"scheduled refresh → revision"_ loop as an implementation detail for that ADR.
 
@@ -130,7 +131,7 @@ Two references previously treated as unidentified people were **transcription mi
 | Scope the MDM-owned bulk-migration CLI tool (CSV → preview → approved revision) | [[joe-worsfold]] | [[party-application]] | open | Phase-1 self-serve substitute for DataOps bulk work |
 | Identify remaining [[party-curation-tool]] neighbourhood people ([[open-questions#OQ-027]] Michael Hay) | [[rory-beattie]] | [[party-curation-tool]] · [[inrisk]] | open | Wiki-level follow-up |
 
-Open action count: **9**. Applied to [[ownership-matrix]] in Pass A.
+Open action count: **9**. Applied to [[party-rearch-ownership-matrix]] in Pass A.
 
 _Pass B resolutions to the Pass A action list:_
 - The "Tom Ash / Tomas / Darius" identification action is **resolved**: Tomas Sivo identified on [[graph-team]]; "Darius" confirmed as transcription mispronunciation of "InRisk", not a person.
@@ -169,7 +170,7 @@ _Nothing in this session contradicts a prior wiki claim — this session is chro
 - The transcript runs ~2h40m and ends at lunch. The _"afternoon session on external providers"_ alluded to in-session is simply [[sources/20260422-meeting-transcript-session-2]]; there is **no third recording**. The name "Boyle" in the raw transcript is a transcription mispronunciation of "Will" (= [[will-bone]]) in reference to his attending the afternoon session. (Resolved Pass B.)
 - Speaker identification is substantially less reliable than Session 2. The engine re-numbers speakers per recording and **assigns the same person to multiple IDs within a single session**: Billy = Speakers 4 and 6; Joe = Speakers 5 and 7. Session 2's user-confirmed mappings do not apply. All Session 1 attendee speakers are now resolved (Pass B).
 - Lines ~745–820 are the break between the "search widget + PCT" segment and the "InRisk dependencies" segment; the auto-transcription picks up a lot of non-meeting noise (_"South Dakota"_, _"Twitter"_, _"Go on"_) — ignored for content extraction.
-- Joe's team-shape concern (claim 19) is load-bearing for the [[ownership-matrix]] — tracked as [[open-questions#OQ-017]].
+- Joe's team-shape concern (claim 19) is load-bearing for the [[party-rearch-ownership-matrix]] — tracked as [[open-questions#OQ-017]].
 - The session's key narrative shift: the room enters expecting the biggest problem to be the InRisk interim schema; leaves with the InRisk problem being _"small"_ and the new insight being that the DU cutover is a single-event adapter, not an N-event migration.
 - **Emotionally**: the _"walking through my field of weeping, my Gladiator reference"_ line from Joe (line 5061) marks the moment the room relaxes — the proxy insight lands and the shape of the programme becomes navigable. Useful emotional tell if we ever need to time-stamp when the plan crystallised.
 - **Pass B lesson for future ingests**: auto-transcription mispronunciations of in-room nouns (like "Darius" for "InRisk", "Boyle" for "Will") can masquerade as unidentified people for a long time before a user cross-check catches them. When a "person" surfaces only once with thin context, treat transcription-artefact as a live hypothesis before populating an entity page.
@@ -191,7 +192,7 @@ All Pass A open questions are now tracked in the standing [[open-questions]] reg
 - ⟶ **Bulk migration tool Phase 2+ UX** — deferred to [[open-questions#OQ-006]]; Phase 1 is resolved via [[bulk-migrations-owned-by-mdm-phase-1]].
 
 ## Related
-- [[overview]] · [[dependency-map]] · [[ownership-matrix]] · [[open-questions]]
+- [[party-rearch]] · [[party-rearch-dependency-map]] · [[party-rearch-ownership-matrix]] · [[open-questions]]
 - [[sources/20260422-meeting-transcript-session-2]]
 - [[contract-buckets]] — concept formalised from this session
 - [[strangle-the-graph-via-proxy-events]] · [[pct-and-mdm-go-live-together]] · [[d-and-b-caching-and-auto-parent]] · [[uuid-system-id-with-display-id]] · [[no-historic-client-backfill-into-mdm]] · [[no-pct-audit-backfill]] · [[feature-tagging-moves-to-inrisk]] · [[bulk-migrations-owned-by-mdm-phase-1]]

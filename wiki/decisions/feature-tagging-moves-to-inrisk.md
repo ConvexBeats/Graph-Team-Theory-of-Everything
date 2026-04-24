@@ -9,6 +9,8 @@ owner: graph-team
 sources: [20260422-meeting-transcript-session-1]
 source_count: 1
 status: accepted
+project: party-rearch
+phase: [phase-2]
 ---
 
 # Feature-tagging moves to InRisk ownership (Phase 2+)
@@ -67,7 +69,7 @@ Phase 1: no change — feature-tagging stays on its current Postgres table and w
   - If [[prebind-team]] is building on [[inrisk-engine]] by the time the migration happens, there's a choice to be made between migrating into [[inrisk]] (IR2) or [[inrisk-engine]] directly — deferred.
 
 ## Relationship to other decisions
-- Reinforces the "**InRisk does the minimum for Phase 1**" pillar (see [[overview]]). Feature-tagging is deliberately _off_ the Phase 1 list.
+- Reinforces the "**InRisk does the minimum for Phase 1**" pillar (see [[party-rearch#Pillars]] and [[party-rearch-phase-1]]). Feature-tagging is deliberately _off_ the Phase 1 list.
 - Companion to [[strangle-the-graph-via-proxy-events]] in the sense that both are about bounding the Phase 1 surface so the migration ships.
 - Does **not** depend on [[inrisk-engine]]'s go-live; migration can happen into [[inrisk]] (IR2) well before InRisk Engine matures. This is explicit — Phase 2+ feature-tagging ownership is not gated on the final-state Party contract.
 
@@ -79,7 +81,7 @@ Phase 1: no change — feature-tagging stays on its current Postgres table and w
 - [[inrisk]] — Phase 2+ owner of both
 - [[prebind-team]] — team accountable for the migration and subsequent maintenance
 - [[graph-team]] — Phase 1 owner; hands over in Phase 2+
-- [[ownership-matrix]] — migration is tracked as an action; Phase 2 trigger condition pending
+- [[party-rearch-ownership-matrix]] — migration is tracked as an action; Phase 2 trigger condition pending
 - [[open-questions#OQ-019]] — trigger condition / timing
 
 ## Sources

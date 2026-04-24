@@ -9,6 +9,8 @@ owner: graph-team
 sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2]
 source_count: 2
 status: accepted
+project: party-rearch
+phase: [phase-1]
 ---
 
 # PCT and MDM go live together

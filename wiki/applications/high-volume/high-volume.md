@@ -10,9 +10,12 @@ state: in-development
 sources: [20260422-meeting-transcript-session-2]
 source_count: 1
 status: draft
+projects: [party-rearch]
 ---
 
 # High Volume
+
+> **Architecture:** detailed current-state tech, touchpoints, and constraints live on [[high-volume-architecture]] (stub — HV is greenfield). Phase-target shapes live under [[party-rearch]] as `party-rearch-<phase-id>-high-volume-architecture` pages (created when targets are authored).
 
 ## Summary
 An application in active development for processing large volumes of insurance deals at higher pace. Designed as a future consumer of the [[party-application]]. Does **not** consume via the UI widget — will integrate against the new MDM API via **Boomi**. Its production go-live on **1 September** is the forcing function for this programme's Phase 1 timeline.
@@ -55,10 +58,11 @@ Handle deal flow at a volume and pace that the existing pre-bind path can't effi
 - Other Party-side integration expectations from HV that haven't surfaced yet (e.g. version-change event subscription, D&B enrichment thresholds).
 
 ## Related
+- [[high-volume-architecture]] — current-state architecture stub (greenfield)
 - [[high-volume-team]] — owning team
 - [[simon-hulbert]] — main contact
 - [[party-application]] — target integration
-- [[ownership-matrix]] · [[dependency-map]]
+- [[party-rearch-ownership-matrix]] · [[party-rearch-dependency-map]]
 
 ## Sources
 - [[sources/20260422-meeting-transcript-session-2]]

@@ -87,7 +87,7 @@ The framework is load-bearing for three reasons:
 _None recorded yet._ The framework is as-proposed; no counter-proposal has been raised.
 
 ## Related
-- [[dependency-map]] — the physical map is organised around this framework (see its "Contract buckets" section).
+- [[party-rearch-dependency-map]] — the physical map is organised around this framework (see its "Contract buckets" section).
 - [[strangle-the-graph-via-proxy-events]] — the strategy that came out of applying the framework to the data-distribution bucket.
 - [[pct-and-mdm-go-live-together]] — the operational-bucket consequence.
 - [[d-and-b-caching-and-auto-parent]] — the flagship enrichment-bucket decision.

@@ -10,6 +10,7 @@ state: concept
 sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2]
 source_count: 2
 status: draft
+projects: [party-rearch]
 ---
 
 # InRisk Engine
@@ -65,7 +66,7 @@ Replace the legacy IR2 with a modern, API-first PAS that consumes party data cle
 - [[inrisk]] — predecessor; remains live during the interim
 - [[party-application]] — final-state contract provider
 - [[devx-team]] — owner · [[antonie-labuschagne]]
-- [[ownership-matrix]] · [[dependency-map]]
+- [[party-rearch-ownership-matrix]] · [[party-rearch-dependency-map]]
 
 ## Sources
 - [[sources/20260422-meeting-transcript-session-1]] — morning; explicit out-of-scope call

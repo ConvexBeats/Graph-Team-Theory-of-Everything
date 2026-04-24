@@ -178,3 +178,119 @@ Kinds: `ingest` · `query` · `analysis` · `lint` · `schema` · `note`
   - §4 Page-format reference under "Entity" replaced with a three-way breakdown — one paragraph per sub-type, listing the sections each template enforces.
 - **Not changed**: `index.md` (its Teams / People / Platforms sub-sections already reflected the split); all wiki-link references across the wiki (still bare slugs).
 - touched: [[AGENTS]], [[_templates/person]] (new), [[_templates/team]] (new), [[_templates/platform]] (new), and file moves for all 30 entity pages
+
+## [2026-04-22] schema | projects + phases restructure
+
+- **New page types**: `project`, `phase`, `portfolio-overview` added to the `type:` enum. Templates created: `_templates/project.md`, `_templates/phase.md`.
+- **New frontmatter fields**:
+  - `projects: [<slug>, …]` — on cross-project pages (applications, entities, platforms, concepts) that touch multiple projects.
+  - `project: <slug>` — on project-scoped pages (sources, decisions, phase pages, project-scoped analyses).
+  - `phase: [<phase-id>, …]` — on decisions / analyses scoped to specific phases within a project (empty list = project-level, not phase-bound).
+  - `phase_id`, `slug`, `gate_date` — on phase / project pages.
+- **New folder**: `wiki/projects/<slug>/`. Project-scoped files (project overview, phase pages, project-scoped dependency map and ownership matrix) now live here, prefixed with the project slug for global filename uniqueness (e.g. `party-rearch.md`, `party-rearch-phase-1.md`, `party-rearch-dependency-map.md`).
+- **Moved**:
+  - `wiki/overview.md` → `wiki/projects/party-rearch/party-rearch.md` (is now the party-rearch project thesis). Frontmatter changed to `type: project` with slug/status/applications fields.
+  - `wiki/analyses/dependency-map.md` → `wiki/projects/party-rearch/party-rearch-dependency-map.md`.
+  - `wiki/analyses/ownership-matrix.md` → `wiki/projects/party-rearch/party-rearch-ownership-matrix.md`.
+  - `wiki/analyses/` retained with a `.gitkeep` — reserved for cross-project / portfolio-level standing analyses as they emerge.
+- **New files**:
+  - `wiki/overview.md` — rewritten from scratch as the **portfolio overview** (projects table, cross-project themes, how-to-read guide). Previously the programme-level thesis; that content is now on `[[party-rearch]]`.
+  - `wiki/projects/party-rearch/party-rearch-phase-1.md` — MDM + PCT co-ship to 1-Sep gate; full scope table, 8 phase-1 decisions, open questions, done-state.
+  - `wiki/projects/party-rearch/party-rearch-phase-2.md` — post-cutover end-state stub; deferred items inventory.
+  - `wiki/projects/standardise-secrets/standardise-secrets.md` — stub project page for the ASG-mandated secrets-management project (Shai-Hulud 2.0 / INC-140574 driver); scope/owner/timeline TBD at first ingest.
+  - `wiki/projects/standardise-secrets/standardise-secrets-phase-1.md` — placeholder phase stub.
+- **Link rewrites**: 35 replacements across 18 files:
+  - `[[dependency-map]]` → `[[party-rearch-dependency-map]]`
+  - `[[ownership-matrix]]` → `[[party-rearch-ownership-matrix]]`
+  - `[[overview]]` / `[[overview#Pillars]]` rewrites where the reference meant the old programme thesis (now `[[party-rearch]]` / `[[party-rearch#Pillars]]`); references on the new portfolio page and project stubs that correctly point at `[[overview]]` were left alone.
+- **Frontmatter injections**: `project:` (+`phase:` on decisions) added to 8 decisions, 2 sources, and 6 applications. 24 frontmatter lines added total. No pre-existing keys were overwritten.
+- **open-questions.md**: added a mandatory **`Project`** column as column 2 on every table (Open + Resolved). All 31 existing rows assigned `party-rearch`. The `How to read` section documents the new column. IDs remain global across projects — the namespace is not per-project.
+- **AGENTS.md updates**:
+  - §3 Folder conventions: tree updated to show `wiki/projects/<slug>/`, `open-questions.md` noted as global with a `Project` column, and filename uniqueness rule extended to cover project-scoped files (slug-prefixed).
+  - §3 Vocabulary: `project` and `phase` added; `application`/`person`/`team`/`platform` clarified as **cross-project** entities.
+  - §3 New cascade: **Choosing a project/phase location** — the decision tree for where a new project-scoped page belongs.
+  - §4 Frontmatter: extended enum with `project | phase | portfolio-overview`; new optional fields `project`, `projects`, `phase`, `phase_id`, `slug`, `gate_date` documented.
+  - §4 Page-type-specific sections: new rows for `project`, `phase`, and `portfolio-overview` (replacing the old "overview" entry).
+  - §5.1 Ingest workflow: new Step 1 "Identify the project"; standing-analyses refresh now targets project-scoped files; portfolio overview only updated when the portfolio itself changes.
+  - §5.1a Meeting-note sub-workflow: ADRs must carry `project:` + `phase:` from creation; actions fold into the project-scoped ownership matrix.
+  - §5.1b Open-questions: Project column is mandatory; IDs are global across all projects.
+  - §6 `index.md` example: rewritten with Portfolio / Projects sections, project-scoped analyses listed under each project, cross-project sections marked as such.
+  - §10 "Project scope" → **"Portfolio scope"**: now a portfolio summary listing both in-flight projects with a one-line thesis each; application list clarified as cross-project.
+- **index.md**: regenerated with Portfolio + Projects top-level sections, project-scoped analyses listed under each project, `projects:` metadata added to application entries, and updated counts (2 projects · 3 phases · 3 project-scoped analyses).
+- touched (structural): [[AGENTS]], [[index]], [[overview]] (new portfolio content), [[party-rearch]] (ex-overview), [[party-rearch-phase-1]] (new), [[party-rearch-phase-2]] (new), [[party-rearch-dependency-map]] (ex-dependency-map), [[party-rearch-ownership-matrix]] (ex-ownership-matrix), [[standardise-secrets]] (new), [[standardise-secrets-phase-1]] (new), [[_templates/project]] (new), [[_templates/phase]] (new), [[open-questions]] (+Project column), plus 18 files that had their `[[dependency-map]]`/`[[ownership-matrix]]`/`[[overview]]` links redirected, and 16 pages that received project/phase frontmatter.
+
+## [2026-04-22] note | rename project slug `standardise-secrets` → `secrets-management`
+
+- Per user preference, renamed the second project's slug from `standardise-secrets` to `secrets-management`. Human-readable title unchanged ("Standardise Secrets Management"); only the slug and its file/folder names changed.
+- Renamed: `wiki/projects/standardise-secrets/` → `wiki/projects/secrets-management/`, `standardise-secrets.md` → `secrets-management.md`, `standardise-secrets-phase-1.md` → `secrets-management-phase-1.md`.
+- 31 slug replacements across 6 files: [[AGENTS]], [[index]], [[overview]], [[open-questions]], [[secrets-management]], [[secrets-management-phase-1]].
+- Kept `standardise-secrets` as an alias on [[secrets-management]]'s frontmatter so readers searching for the old slug still land on the page.
+- This log entry intentionally preserves the old slug in historical entries above — the log is append-only.
+
+## [2026-04-22] analysis | party-rearch Phase 1 — Summary & Applications-Affected (filed)
+
+- **Query**: "Could you give me a summary of Phase 1 of the MDM party rearchitecture project and which applications are affected?"
+- **Filed as**: [[party-rearch-phase-1-summary]] at `wiki/projects/party-rearch/party-rearch-phase-1-summary.md` (`type: analysis`, `project: party-rearch`, `phase: [phase-1]`).
+- Focused digest: what Phase 1 is, the 6-row applications-affected table (with change-intensity and shape-of-change), the 7 Phase-1 ADRs, the [[intercept-backfill-projection]] delivery shape, and the top-5 open questions gating the 1-Sep cutover. Distinct from [[party-rearch-phase-1]] (canonical, exhaustive) by being applications-first and readable in one sitting.
+- **Confidence**: high on structure (re-assembly of already-reviewed content), medium-to-low on HV integration shape ([[open-questions#OQ-013]]) and MDM squad shape ([[open-questions#OQ-017]]) which remain open — noted on-page with explicit follow-ups to refresh when resolved.
+- No new pages created beyond the summary itself; no existing page content altered.
+- touched: [[index]] (added summary under party-rearch analyses; page-count bumped 3 → 4 project-scoped analyses), [[party-rearch-phase-1-summary]] (new).
+
+## [2026-04-22] schema | introduce architecture pages (current-state + phase-target)
+
+- **Motivation**: identity pages for applications were carrying both "role / ownership / change items" (identity) and "tech / touchpoints / constraints" (architecture). As more phases land, the latter needs a per-phase target and a fold-in workflow — mixed into the identity page that becomes unreadable. Splitting the two concerns.
+- **Structure introduced**:
+  - **Current-state architecture** (cross-project, per app): `wiki/applications/<app-slug>-architecture.md`. `type: application-architecture`, `state: current`. One per application. This is the living reference; phase completions fold targets into it.
+  - **Phase-end target architecture** (project-scoped, per (project, phase, app)): `wiki/projects/<slug>/<slug>-<phase-id>-<app-slug>-architecture.md`. `type: phase-application-architecture`, `state: phase-target | shipped | superseded`, `baseline: <app-slug>-architecture`, with a load-bearing **Delta from current state** section plus a standalone **Full end-of-phase shape** section.
+- **AGENTS.md changes**: added both types to the type enum; added `baseline` + architecture-specific `state` frontmatter; added architecture entries to the folder tree (both `wiki/applications/` and `wiki/projects/<slug>/`); added entries 4 & 5 to the project-location cascade (phase-target architectures go under the project folder; current-state architectures stay cross-project); added **§5.4 Phase completion** workflow — the fold-in routine that moves old current-state claims to **Superseded claims** and promotes the phase target to the new baseline; added page-section guidance for both architecture types.
+- **Templates** (new): [[_templates/application-architecture]], [[_templates/phase-application-architecture]].
+- **Skeletons created** (current-state, `status: stub`, ready to be populated from forthcoming raw-folder ingests):
+  - [[party-application-architecture]] — richest skeleton; pre-seeded with Neo4j-as-primary-store, payload-event contract, Graph-API consumer-audit open question, Eclipse scope call
+  - [[party-curation-tool-architecture]] — Next.js-on-Jira, D&B integration, Chakra-widget tension pre-seeded
+  - [[inrisk-architecture]] — integration-surface-focused stub (client-ID / submission / requirement nesting; Eclipse ingestion; HV-integration open question)
+  - [[high-volume-architecture]] — lean stub; HV is greenfield so "current state" is a baseline for its target page to delta from
+- **Identity pages updated** (4): callout added at top linking to the architecture page; architecture page added to **Related** — [[party-application]], [[party-curation-tool]], [[inrisk]], [[high-volume]]. Identity-page content intentionally not cut — migration of detail from identity to architecture page happens organically with the first real architecture ingest.
+- **[[party-rearch-phase-1]]**: scope table followed by a new **Architecture pages per application** sub-table pairing each affected app's current-state page with its (to-be-created) phase-1 target page.
+- **Phase-target pages deliberately NOT created yet** — they'll be authored from authoritative source material when the user drops architecture detail into the raw folder. Current skeletons make clear what "to be created" pages will be named so cross-links can be established in advance.
+- **No content loss**: identity pages retain all their pre-existing detail; the architecture pages are additive scaffolding only.
+- touched (new, 6): [[_templates/application-architecture]], [[_templates/phase-application-architecture]], [[party-application-architecture]], [[party-curation-tool-architecture]], [[inrisk-architecture]], [[high-volume-architecture]].
+- touched (edited, 7): [[AGENTS]] (§3 folder tree + §3 cascade + §4 type-enum + §4 frontmatter + §4 page-type sections + new §5.4 workflow), [[index]] (new "Application architecture" section, updated counts, updated "How to read"), [[party-application]], [[party-curation-tool]], [[inrisk]], [[high-volume]] (architecture callout + Related link), [[party-rearch-phase-1]] (architecture sub-table).
+
+## [2026-04-22] schema | per-application folders under `wiki/applications/`
+
+- **Motivation**: with two pages per app (identity + current-state architecture) in a flat folder and richer per-app material likely ahead (API contracts, data models, runbooks, diagrams), the flat layout was about to get cluttered. Moved to one folder per application so every app has a clear home for all its material. Symmetric with `wiki/projects/<slug>/`.
+- **Before**: `wiki/applications/<app-slug>.md` and `wiki/applications/<app-slug>-architecture.md` sitting flat alongside each other for 6 apps.
+- **After**: `wiki/applications/<app-slug>/<app-slug>.md` + `.../<app-slug>-architecture.md`, with room for `<app-slug>-<aspect>.md` siblings (e.g. `party-application-api-contracts.md`, `party-application-data-model.md`, `party-application-runbook.md`) and a `diagrams/` subfolder when they become needed.
+- **No link breakage**: Obsidian resolves wiki links by basename, so every existing `[[party-application]]`, `[[party-curation-tool-architecture]]`, etc. continues to resolve without edits. No link rewrites were needed across the wiki. Confirmed by `rg` sweep for path-style references — none found.
+- **Files moved**: 10 (6 identity + 4 current-state architecture). Filenames unchanged; only the path changed.
+- **Schema changes** ([[AGENTS]]):
+  - Folder tree: `applications/` entry rewritten to show `applications/<app-slug>/` with identity + architecture + optional richer pages.
+  - Cascade: entry 5 (current-state architecture) updated to the new path; **new entry 7** added to govern richer per-app pages (API contracts, data models, runbooks, diagrams) — they live in the per-app folder alongside identity and architecture; entries 8 & 9 renumbered.
+  - Page-section guidance: `application` and `application-architecture` paths updated.
+- **Templates** updated: both [[_templates/application]] and [[_templates/application-architecture]] got a `<!-- Lives at: … -->` comment clarifying the target path; the application template gained a "Architecture" callout block and `projects: []` frontmatter field in line with existing pages. Also cleaned up two stale placeholders: [[_templates/source]] and [[_templates/decision]] replaced illustrative `[[applications/...]]` path-style placeholders with basename-style `[[app-slug]]` to match the convention used everywhere else.
+- **[[index]]**: "How to read" entry for Applications rewritten to describe the per-app folder; date-stamp updated.
+- touched (structural, 10 moved): `wiki/applications/party-application/{party-application.md, party-application-architecture.md}`, `wiki/applications/party-curation-tool/{party-curation-tool.md, party-curation-tool-architecture.md}`, `wiki/applications/inrisk/{inrisk.md, inrisk-architecture.md}`, `wiki/applications/inrisk-engine/inrisk-engine.md`, `wiki/applications/high-volume/{high-volume.md, high-volume-architecture.md}`, `wiki/applications/eclipse/eclipse.md`.
+- touched (edited, 5): [[AGENTS]], [[index]], [[_templates/application]], [[_templates/application-architecture]], [[_templates/source]] + [[_templates/decision]] (placeholder tidy).
+
+## [2026-04-22] schema | per-phase folders under `wiki/projects/<slug>/`
+
+- **Motivation**: same scaling pressure as the per-app migration, one level in. Each phase is about to grow past a single page — phase page + phase summary + N phase-target architectures + potential phase retros/digests. Phase 1 of [[party-rearch]] alone will reach ~6–8 files once its phase-target architectures are populated. Moved to a folder-per-phase layout so each phase has a clear home.
+- **Before**: `wiki/projects/<slug>/<slug>-phase-N.md` (and `<slug>-phase-N-<analysis>.md`, `<slug>-phase-N-<app>-architecture.md`) sitting flat in the project folder alongside the project overview and cross-phase standing analyses.
+- **After**: `wiki/projects/<slug>/phase-N/` contains every phase-scoped artefact. The project root keeps only **cross-phase** material — the project overview, dependency map, ownership matrix, and future cross-phase analyses.
+- **Critical design choice — filenames keep the `<slug>-phase-N-` prefix.** The folder path repeats what's in the filename, which looks redundant, but dropping the prefix would collide on basename with current-state architecture pages (e.g. `party-application-architecture.md` already exists in `wiki/applications/party-application/`). Redundancy preserves basename uniqueness and thus unambiguous Obsidian link resolution. This is the same rule applied to app folders — folder is organisational, basename is identity.
+- **No link breakage**: Obsidian resolves wiki links by basename, so every existing `[[party-rearch-phase-1]]`, `[[party-rearch-phase-1-summary]]`, `[[party-rearch-phase-2]]`, `[[secrets-management-phase-1]]` resolves without any rewrites. Confirmed by `rg` sweep for stale path references — only matches are in historical `log.md` prose (which is append-only and deliberately preserves prior placements).
+- **Files moved**: 4.
+  - `wiki/projects/party-rearch/party-rearch-phase-1.md` → `.../phase-1/party-rearch-phase-1.md`
+  - `wiki/projects/party-rearch/party-rearch-phase-1-summary.md` → `.../phase-1/party-rearch-phase-1-summary.md`
+  - `wiki/projects/party-rearch/party-rearch-phase-2.md` → `.../phase-2/party-rearch-phase-2.md`
+  - `wiki/projects/secrets-management/secrets-management-phase-1.md` → `.../phase-1/secrets-management-phase-1.md`
+- **Schema changes** ([[AGENTS]]):
+  - Folder tree: `projects/<slug>/` now shows `phase-N/` subfolders containing the phase overview, phase-target architectures, and phase-scoped analyses; project-level entries stay above the phase folder.
+  - Filename rules: added a bullet about phase-scoped files carrying the `<slug>-phase-N-` prefix and why the folder repeats it; filename-uniqueness rule expanded to include per-application and per-phase subfolders.
+  - Cascade: entries 2, 4, and 5 updated to the new path shape (phase overview, phase-scoped analysis, phase-target architecture); **new entry 4 added** to govern phase-scoped analyses (e.g. `party-rearch-phase-1-summary`) distinctly from cross-phase ones (entry 3); entries 5–10 renumbered accordingly.
+  - Page-section guidance: paths for `phase` and `phase-application-architecture` updated.
+- **Templates** updated: [[_templates/phase]] and [[_templates/phase-application-architecture]] gained `<!-- Lives at: … -->` comments clarifying the nested path and the sibling pages expected in the same phase folder. Template bodies unchanged.
+- **[[index]]**: "How to read" Projects entry rewritten to describe the phase-subfolder structure; date-stamp updated.
+- **Phase-scoped analyses given their own cascade entry**: a phase-scoped analysis like `party-rearch-phase-1-summary` now has an unambiguous home (inside the phase folder, with `project:` + `phase:` frontmatter), distinct from cross-phase standing analyses like `party-rearch-dependency-map` (which stay at the project root, with no `phase:` field). This clarifies the earlier user question "why didn't `party-rearch-phase-1-summary` go in `wiki/analyses/`?" — it's project- AND phase-scoped, so it lives in its phase folder.
+- touched (structural, 4 moved): files listed above.
+- touched (edited, 4): [[AGENTS]], [[index]], [[_templates/phase]], [[_templates/phase-application-architecture]].

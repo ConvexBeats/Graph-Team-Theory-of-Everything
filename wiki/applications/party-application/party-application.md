@@ -10,9 +10,12 @@ state: current
 sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2]
 source_count: 2
 status: draft
+projects: [party-rearch]
 ---
 
 # Party Application
+
+> **Architecture:** detailed current-state tech, touchpoints, and constraints live on [[party-application-architecture]]. Phase-target shapes live under [[party-rearch]] as `party-rearch-<phase-id>-party-application-architecture` pages (created when targets are authored). This identity page covers role-in-portfolio, ownership, and cross-project change items; the architecture page is the place to go for technical detail.
 
 ## Summary
 The authoritative store and routing service for **business parties** (clients, brokers, underwriters, etc.) consumed across the insurance-deal lifecycle. Today: **Neo4j / Cypher** graph database ("Party Graph" / MDM / Graph) emitting full party payloads to downstream consumers. Target: **DynamoDB + OpenSearch** store ("new MDM") handing out a party **ID + version** reference, with consumers resolving details near-real-time. Migration is via the strangler pattern — see [[strangle-the-graph-via-proxy-events]].
@@ -115,14 +118,15 @@ All Party-Application-facing open items are tracked in [[open-questions]]:
 - [[bulk-migrations-owned-by-mdm-phase-1]]
 
 ## Related
+- [[party-application-architecture]] — detailed current-state architecture (tech, touchpoints, constraints)
 - [[party-curation-tool]] — human-facing companion; co-ships
 - [[inrisk]] — interim-state consumer with 3 required changes
 - [[inrisk-engine]] — targets the final-state contract; not part of interim work
 - [[high-volume]] — future consumer; forcing-function for the end-state timeline
 - [[graph-team]] — owner
 - [[analytics-team]] — event consumer
-- [[ownership-matrix]] — workstreams and open actions
-- [[dependency-map]] — current vs target contracts
+- [[party-rearch-ownership-matrix]] — workstreams and open actions
+- [[party-rearch-dependency-map]] — current vs target contracts
 - [[open-questions]] — open items affecting this application
 - [[contract-buckets]] — the framework used to organise all of this application's consumer contracts
 

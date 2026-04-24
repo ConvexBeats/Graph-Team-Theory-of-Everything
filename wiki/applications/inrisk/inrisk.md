@@ -10,9 +10,12 @@ state: current
 sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2]
 source_count: 2
 status: draft
+projects: [party-rearch]
 ---
 
 # InRisk
+
+> **Architecture:** detailed current-state tech, touchpoints, and constraints live on [[inrisk-architecture]]. Phase-target shapes live under [[party-rearch]] as `party-rearch-<phase-id>-inrisk-architecture` pages (created when targets are authored).
 
 ## Summary
 Policy Administration System (PAS) capturing all pre-bind policy information. Primary consumer of the [[party-application]]. Currently stores large party-payload snapshots against submissions and requirements; under this programme, InRisk takes on **three interim-state modifications** so that it can operate against the new MDM contract during Phase 1. InRisk is **not** evolving to the final-state Party contract in this programme — that is [[inrisk-engine]]'s job.
@@ -93,6 +96,7 @@ All InRisk-facing open items are tracked in [[open-questions]]:
 - [[feature-tagging-moves-to-inrisk]] — Phase 2+ ownership transfer from [[graph-team]] to [[prebind-team]]
 
 ## Related
+- [[inrisk-architecture]] — detailed current-state architecture (integration-surface focus)
 - [[party-application]] — upstream, primary integration
 - [[inrisk-engine]] — full rewrite, targeting final Party contract; not part of this programme's interim work
 - [[party-curation-tool]] — embedder of the Party widget (pending)
@@ -100,7 +104,7 @@ All InRisk-facing open items are tracked in [[open-questions]]:
 - [[architecture-team]] · [[scott-gruber]] — broker-retrieval SME
 - [[analytics-team]] · [[paul-rogers]] — flattening-decision counterpart
 - [[contract-buckets]] — appears in multiple buckets (operational · data-distribution)
-- [[ownership-matrix]] · [[dependency-map]] · [[open-questions]]
+- [[party-rearch-ownership-matrix]] · [[party-rearch-dependency-map]] · [[open-questions]]
 
 ## Sources
 - [[sources/20260422-meeting-transcript-session-1]] — morning; party-ID-table shape, broker UID retirement phasing, roles-vs-views, feature-tagging long-term ownership, manual-create edge case

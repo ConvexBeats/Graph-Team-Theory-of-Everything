@@ -29,13 +29,13 @@ Data & Process Analyst on the [[analytics-team]] (the team that owns the Data Un
 - Named by [[joe-worsfold]] in-session as the person to check with on the client-ID flattening / InRisk API option — [[sources/20260422-meeting-transcript-session-2]].
 
 ## Open questions
-- Paul's view on the flattening question — this is the highest-leverage open item on [[dependency-map]].
+- Paul's view on the flattening question — this is the highest-leverage open item on [[party-rearch-dependency-map]].
 - Whether Paul is the correct decision-maker, or whether a team-lead counterpart should also be involved.
 
 ## Related
 - [[analytics-team]]
 - [[party-application]] · [[inrisk]]
-- [[joe-worsfold]] · [[ownership-matrix]]
+- [[joe-worsfold]] · [[party-rearch-ownership-matrix]]
 
 ## Sources
 - [[sources/20260422-meeting-transcript-session-2]]
