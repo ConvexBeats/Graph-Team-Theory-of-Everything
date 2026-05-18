@@ -2,11 +2,11 @@
 type: analysis
 title: Party Re-Architecture — Dependency Map
 created: 2026-04-22
-updated: 2026-04-22
+updated: 2026-05-18
 tags: [analysis, standing, dependencies]
 project: party-rearch
-sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2]
-source_count: 2
+sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up]
+source_count: 3
 status: draft
 ---
 
@@ -42,7 +42,11 @@ Every design decision in the programme maps onto one or more of these buckets. F
       ├─── (E, payload)  ─────►  [[analytics-team]] (DU → Snowflake)
       ├─── (E, payload)  ─────►  [[inrisk]]   snapshot-cached on submission/requirement
       ├─── (P, payload)  ─────►  URD broker path  ────►  [[inrisk]] (broker retrieval)
-      ├─── (R)           ────►  sanctions via Boomi → NTT → back round-trip
+      ├─── (E)           ────►  Boomi  ──► [[inrisk]] (one-submission-at-a-time API calls; no batch endpoint)
+      │                                     │
+      │                                     └─►  [[ntt]] (sanctions check)  ──► back round-trip
+      │                                     │
+      │                                     ▼ (Boomi-side cache + idempotency layer; [[sanctions-processing]] in wrong place)
       ├─── (API)         ◄────  [[party-curation-tool]] (old, Next.js + Jira workflow)
       ├─── (ingest)      ◄────  D&B (lookup at curation time, gated by double-ticketing)
       ├─── (ingest)      ◄────  S&P  via  [[analytics-team]] (manual bulk)
@@ -58,6 +62,7 @@ Notable quirks:
 - Broker data flows through URD rather than being owned by InRisk directly.
 - **Spine-rewrite behaviour** (Session 1): every InRisk event causes Graph to rewrite the whole spine and emit one event, regardless of actual field changes. Effectively DU consumes **a single event** (plus the broker-variant on the common bus) despite the underlying schema complexity. This is the insight that makes the proxy adapter small.
 - **Historical snapshots** live in [[inrisk]] (per client-ID, per submission) and in [[data-universe]] — not in the current Graph DB.
+- **Sanctions orchestration lives in Boomi** (2026-05-13): Boomi consumes every party-change event, calls InRisk one submission at a time to reconstruct context (no batch endpoint), maintains its own cache + idempotency, calls [[ntt]] for the actual check. Group consensus: wrong place. See [[sanctions-processing]] · [[open-questions#OQ-032]]. Phase 1 leaves this flow unchanged.
 
 ---
 
@@ -69,34 +74,42 @@ Notable quirks:
       ├─── (E, proxy — same shape as current)  ────►  [[analytics-team]]   [Phase 1]
       │         └── see [[strangle-the-graph-via-proxy-events]]
       │
-      ├─── (R, ID+version)  ────►  [[inrisk]] (IR2)      [Phase 1 — InRisk-side changes required]
-      │         ├── InRisk stores Party ID on its party table
+      ├─── (R, ID+version)  ────►  [[inrisk]] (IR2)      [Phase 1 — InRisk-side changes required, cuts over ≥ 2 weeks before HV]
+      │         ├── InRisk stores Party ID + version on existing client + broker tables (additive)
       │         ├── Outgoing InRisk messages include Party ID
+      │         ├── Widget integration via Joe's design-system-agnostic component library (SDK-style)
       │         └── Broker retrieval moves to direct-from-InRisk (URD path removed)
       │
-      ├─── (R, API via Boomi)  ────►  [[high-volume]]     [Phase 1]
+      ├─── (R, API via Boomi)  ────►  [[high-volume]]     [Phase 1 — switches on at 1 Sep gate, after InRisk cutover]
       │         └── no widget; API-only
       │
       ├─── (API)   ◄──►   [[party-curation-tool]] (new, Next.js on open-API spec)  [Phase 1]
-      │         └── co-ships with MDM — [[pct-and-mdm-go-live-together]]
+      │         ├── co-ships with MDM — [[pct-and-mdm-go-live-together]]
+      │         └── consumes Joe's Chakra-3 + design-system widget (the other component library)
       │
       ├─── (ingest+cache)  ◄────  D&B (Dynamo-cached, TTL; auto-create parent)   [Phase 1]
-      └─── (ingest)         ◄────  S&P  via  [[analytics-team]] (still manual)  [Phase 1]
+      ├─── (ingest)         ◄────  S&P  via  [[analytics-team]] (still manual)  [Phase 1]
+      │
+      └─── (E, proxy)  ────►  Boomi  ──► [[inrisk]] / [[ntt]]   [Phase 1 — unchanged, wrong place flagged]
+                └── [[sanctions-processing]]; orchestration off-Boomi is Phase 2+; [[open-questions#OQ-032]]
 
 [[inrisk]] ── (E, now with party-ID) ──►  downstream consumers
-Graph DB — read-only during stabilisation, decommissioned post-cutover.
+Graph DB — read-only during stabilisation; brief dual-write from MDM for cutover-window revertability ([[strangle-the-graph-via-proxy-events]] refinement); decommissioned post-cutover.
 ```
 
 Key Phase-1 changes:
 - **DU sees no change** on cutover — proxy events in Graph shape.
-- **InRisk** gets 3 discrete code changes (party-ID storage, messaging, broker retrieval).
-- **PCT widget** potentially embeds in [[inrisk]] (Chakra V2/V3 question deferred).
-- **HV** integrates via Boomi API — widget question does not block HV.
+- **InRisk gets a concrete 4–5-story epic** (Party MDM Integration): tech-debt clear, additive data-model change on existing client + broker tables, client + broker widget integration (feature-flagged), party-tagging integration. Now sized as a full deliverable in its own right that lands ≥ 2 weeks before HV ([[inrisk-cuts-over-before-high-volume]]).
+- **Party-tagging in scope; feature-tagging out** — party-tagging gets a Phase-1 story; the feature-tagging Postgres table + widget stay alive past cutover unchanged so [[inrisk]] keeps pulling its static list ([[feature-tagging-moves-to-inrisk]] refined 2026-05-13).
+- **Two widget component libraries** — Joe publishes a design-system-agnostic library for [[inrisk]] alongside the Chakra-3 + design-system widget for [[party-curation-tool]] / [[dataops-team]]. HV doesn't use a widget. Closes [[open-questions#OQ-005]].
+- **HV** integrates via Boomi API — widget question does not block HV; switches on at 1 Sep after InRisk-first cutover window.
+- **Sanctions / Boomi orchestration unchanged in Phase 1** — proxy events drive Boomi just as Graph events did; the "wrong place" rework is Phase 2+ ([[open-questions#OQ-032]]).
+- **Cutover-window dual-write to old graph** for revertability — refinement of [[strangle-the-graph-via-proxy-events]]; not a contradiction of "no dual sources of truth".
 - **No historical backfill into MDM** — per [[no-historic-client-backfill-into-mdm]], MDM carries version history from cutover forward; pre-cutover per-client-ID InRisk history stays in [[inrisk]] / [[data-universe]].
 - **Eclipse ingestion removed** — no live consumer; already resolved via InRisk-client-ID path.
-- **Feature-tagging table** — stays in current Postgres + widget shape (unchanged); in-session scope call defers its migration to Phase 2.
-- **Single-flag coupled rollout** — old-search→new-search and old-PCT→new-PCT share one cutover flag.
+- **Single-flag coupled rollout** — old-search→new-search and old-PCT→new-PCT share one cutover flag (separate from the InRisk-side feature flags on the widget integration stories).
 - **Bulk-migration tool** — MDM-team-owned CLI (CSV → diff preview → auto-approved revision); full self-serve UX is Phase 2+.
+- **AWS estate** — MDM runs on the existing 3-account / 4-env world; not AWS 2.0.
 
 ---
 
@@ -135,11 +148,15 @@ Key Phase-1 changes:
 | InRisk API for nested-shape reconstruction (fallback) | [[prebind-team]] | [[graph-team]] | 1 | Only needed if Analytics Team rejects flatter shape |
 | Broker-retrieval workshop | [[tech-tooling]] · [[graph-team]] | [[prebind-team]] ([[john-trahearn]] / [[kris-mokrzycki]]) · [[architecture-team]] ([[scott-gruber]]) | 1 | [[scott-gruber]] required; target Mon/Tue after Romania |
 | D&B caching alignment | [[graph-team]] | "enriched team" (name TBD) | 1 | [[joe-worsfold]] open; see [[d-and-b-caching-and-auto-parent]] |
-| HV Party-integration shape | [[tech-tooling]] ([[rory-beattie]]) · [[graph-team]] | [[high-volume-team]] ([[simon-hulbert]]) | 1 | 1 Sep is fixed; integration shape still being specified |
-| Chakra V2/V3 widget decision | [[graph-team]] · [[tech-tooling]] | [[prebind-team]] | 1 | Workshop with InRisk in PCT context |
+| HV Party-integration shape | [[tech-tooling]] ([[rory-beattie]]) · [[graph-team]] | [[high-volume-team]] ([[simon-hulbert]]) | 1 | 1 Sep is fixed; HV switches on **after** InRisk-first cutover window per [[inrisk-cuts-over-before-high-volume]] |
+| InRisk-cutover sequencing | [[graph-team]] · [[prebind-team]] | [[high-volume-team]] | 1 | InRisk lands on MDM ≥ 2 weeks before 1 Sep; HV consumes only after that buffer. [[inrisk-cuts-over-before-high-volume]]; concrete date [[open-questions#OQ-035]] |
+| ~~Chakra V2/V3 widget decision~~ | ~~[[graph-team]] · [[tech-tooling]]~~ | ~~[[prebind-team]]~~ | ~~1~~ | **Resolved 2026-05-13**: two component libraries — Chakra-3 + design-system for PCT, design-system-agnostic for InRisk. See [[inrisk-cuts-over-before-high-volume]] |
+| Joe's design-system-agnostic component library for InRisk | [[graph-team]] ([[joe-worsfold]]) | [[prebind-team]] | 1 | New 2026-05-13; underpins InRisk's widget stories |
+| Widget-response field alignment (MDM ↔ InRisk consumer needs) | [[graph-team]] ([[joe-worsfold]]) | [[prebind-team]] ([[sergiu-postolachi]] raised) | 1 | OpenSearch indexed differently than Dynamo storage; iterate as integration starts. [[open-questions#OQ-036]] |
+| Sanctions-domain ownership rework (off Boomi) | [[tech-tooling]] ([[rory-beattie]] · [[suzanna-whitefield]]) | [[andrea-read]] (escalation), then unassigned | 2+ | Audit pressure this year; group consensus on wrong place. [[sanctions-processing]] · [[ntt]] · [[open-questions#OQ-032]] |
 | PCT rollout sponsor / business-case messaging | [[tech-tooling]] ([[will-bone]]) | [[data-quality-team]] ([[hugh-lobban]]) → [[dataops-team]] | 1 | Sponsor-level framing for the curator-facing change |
 | Final-state Party contract definition | [[graph-team]] | [[devx-team]] ([[antonie-labuschagne]]) for [[inrisk-engine]] | End-state | DevX consumes final-state; not interim |
-| Feature-tagging migration | [[graph-team]] | [[prebind-team]] | End-state | Gated on InRisk buy-in; formal handover of both Postgres table + widget component |
+| Feature-tagging migration | [[graph-team]] | [[prebind-team]] | End-state | Direction unchanged; 2026-05-13 added party-tagging-vs-feature-tagging boundary, old-backend-stays-alive-past-cutover carve-out, and static-list-hypothesis investigation. [[feature-tagging-moves-to-inrisk]]; [[open-questions#OQ-019]] |
 | Graph API consumer audit (spike) | — | — | 1 | [[joe-worsfold]] · [[billy-calladine]]; output feeds this map (expect new rows or confirms the list is complete) |
 | D&B scheduled-refresh loop | [[graph-team]] | "enriched team" (TBD) | 1 | Cadence monthly/quarterly TBD; see [[d-and-b-caching-and-auto-parent]] |
 | S&P enrichment path (end-state) | [[party-application]] | S&P API (direct) | End-state | Currently via DU (manual bulk); API offers built-in entity resolution |
@@ -156,3 +173,4 @@ Key Phase-1 changes:
 - 2026-04-22 — [[sources/20260422-meeting-transcript-session-2]] — first substantive pass
 - 2026-04-22 — [[sources/20260422-meeting-transcript-session-1]] — added contract-buckets scaffolding; named Eclipse retirement, broker-variant event, spine-rewrite behaviour; explicit Phase-1 scope notes on backfill, feature-tagging, coupled rollout, bulk-migration CLI; end-state notes on broker-UID retirement, feature-tagging handover, S&P API; new cross-cutting rows for Graph-API audit spike, D&B scheduled refresh, S&P end-state
 - 2026-04-22 — lint pass — **Knowledge Graph reclassified** as the internal Neo4j datastore inside [[party-application]]; no longer a separate data-distribution consumer on this map. Also added [[data-universe]] as the explicit platform owned by [[analytics-team]]; added [[eclipse]] as an application stub consumed by [[inrisk]].
+- 2026-05-18 — [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] — sanctions / Boomi / [[ntt]] expanded on the current-state diagram (orchestration flagged as wrong place); Phase-1 diagram updated to reflect InRisk-first cutover sequencing, two-component-libraries widget split, sanctions flow unchanged, additive client+broker table data model, cutover-window dual-write nuance; cross-cutting rows added for cutover sequencing, Joe's second component library, widget-response field alignment, and sanctions-domain ownership; Chakra V2/V3 row marked resolved; feature-tagging row note updated with the refined ADR framing.

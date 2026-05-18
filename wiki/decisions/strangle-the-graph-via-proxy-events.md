@@ -2,12 +2,12 @@
 type: decision
 title: Strangle the Graph via proxy events
 created: 2026-04-22
-updated: 2026-04-22
+updated: 2026-05-18
 tags: [decision, migration, events]
 application: [party-application]
 owner: graph-team
-sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2]
-source_count: 2
+sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up]
+source_count: 3
 status: accepted
 project: party-rearch
 phase: [phase-1]
@@ -28,6 +28,14 @@ The idea was invented live in [[sources/20260422-meeting-transcript-session-1]],
 
 ### Consolidation (Session 2, afternoon)
 The decision was formally adopted in [[sources/20260422-meeting-transcript-session-2]]. The **bidirectional-mappability** criterion was named there (from [[ben-joseph]]): _"if I can take an event currently emitted from Party Graph, map it into MDM, then map the MDM record back to the exact same event, we can go in."_ This is the go/no-go test for the adapter.
+
+### Refinement (2026-05-13 follow-up) — cutover-window dual-write for revertability
+[[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] sharpened the operational behaviour at the cutover boundary itself:
+
+- **No parallel running of MDM and old graph as sources of truth** for party create / search — that was always the intent and is reinforced here. The mapper is one-way (MDM → old events); a two-way mapper would create an unmanageable data-mess. Joe Worsfold: _"we'd end up having to have a mapper going the other way, and I just think we'll get into a data problem mess of, like, not knowing."_
+- **However, for the cutover window, MDM dual-writes to the old graph** so that a revert is possible without losing data created during the window. Joe: _"essentially, even when MDM takes over, be writing to the old graph, so that if you switch back, that you'd be able to find stuff that was only just created in MDM."_
+- This is **not a contradiction** of the "no dual-running" framing — MDM remains the single source of truth in the live path; the old graph receives a write-through for revertability only, not for serving reads. Once the cutover is stable, the dual-write stops and the old graph proceeds to decommission as originally planned.
+- **Non-prod environments** are easier: dual-write naturally allows toggling back and forth, so non-prod doesn't need the same care that prod does. Useful for InRisk-side integration testing under the InRisk-first cutover sequence per [[inrisk-cuts-over-before-high-volume]].
 
 ## Options considered
 
@@ -74,8 +82,10 @@ Implementation trio from [[alex-sillars]]:
 - [[party-application]] — primary application affected
 - [[analytics-team]] — consumer of the proxy events
 - [[pct-and-mdm-go-live-together]] — complementary decision; without new PCT shipping together, the intercept side of this strategy breaks
+- [[inrisk-cuts-over-before-high-volume]] — companion ADR governing the cutover **sequencing** ([[inrisk]] first, then [[high-volume]] at the 1-Sep gate); the dual-write nuance recorded above is the operational corollary that makes that sequencing reversible if needed
 - [[graph-team]] — owner
 
 ## Sources
 - [[sources/20260422-meeting-transcript-session-1]] — **origin** (morning of 2026-04-22); idea first proposed in the DU-events segment
 - [[sources/20260422-meeting-transcript-session-2]] — consolidation / formal adoption (afternoon of 2026-04-22); bidirectional-mappability criterion named
+- [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] — cutover-window dual-write nuance for revertability; non-prod toggle-back-and-forth pattern

@@ -2,11 +2,11 @@
 type: analysis
 title: Party Re-Architecture — Ownership Matrix
 created: 2026-04-22
-updated: 2026-04-22
+updated: 2026-05-18
 tags: [analysis, standing, ownership, actions]
 project: party-rearch
-sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2]
-source_count: 2
+sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up]
+source_count: 3
 status: draft
 ---
 
@@ -21,11 +21,12 @@ A standing analysis of workstreams, owners, and open actions for the Party Appli
 | **MDM core build** (data model, intercept, 100% backfill, projections, proxy adapter) | [[graph-team]] | [[tech-tooling]] (oversight) | ~2 sprints with focused squad |
 | **New PCT build** (Next.js on open-API spec) | [[graph-team]] | [[dataops-team]] (user-side), [[data-quality-team]] (sponsor via [[hugh-lobban]]) | Ships with MDM — [[pct-and-mdm-go-live-together]] |
 | **Proxy-event emission to Data Universe** | [[graph-team]] | [[analytics-team]] (consumer) | [[strangle-the-graph-via-proxy-events]] |
-| **InRisk interim changes** (party-ID storage, messaging, broker retrieval) | [[prebind-team]] ([[john-trahearn]], [[kris-mokrzycki]]) | [[graph-team]] ([[joe-worsfold]]), [[tech-tooling]] ([[rory-beattie]]), [[architecture-team]] ([[scott-gruber]] on broker SME) | Broker-retrieval change is the largest |
+| **InRisk interim changes** (Party MDM Integration epic: 4–5 stories — tech-debt clearance, data-model addition, client + broker widget integration, party tagging) | [[prebind-team]] ([[john-trahearn]], [[kris-mokrzycki]]) | [[graph-team]] ([[joe-worsfold]], [[billy-calladine]] for widget Q&A), [[tech-tooling]] ([[rory-beattie]]), [[architecture-team]] ([[scott-gruber]] on broker SME) | Now sized via concrete epic ([[inrisk]]); broker-retrieval change still the largest; cutover lands ≥ 2 weeks before HV per [[inrisk-cuts-over-before-high-volume]] |
 | **Analytics Team schema-impact check** | [[analytics-team]] ([[paul-rogers]]) | [[graph-team]] ([[joe-worsfold]]) | Gating for flatten-vs-reconstruct decision |
 | **D&B caching + auto-parent flow** | [[graph-team]] | "enriched team" (name TBD) | [[d-and-b-caching-and-auto-parent]] |
 | **S&P ingestion (Phase 1)** | [[analytics-team]] → [[graph-team]] | — | Stays manual; no change in Phase 1 |
-| **Widget / SDK / Chakra strategy** | [[graph-team]] + [[tech-tooling]] | [[prebind-team]] | Deferred pending InRisk workshop; HV not a blocker |
+| **Widget / SDK / Chakra strategy** | [[graph-team]] ([[joe-worsfold]]) | [[prebind-team]] (consumer) | **Resolved 2026-05-13** ([[inrisk-cuts-over-before-high-volume]]): two component libraries — Chakra-3 + design-system for PCT, design-system-agnostic for InRisk; HV API-only. Closes [[open-questions#OQ-005]]. Joe's open action: publish the second library |
+| **Sanctions-domain ownership / off-Boomi migration** | _unassigned_ | [[rory-beattie]] · [[suzanna-whitefield]] to escalate to [[andrea-read]] | Surfaced 2026-05-13. Out of Phase 1; audit pressure this year. See [[sanctions-processing]] · [[ntt]] · [[open-questions#OQ-032]] |
 | **HV Party integration (via Boomi)** | [[high-volume-team]] ([[simon-hulbert]]) | [[graph-team]] (API contract), [[tech-tooling]] ([[rory-beattie]]) | API-only, no widget; forcing function for 1 Sep |
 | **InRisk Engine (final-state targeting)** | [[devx-team]] ([[antonie-labuschagne]]) | [[graph-team]] (final-state contract provider) | Not interim; out of Phase 1 |
 | **Anti-patterns / data-fixes workshop** | [[joe-worsfold]] | [[prebind-team]] | Addresses client-ID cascade implications |
@@ -42,7 +43,7 @@ A standing analysis of workstreams, owners, and open actions for the Party Appli
 
 ## Open actions
 
-Total open: **20** (12 from Session 2 + 9 from Session 1 − 1 resolved in Pass B).
+Total open: **27** (12 from Session 2 + 9 from Session 1 − 1 resolved in Pass B + 8 new from 2026-05-13 follow-up − 1 resolved by 2026-05-13 follow-up).
 
 _This section tracks actions ("things to do"). Open **questions** ("things to find out") live in [[open-questions]] and are referenced from individual action rows where relevant._
 
@@ -58,7 +59,7 @@ _This section tracks actions ("things to do"). Open **questions** ("things to fi
 | 8 | Create + schedule tickets (data model, intercept, backfill, projections, proxy adapter) | [[alex-sillars]] | [[party-application]] | open |
 | 9 | Involve testers early; build go-live checklist | [[alex-sillars]] | [[party-application]] | open |
 | 10 | Scope / effort review once first tickets exist | [[joe-worsfold]] | [[party-application]] | open |
-| 11 | InRisk widget / SDK / Chakra V2-vs-V3 discussion | [[rory-beattie]] + [[alex-sillars]] | [[party-curation-tool]] · [[inrisk]] | open |
+| 11 | InRisk widget / SDK / Chakra V2-vs-V3 discussion | [[rory-beattie]] + [[alex-sillars]] | [[party-curation-tool]] · [[inrisk]] | **resolved 2026-05-13** — see [[inrisk-cuts-over-before-high-volume]]; closes [[open-questions#OQ-005]] |
 | 12 | Confirm broker retrieval moves InRisk-direct (removes URD path) | [[rory-beattie]] | [[inrisk]] | open — part of broker workshop |
 | 13 | Spike: audit Graph API usage — which endpoints are hit, by which consumers, at what volume | [[joe-worsfold]] · [[billy-calladine]] | [[party-application]] | open — Session 1 |
 | 14 | Walk current PCT end-to-end with [[sergiu-postolachi]] to confirm no functional gap in new PCT | [[joe-worsfold]] | [[party-curation-tool]] | open — Session 1 |
@@ -68,6 +69,14 @@ _This section tracks actions ("things to do"). Open **questions** ("things to fi
 | 18 | Graph-API consumer audit spike — resolves Eclipse retirement question | [[joe-worsfold]] · [[billy-calladine]] | [[party-application]] | open — Session 1; [[open-questions#OQ-001]] · [[open-questions#OQ-004]] |
 | 19 | Build MDM-owned bulk-migration CLI (CSV → preview → approved revision) | [[joe-worsfold]] | [[party-application]] | open — Session 1; scoped under [[bulk-migrations-owned-by-mdm-phase-1]] |
 | 20 | Identify remaining Session 1 PCT-neighbourhood people (Michael Hay) | [[rory-beattie]] | [[party-curation-tool]] | open — [[open-questions#OQ-027]] |
+| 21 | Bring InRisk Phase-1 epic ("Party MDM Integration") + 4–5 stories through Thursday high-level (2026-05-14) and Tuesday low-level (2026-05-19); sprint starts Wed 2026-05-20 | [[john-trahearn]] | [[inrisk]] | open — 2026-05-13 |
+| 22 | Brush up on InRisk's current widget integration mechanic (query-param flow vs SDK-style new flow) before Thursday's high-level | [[john-trahearn]] | [[inrisk]] | open — 2026-05-13 |
+| 23 | Attend Thursday's InRisk Phase-1 high-level to validate widget commonality and integration mechanic | [[billy-calladine]] | [[inrisk]] · [[party-application]] | open — 2026-05-13 |
+| 24 | Publish a second, design-system-agnostic component library for [[inrisk]] to consume | [[joe-worsfold]] | [[party-application]] | open — 2026-05-13; feeds [[inrisk-cuts-over-before-high-volume]] |
+| 25 | Investigate whether feature tagging can be treated as a fully static list (no dynamic management), potentially simplifying its later migration into InRisk classifications | [[suzanna-whitefield]] | [[inrisk]] | open — 2026-05-13; feeds [[open-questions#OQ-019]] |
+| 26 | Escalate sanctions / Boomi orchestration ownership to [[andrea-read]] | [[rory-beattie]] · [[suzanna-whitefield]] | [[ntt]] · [[party-application]] · [[inrisk]] | open — 2026-05-13; [[open-questions#OQ-032]] |
+| 27 | Speak to Anna ahead of cutover to warm users to the UX change | [[rory-beattie]] | [[party-curation-tool]] · [[inrisk]] | open — 2026-05-13; Anna identity: [[open-questions#OQ-033]] |
+| 28 | Confirm widget-response shape covers all fields InRisk needs once integration starts | [[joe-worsfold]] | [[party-application]] · [[inrisk]] | open — 2026-05-13; [[open-questions#OQ-036]] |
 
 ## Ownership gaps
 
@@ -98,3 +107,4 @@ _Historical resolutions; current resolutions now live in [[open-questions#Resolv
 - 2026-04-22 — [[sources/20260422-meeting-transcript-session-2]] — Pass A populated; Pass B refreshed with resolved owners and corrected attributions
 - 2026-04-22 — [[sources/20260422-meeting-transcript-session-1]] Pass A — added 9 new actions (spike, walkthrough, squad shape, ticketisation, D&B cadence, Eclipse retirement, bulk-CLI, people identification, speaker ID); added 6 new workstreams
 - 2026-04-22 — [[sources/20260422-meeting-transcript-session-1]] Pass B — collapsed people-identification actions into [[open-questions]] (OQ-017, OQ-023–031); dropped the "identify Speakers 6/7" action (resolved); dropped the "PCT neighbourhood people" combined action in favour of per-person OQ rows; promoted three candidate ADRs ([[no-pct-audit-backfill]], [[feature-tagging-moves-to-inrisk]], [[bulk-migrations-owned-by-mdm-phase-1]]) — relevant workstream rows updated to cite them.
+- 2026-05-18 — [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] — InRisk workstream re-scoped from "3 interim changes" framing to concrete "Party MDM Integration epic" with 4–5 stories; added a new **Sanctions-domain ownership / off-Boomi migration** workstream (out of Phase 1, escalation owner Rory + Suzy → Andrea); marked the **Widget / SDK / Chakra strategy** workstream resolved and the Chakra-V2-vs-V3 action (#11) resolved by [[inrisk-cuts-over-before-high-volume]]; added 8 new actions (#21–28) covering Thursday/Tuesday cadence, widget-mechanic brush-up, Billy to validate, Joe's second library, Suzy's static-list investigation, sanctions escalation, Anna warming, widget-response field alignment.

@@ -3,12 +3,12 @@ type: application
 title: Party Application
 aliases: [graph, party-mdm, mdm]
 created: 2026-04-22
-updated: 2026-04-22
+updated: 2026-05-18
 tags: [application, in-scope, core]
 owner: graph-team
 state: current
-sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2]
-source_count: 2
+sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up]
+source_count: 3
 status: draft
 projects: [party-rearch]
 ---
@@ -38,6 +38,7 @@ Provide version-controlled party records to every application that needs to disp
 - **Key consumers (known)**: [[inrisk]] (snapshot-cached payloads), [[party-curation-tool]] (read/write), [[data-universe]] (events, consumed by [[analytics-team]]), sanctions flow via Boomi → NTT, D&B enrichment pipeline
 - **Key interfaces**: payload-shape party events to DU; some direct APIs for sanctions and related consumers; a URD-based broker retrieval path that InRisk uses (to be removed in target state)
 - **Event-emit behaviour (Session 1)**: every InRisk event causes the Knowledge Graph (Neo4j) to **rewrite the whole spine and emit one spine-rewrite event**, regardless of whether any field actually changed. Effectively a single event shape flows to the [[data-universe]] (plus a broker-specific variant on the common bus). This is both the current flakiness _and_ the reason the strangler adapter is a small job — it's a one-event mapper, not an N-event migration.
+- **Spine-rewrite cascade on sanctions** (2026-05-13 follow-up): the spine-rewrite-on-every-InRisk-event behaviour is the upstream of [[sanctions-processing]]'s false-positive problem — Boomi fires sanctions checks on every party-change event whether or not it's relevant, and InRisk feels the resulting noise. Not a Phase-1 fix; flagged as a future driver for sanctions-domain redesign ([[open-questions#OQ-032]]).
 - **Eclipse ingestion**: present in current-state docs but with **no live consumers** (data has not been refreshed for months; Eclipse IDs are already resolvable via the InRisk-client-ID path). Retired in the new world — see Change items.
 - **Party role support (today)**: limited — users can create *road code* parties in a complicated way; cannot create reinsured, cover holder, or claims parties without going to another team
 - **Search**: Cypher queries over Neo4j nodes — acknowledged as not ideal for fuzzy / misspelling-tolerant matching
@@ -46,6 +47,11 @@ Provide version-controlled party records to every application that needs to disp
 
 - **Owner**: [[graph-team]] (unchanged)
 - **Tech stack**: **DynamoDB** (party records, views, cache of D&B data) + **OpenSearch** (discoverability, fuzzy matching)
+- **Cloud estate (Phase-1 confirmation, 2026-05-13)**: MDM runs on the **existing 3-account × 4-environment AWS estate** (not AWS 2.0 — Joe would have preferred AWS 2.0 but it's not ready). Removes a potential cross-account integration unknown for [[inrisk]]'s Phase-1 work.
+- **Widget surface — two component libraries (2026-05-13)**:
+  - The **Chakra-3-with-design-system widget** Joe has already published — consumed by [[party-curation-tool]] / [[dataops-team]].
+  - A second, **design-system-agnostic component library** matched to [[inrisk]]'s current look — to be published by [[joe-worsfold]] for [[inrisk]] to consume. See [[inrisk-cuts-over-before-high-volume]] for the rationale.
+  - [[high-volume]] doesn't use a widget — API-only via Boomi.
 - **Integration shape**: consumers receive a **party ID + version**; they call back near-real-time with any of:
   - `get by ID + version` — pinned snapshot
   - `get by ID + timestamp` — as-of
@@ -88,8 +94,8 @@ From [[sources/20260422-meeting-transcript-session-2]]:
 - [[feature-tagging-moves-to-inrisk]] (**accepted**, promoted to ADR in Session 1 Pass B): Phase 1 no change; Phase 2+ migrate Postgres table + widget component to [[inrisk]] / [[prebind-team]] ownership.
 - [[bulk-migrations-owned-by-mdm-phase-1]] (**accepted**, promoted to ADR in Session 1 Pass B): CLI-first in Phase 1; full self-serve UX is Phase 2+.
 - [[no-pct-audit-backfill]] (**accepted**, promoted to ADR in Session 1 Pass B): the PCT-side analog of [[no-historic-client-backfill-into-mdm]].
-- **Sanctions flow simplification** (future, out of Phase 1): NTT result lands on party; Party informs InRisk of affected submissions directly. **Session 1 detail**: the new PCT's `revision.proposed` event triggers a worker that raises the sanctions check; sanction status is stamped **on the version** of the party (GitHub-commit-verified analogy).
-- **Chakra V2 vs V3 widget strategy** (deferred, pending InRisk workshop)
+- **Sanctions flow simplification** (future, out of Phase 1): the long-term direction sketched in Session 2 was that NTT result lands on the party version directly; Party informs InRisk of affected submissions. **2026-05-13 follow-up** broadened the framing: the orchestration that today lives in Boomi (firing on every party change, calling [[inrisk]] one submission at a time, building its own cache + idempotency layer) is in the wrong place — it should be its own domain, not absorbed into Party, InRisk, or Boomi. Audit pressure is significant this year. See [[sanctions-processing]] for the domain framing, [[ntt]] for the vendor platform, [[open-questions#OQ-032]] for the open ownership question, and [[open-questions#OQ-008]] for the end-state-flow question. _Session 1 detail kept for reference: the new PCT's `revision.proposed` event triggers a worker that raises the sanctions check; sanction status is stamped on the version (GitHub-commit-verified analogy)._
+- **Chakra V2 vs V3 widget strategy** (resolved 2026-05-13): two-library approach — Joe maintains a Chakra-3-plus-design-system widget for [[party-curation-tool]] and a design-system-agnostic library matched to InRisk's current look. Resolution lives on [[inrisk-cuts-over-before-high-volume]]; closes [[open-questions#OQ-005]].
 - **No GraphQL facade in target state** (accepted, new in Session 1): single API, single Dynamo-backed store, OpenSearch for discoverability — fewer technologies for DevOps to support. Joe: _"there's no graph file, just as a heads up — everything's in one API, it's a lot simpler."_
 - **Roles vs. views litmus test** (accepted, new in Session 1): _"if every policy was deleted from this party, would it still be insured? No. Would it still be a broker? Yes."_ Roles are intrinsic to the party; views (insured/reinsured) are ascribed by consumers and fed back into MDM to maintain DU projection shape.
 
@@ -106,15 +112,19 @@ All Party-Application-facing open items are tracked in [[open-questions]]:
 - [[open-questions#OQ-013]] — HV integration-shape specifics.
 - [[open-questions#OQ-017]] — MDM delivery squad shape.
 - [[open-questions#OQ-018]] — final-state Party contract specification.
+- [[open-questions#OQ-032]] — sanctions-domain location (orchestration off Boomi). New 2026-05-13.
+- [[open-questions#OQ-035]] — concrete InRisk MDM-cutover date (≥ 2 weeks before 1 Sep).
+- [[open-questions#OQ-036]] — widget-response field alignment (Sergiu's question).
 
 ## Related decisions
-- [[strangle-the-graph-via-proxy-events]]
+- [[strangle-the-graph-via-proxy-events]] (refined 2026-05-13 with cutover-window dual-write nuance)
+- [[inrisk-cuts-over-before-high-volume]] (new 2026-05-13 — cutover sequencing + two-library widget call)
 - [[pct-and-mdm-go-live-together]]
 - [[no-historic-client-backfill-into-mdm]]
 - [[no-pct-audit-backfill]]
 - [[d-and-b-caching-and-auto-parent]]
 - [[uuid-system-id-with-display-id]]
-- [[feature-tagging-moves-to-inrisk]]
+- [[feature-tagging-moves-to-inrisk]] (refined 2026-05-13 — party-tagging-vs-feature-tagging boundary; static-list investigation)
 - [[bulk-migrations-owned-by-mdm-phase-1]]
 
 ## Related
@@ -133,3 +143,4 @@ All Party-Application-facing open items are tracked in [[open-questions]]:
 ## Sources
 - [[sources/20260422-meeting-transcript-session-1]] — morning; three-bucket contract framing, strangler invention, Eclipse retirement, feature-tagging scope, bulk-migration shape, team-size tension
 - [[sources/20260422-meeting-transcript-session-2]] — afternoon; consolidation and promotion of ADRs
+- [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] — cutover-window dual-write nuance; AWS estate confirmation; two-library widget call; sanctions / Boomi / NTT framing; party-tagging vs feature-tagging boundary

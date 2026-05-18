@@ -2,12 +2,12 @@
 type: decision
 title: Feature-tagging moves to InRisk ownership (Phase 2+)
 created: 2026-04-22
-updated: 2026-04-22
+updated: 2026-05-18
 tags: [decision, ownership, phase-2, feature-tagging]
 application: [party-application, inrisk]
 owner: graph-team
-sources: [20260422-meeting-transcript-session-1]
-source_count: 1
+sources: [20260422-meeting-transcript-session-1, 20260513-inrisk-integration-with-party-mdm-follow-up]
+source_count: 2
 status: accepted
 project: party-rearch
 phase: [phase-2]
@@ -51,6 +51,18 @@ Joe Worsfold, Session 1: _"it's an InRisk responsibility, really, it's their dom
 
 Phase 1: no change — feature-tagging stays on its current Postgres table and widget in their existing locations.
 
+### Refinement (2026-05-13 follow-up)
+
+[[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] tightened the boundary and softened the migration shape:
+
+1. **Party-tagging vs feature-tagging — clear, opposite Phase-1 scope.**
+   - **Party tagging** (obligor / loss-leader / role-like tags applied to a party) is _party_ data and is **in scope for Phase 1**. It is delivered via the existing widget pattern plus the new MDM ID/version fields; [[john-trahearn]] added a dedicated story (#5) to the Party MDM Integration epic to cover it.
+   - **Feature tagging** (submission-level attributes that only piggy-backed on Party's UX / DB pattern because Party had "a nice widget") is **out of scope for Phase 1**. The old backend stays alive past cutover so [[inrisk]] continues to pull its static list from the existing Postgres table + widget without interruption.
+2. **Joe cannot decommission old Party until feature-tagging is moved**, but he is explicit that he is willing to maintain the table + widget + API past cutover as the price of keeping Phase 1's scope bounded. _"I can't decommission old party until we get rid of that, so we'll still end up having to have the table, the API and the old widget for enabling feature tagging until we get rid of it."_
+3. **Long-term home likely narrows** — InRisk's [[kris-mokrzycki]]: feature tagging could "come into space of in risk, because we are the only people who consume and surface that". This points to integration into [[inrisk]]'s existing classifications-style surface rather than a wholesale Postgres-table-plus-widget handover.
+4. **Static-list hypothesis** — Suzanna Whitefield offered to investigate whether the feature-tag list has become genuinely static (no new options added in two years). If yes, the migration becomes meaningfully simpler — a one-time data move plus an InRisk-side surface, rather than a maintained dynamic substrate. Tracked under [[open-questions#OQ-019]]; result will shape the trigger condition for this ADR's eventual execution.
+5. **The decision direction is unchanged** — Phase 2+; InRisk-owned; [[graph-team]] hands over. The 2026-05-13 follow-up adds detail about _how_ the handover may look once Suzy's investigation lands, and adds an explicit Phase-1 carve-out for the old backend's continued life.
+
 ## Consequences
 
 - **Positive**
@@ -86,3 +98,4 @@ Phase 1: no change — feature-tagging stays on its current Postgres table and w
 
 ## Sources
 - [[sources/20260422-meeting-transcript-session-1]] — locus of the decision (morning session, feature-tagging discussion)
+- [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] — Phase-1 carve-out (old backend alive past cutover); party-tagging vs feature-tagging boundary; static-list hypothesis; likely InRisk-classifications-style migration shape

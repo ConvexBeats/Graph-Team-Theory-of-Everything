@@ -2,10 +2,10 @@
 type: analysis
 title: Open Questions Register
 created: 2026-04-22
-updated: 2026-04-22
+updated: 2026-05-18
 tags: [analysis, standing, open-questions]
-sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2]
-source_count: 2
+sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up]
+source_count: 3
 status: draft
 ---
 
@@ -36,11 +36,11 @@ A standing register of unresolved questions raised across the programme. One row
 | OQ-002 | party-rearch | **Does the Analytics Team (Data Universe) tolerate a flattened `(party-id, submission-id)` shape in proxy events, or does InRisk need to expose a nesting-reconstruction API?** Single biggest Phase-1 branch point. | [[sources/20260422-meeting-transcript-session-2]] | [[paul-rogers]] (resolver) · [[joe-worsfold]] (requester) | open |
 | OQ-003 | party-rearch | **Does any consumer beyond [[inrisk]] need the nested client-ID shape in DU events?** Input into OQ-002. | [[sources/20260422-meeting-transcript-session-2]] | [[joe-worsfold]] | open |
 | OQ-004 | party-rearch | **Graph API consumer map** — which endpoints are hit, by which consumers, at what volume? Spike will feed [[party-rearch-dependency-map]] and decommissioning scope. May resolve OQ-001. | [[sources/20260422-meeting-transcript-session-1]] | [[joe-worsfold]] · [[billy-calladine]] | open |
-| OQ-005 | party-rearch | **Chakra V2 vs V3 widget strategy** — V2, minimal-render, or V3-only-when-InRisk-upgrades? Settled by an InRisk-in-the-room workshop. Not a Phase-1 blocker. | [[sources/20260422-meeting-transcript-session-2]] | [[rory-beattie]] · [[alex-sillars]] | open |
 | OQ-006 | party-rearch | **Bulk-migration tool UX** — CLI-first (Phase 1 per [[bulk-migrations-owned-by-mdm-phase-1]]) is agreed. Phase 2+: CSV upload + diff preview in PCT, or separate MDM-team tool with a broader self-serve UX? | [[sources/20260422-meeting-transcript-session-1]] | [[joe-worsfold]] | open |
 | OQ-007 | party-rearch | **Version-change event semantics** — do we push version-change events, or do consumers pull on demand? Per-consumer PO decision. | [[sources/20260422-meeting-transcript-session-2]] | [[alex-sillars]] | open |
-| OQ-008 | party-rearch | **End-state sanctions flow** — owner and timing for the Phase 2+ simplification (NTT result lands on party; Party informs InRisk of affected submissions directly). | [[sources/20260422-meeting-transcript-session-2]] | _unassigned_ | open |
+| OQ-008 | party-rearch | **End-state sanctions flow** — owner and timing for the Phase 2+ simplification ([[ntt]] result lands on party; Party informs [[inrisk]] of affected submissions directly). Sharpened 2026-05-13: this is the _flow_ question that pairs with [[open-questions#OQ-032]]'s _location_ question — once the orchestration leaves Boomi, what's the end-state contract? See [[sanctions-processing]]. | [[sources/20260422-meeting-transcript-session-2]] · [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] | _unassigned_ — escalation target [[andrea-read]] | open |
 | OQ-009 | party-rearch | **Party-merge event handling in InRisk** — explicit handling needed, or can it be absorbed via the `by ID` follow-the-merge lookup pattern? | [[sources/20260422-meeting-transcript-session-2]] | [[john-trahearn]] · [[kris-mokrzycki]] | open |
+| OQ-032 | party-rearch | **Sanctions-domain location** — the orchestration logic that today lives in Boomi (firing on every party-change event, calling [[inrisk]] one submission at a time, building its own cache + idempotency layer, calling [[ntt]] for the actual check) is in the wrong place by group consensus. Where should it live? Own service / domain? Owned by which team? Audit pressure this year is the forcing function. See [[sanctions-processing]] · [[ntt]]. Out of Phase 1. | [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] | _unassigned_ — escalation: [[rory-beattie]] · [[suzanna-whitefield]] → [[andrea-read]] | open |
 ### Timeline / cadence
 
 | ID | Project | Question | Raised in | Owner | Status |
@@ -51,6 +51,7 @@ A standing register of unresolved questions raised across the programme. One row
 | OQ-014 | party-rearch | **DataOps change-management lead time** — must overlap with the development timeline; cannot be done post-hoc. | [[sources/20260422-meeting-transcript-session-2]] | [[hugh-lobban]] · [[will-bone]] | open |
 | OQ-015 | party-rearch | **Broker-retrieval workshop date + participants** — target Mon/Tue after Romania trip. | [[sources/20260422-meeting-transcript-session-2]] | [[rory-beattie]] | open |
 | OQ-016 | party-rearch | **Anti-patterns / data-fixes workshop scheduling.** | [[sources/20260422-meeting-transcript-session-2]] | [[joe-worsfold]] | open |
+| OQ-035 | party-rearch | **Concrete InRisk MDM-cutover date.** Per [[inrisk-cuts-over-before-high-volume]], InRisk cuts over to MDM ≥ 2 weeks before 1 Sep — i.e. mid-August at the latest. A concrete date is not yet set; sizes how much buffer HV's 1 Sep go-live actually gets, and the InRisk-side sprint plan. | [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] | [[rory-beattie]] · [[john-trahearn]] · [[joe-worsfold]] | open |
 
 ### Design open calls
 
@@ -58,10 +59,11 @@ A standing register of unresolved questions raised across the programme. One row
 |---|---|---|---|---|---|
 | OQ-017 | party-rearch | **MDM-delivery squad shape** — focused ~3-person squad (deep context, knowledge-bottleneck risk) vs. whole ~13-person [[graph-team]] (slower context-sharing, more resilience). Blocks sprint-planning for intercept / backfill / adapter work. | [[sources/20260422-meeting-transcript-session-1]] | [[rory-beattie]] (primary); consulted: [[alex-sillars]] | open — Rory's call; will merit further discussion |
 | OQ-018 | party-rearch | **Final-state Party contract specification** — [[inrisk-engine]]'s go-live gating. Publish the spec ahead of building it so [[antonie-labuschagne]] / [[devx-team]] can plan against it. | [[sources/20260422-meeting-transcript-session-2]] | [[graph-team]] ([[joe-worsfold]], [[alex-sillars]]) | open |
-| OQ-019 | party-rearch | **Feature-tagging migration timing** — [[feature-tagging-moves-to-inrisk]] is accepted for Phase 2+ but the trigger condition and concrete date remain unset. | [[sources/20260422-meeting-transcript-session-1]] | [[prebind-team]] + [[graph-team]] | open |
+| OQ-019 | party-rearch | **Feature-tagging migration timing and target shape** — [[feature-tagging-moves-to-inrisk]] is accepted for Phase 2+ but the trigger condition and concrete date remain unset. **Advanced 2026-05-13**: [[suzanna-whitefield]] to investigate whether feature tagging has become a fully static list (no new options added in two years). If yes, the migration likely becomes an **InRisk-classifications-style change** rather than a Postgres-table-plus-widget handover, materially simpler. Phase-1 carve-out is explicit: old backend (Postgres table + API + widget) stays alive past cutover so [[inrisk]] continues to pull its static list without interruption. | [[sources/20260422-meeting-transcript-session-1]] · [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] | [[suzanna-whitefield]] (static-list investigation) · [[prebind-team]] + [[graph-team]] (migration execution) | open |
 | OQ-020 | party-rearch | **Auto-created parent UX on PCT** — making D&B auto-created parents visible, editable, and clearly provenance-marked. Referenced from [[d-and-b-caching-and-auto-parent]]. | [[sources/20260422-meeting-transcript-session-2]] | [[alex-sillars]] | open |
 | OQ-021 | party-rearch | **Cache invalidation policy on explicit re-lookup or record merge** — for [[d-and-b-caching-and-auto-parent]]. | [[sources/20260422-meeting-transcript-session-2]] | [[joe-worsfold]] | open |
 | OQ-022 | party-rearch | **"Tech users" model in new PCT** — dedicated UX for HV-created draft parties, or reuse of existing role permissions? | [[sources/20260422-meeting-transcript-session-2]] | [[alex-sillars]] | open |
+| OQ-036 | party-rearch | **Widget-response field alignment** — will Joe's new MDM widget return everything [[inrisk]] needs in its response, given OpenSearch is indexed slightly differently than the underlying Dynamo storage? Sergiu raised in-call. Joe expects to adjust the widget's response shape as integration starts; iterate during stories 3, 4 (and 5) of the Party MDM Integration epic. | [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] | [[joe-worsfold]] · [[john-trahearn]] | open |
 
 ### People identification
 
@@ -75,6 +77,8 @@ A standing register of unresolved questions raised across the programme. One row
 | OQ-028 | party-rearch | **Kartik** — name-only mention in Session 1; context thin. | [[sources/20260422-meeting-transcript-session-1]] | [[rory-beattie]] | open |
 | OQ-029 | party-rearch | **Jenny / Ginny** — name-only mention in Session 1; GraphQL-endpoint context. | [[sources/20260422-meeting-transcript-session-1]] | [[rory-beattie]] | open |
 | OQ-030 | party-rearch | **Andrew Tennant** — name-only mention in Session 1; acting head for MRS team, on leave. | [[sources/20260422-meeting-transcript-session-1]] | [[rory-beattie]] | open |
+| OQ-033 | party-rearch | **Anna** — first-name-only reference in 2026-05-13 follow-up; UX / product lead working on an alternative party UX. [[rory-beattie]] to speak to Anna ahead of cutover to warm users to the UX change. Team and surname TBD. | [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] | [[rory-beattie]] | open |
+| OQ-034 | party-rearch | **Marty** — first-name-only reference in 2026-05-13 follow-up; sanctions / [[inrisk]] / Boomi-adjacent figure referenced by [[joe-worsfold]] (_"Marty has so much information about in-risk stuff"_). Likely a stakeholder in the [[sanctions-processing]] context. Team and surname TBD. | [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] | [[rory-beattie]] | open |
 ### ADR candidates (deferred)
 
 | ID | Project | Question | Raised in | Owner | Status |
@@ -109,6 +113,7 @@ Historical items — resolved before the register formally existed, captured her
 | OQ-R14 | party-rearch | "Boyle" identity and the afternoon external-provider session | **Not a person** — mispronunciation of "Will" ([[will-bone]]) in reference to him joining the afternoon session ([[sources/20260422-meeting-transcript-session-2]]). No third recording exists. Remove from people references. | 2026-04-22 | user correction, Pass B of [[sources/20260422-meeting-transcript-session-1]] |
 | OQ-010 | party-rearch | Knowledge Graph owner and future | **Not a separate application** — the "Knowledge Graph" is a **Neo4j instance internal to [[party-application]]**, acting as the primary datastore in the current state. It is replaced by DynamoDB + OpenSearch in the target state. Removed from the data-distribution bucket on [[party-rearch-dependency-map]] and [[contract-buckets]]. | 2026-04-22 | user correction, lint pass |
 | OQ-031 | party-rearch | PreBind Product Owner identity | **Daria Romanovskaia** — Product Owner on [[prebind-team]]. See [[daria-romanovskaia]]. | 2026-04-22 | user correction, lint pass |
+| OQ-005 | party-rearch | Chakra V2 vs V3 widget strategy — V2, minimal-render, or V3-only-when-InRisk-upgrades? Settled by an InRisk-in-the-room workshop. | **Two component libraries from [[joe-worsfold]]**: a Chakra-3-with-design-system widget for [[party-curation-tool]] / [[dataops-team]], and a **design-system-agnostic component library** for [[inrisk]] matched to InRisk's current look. InRisk does **not** absorb Chakra 3 + design-system migration under the September gate. [[high-volume]] is unaffected (API-only). Joe explicitly accepted maintaining the two libraries in parallel as the easier of the available trade-offs. Captured in [[inrisk-cuts-over-before-high-volume]]. | 2026-05-13 | [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] |
 
 ---
 
@@ -129,3 +134,4 @@ Historical items — resolved before the register formally existed, captured her
 ## Source history
 - 2026-04-22 — Session 1 Pass B: register created; seeded with 31 open questions (Session 1 + Session 2 carryover) and 14 resolved entries from the pre-register triage.
 - 2026-04-22 — lint pass: **OQ-010** (Knowledge Graph) resolved — reclassified as internal Neo4j datastore inside [[party-application]]. **OQ-031** (PreBind PO) resolved — [[daria-romanovskaia]]. Open-question count now 29; resolved count now 16.
+- 2026-05-18 — [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] ingest: **OQ-005** (Chakra V2/V3) resolved → two component libraries from Joe; closed by [[inrisk-cuts-over-before-high-volume]]. **OQ-008** (end-state sanctions flow) sharpened with the "wrong place" framing and pairing to the new OQ-032 location question. **OQ-019** (feature-tagging migration timing) advanced with Suzy's static-list investigation and the InRisk-classifications-style target shape. **5 new OQs added**: OQ-032 (sanctions-domain location), OQ-035 (concrete InRisk MDM-cutover date), OQ-036 (widget-response field alignment), OQ-033 (Anna identification), OQ-034 (Marty identification). Open count: 29 − 1 (OQ-005 resolved) + 5 (new) = **33 open**; resolved count now **17**.

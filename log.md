@@ -294,3 +294,81 @@ Kinds: `ingest` · `query` · `analysis` · `lint` · `schema` · `note`
 - **Phase-scoped analyses given their own cascade entry**: a phase-scoped analysis like `party-rearch-phase-1-summary` now has an unambiguous home (inside the phase folder, with `project:` + `phase:` frontmatter), distinct from cross-phase standing analyses like `party-rearch-dependency-map` (which stay at the project root, with no `phase:` field). This clarifies the earlier user question "why didn't `party-rearch-phase-1-summary` go in `wiki/analyses/`?" — it's project- AND phase-scoped, so it lives in its phase folder.
 - touched (structural, 4 moved): files listed above.
 - touched (edited, 4): [[AGENTS]], [[index]], [[_templates/phase]], [[_templates/phase-application-architecture]].
+
+---
+
+## [2026-05-11] query | is the feed to the Data Universe changing in Phase 1?
+
+- **Query**: "Is the feed to the Data Universe changing as part of the Phase 1 delivery for September?"
+- **Answer (filed inline in chat, not as a wiki page)**: No on event shape; yes on producer. Phase 1 keeps the DU feed's event shape unchanged via [[strangle-the-graph-via-proxy-events]] — MDM emits proxy events in the existing Graph shape, satisfying [[ben-joseph]]'s bidirectional-mappability criterion. The underlying producer migrates from Neo4j (Graph) to DynamoDB + OpenSearch (MDM). Phase 2+ replaces proxy events with a direct Dynamo → DU stream (Snowpipe-style). Single biggest Phase-1 branch point that could change the answer is [[open-questions#OQ-002]] — DU tolerance for a flattened `(party-id, submission-id)` shape; current intent is to preserve current contract.
+- **Wiki pages cited**: [[party-rearch-phase-1]] · [[strangle-the-graph-via-proxy-events]] · [[data-universe]] · [[open-questions#OQ-002]] · [[party-rearch-phase-1-summary]].
+- No analysis page filed (answer is a synthesis of already-filed material; not load-bearing enough to warrant a standalone analysis).
+- touched: none (read-only query).
+
+## [2026-05-18] ingest | 20260513 InRisk Integration with Party MDM — Follow-up
+
+- **Source**: `raw/20260513 - InRisk Integration With Party MDM Follow Up.md` — third party-rearch architecture-design call (47 min on 2026-05-13). First dedicated session on the **InRisk side** of Phase 1.
+- **Attendees**: [[rory-beattie]], [[joe-worsfold]] ([[graph-team]] TL), [[john-trahearn]] + [[kris-mokrzycki]] ([[prebind-team]] TLs), [[suzanna-whitefield]] ([[architecture-team]]), [[sergiu-postolachi]] ([[graph-team]] SM — brief).
+- **Source page created**: [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] — key claims grouped under 5 themes (InRisk Phase-1 epic; party-tagging vs feature-tagging; cutover sequencing; Chakra V2/V3 resolution; sanctions/NTT/Boomi), decisions, actions, applications/entities/concepts mentioned, contradictions/reinforces, LLM notes, source-page open-questions.
+
+**Decisions** (per user steers in chat):
+
+- **New ADR**: [[inrisk-cuts-over-before-high-volume]] (**accepted** · phase-1). InRisk cuts over to MDM ≥ 2 weeks before 1 Sep HV go-live (concrete date open at [[open-questions#OQ-035]]); HV switches on at the gate. **Rolls in** the two-component-libraries call: [[joe-worsfold]] publishes a second, **design-system-agnostic component library** for [[inrisk]] alongside the Chakra-3-with-design-system widget for [[party-curation-tool]]. **Resolves** [[open-questions#OQ-005]]. HV is API-only and unaffected by the library decision.
+- **Refinement** to [[strangle-the-graph-via-proxy-events]]: brief **dual-write to old graph during the cutover window** for revertability. Not a contradiction of "no dual sources of truth" — MDM is still the source of truth in the live path; the old graph receives a write-through for revert safety only. Non-prod gets the same pattern, easier to toggle back and forth.
+- **Refinement** to [[feature-tagging-moves-to-inrisk]]: Phase-1 carve-out is explicit — old backend (Postgres table + API + widget) stays alive past cutover so [[inrisk]] continues pulling its static list. **Party tagging in Phase 1 / feature tagging out** boundary recorded. **Static-list hypothesis** from [[suzanna-whitefield]]: feature tagging may now be a static list (no new options in 2 years); if so, future migration becomes an InRisk-classifications-style change rather than a Postgres-table handover. Captured under [[open-questions#OQ-019]].
+
+**New pages** (4):
+
+- [[ntt]] — new platform under `wiki/entities/platforms/`. Vendor sanctions-check application accessed via API; first-class entity now that it sits at the edge of an active workstream (Phase 2+ sanctions-domain rework).
+- [[sanctions-processing]] — new concept under `wiki/concepts/`. The sanctions-screening domain; describes the current Boomi-orchestrated call-chain (Party events → Boomi → InRisk one-submission-at-a-time → NTT), pain points (cascading false positives, no batch endpoint on InRisk, opaque cache + idempotency in Boomi, audit pressure this year), and the room's consensus that the orchestration should live in its own domain.
+- [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] — the source page (above).
+- [[inrisk-cuts-over-before-high-volume]] — the new ADR (above).
+
+**New open questions** (5):
+
+- [[open-questions#OQ-032]] (scope/architecture) — sanctions-domain location. Out of Phase 1; audit pressure this year; escalation [[rory-beattie]] · [[suzanna-whitefield]] → [[andrea-read]].
+- [[open-questions#OQ-035]] (timeline) — concrete InRisk MDM-cutover date (≥ 2 weeks before 1 Sep).
+- [[open-questions#OQ-036]] (design open call) — widget-response field alignment ([[sergiu-postolachi]]'s question: will Joe's new widget return everything InRisk needs given OpenSearch ≠ Dynamo indexing).
+- [[open-questions#OQ-033]] (people identification) — Anna (UX / product lead).
+- [[open-questions#OQ-034]] (people identification) — Marty (sanctions / InRisk-adjacent).
+
+**Resolved**: [[open-questions#OQ-005]] (Chakra V2 vs V3) → two component libraries from Joe; closed by [[inrisk-cuts-over-before-high-volume]].
+
+**Advanced** (not resolved): [[open-questions#OQ-008]] sharpened with the "wrong place" framing to pair with [[open-questions#OQ-032]]; [[open-questions#OQ-019]] now has a concrete branch (Suzy's static-list investigation) and a softer migration shape (InRisk-classifications-style).
+
+**Applications updated**:
+
+- [[inrisk]] — restructured around the concrete **Party MDM Integration epic** (5-story table); party-tagging-vs-feature-tagging Phase-1 boundary; SDK-style widget integration; sanctions touchpoint flagged; new "Cutover sequencing" sub-section; pending-items list extended to OQ-032, OQ-035, OQ-036.
+- [[inrisk-architecture]] — `state` and constraint detail added (datastore = relational; existing client + broker tables to gain party-ID + version-ID columns; SDK-style widget integration on Joe's design-system-agnostic library; no design-system surface in InRisk today; Boomi single-submission-API-call pain point; sanctions touchpoint to [[ntt]] via [[sanctions-processing]]).
+- [[party-application]] — sources 2 → 3; AWS estate clarified as existing 3-account/4-env (not AWS 2.0); two component-library widget surface called out in Target state; sanctions framing expanded with the "wrong place" consensus; OQ-005 marked resolved inline; OQ-032/035/036 added to Pending; [[inrisk-cuts-over-before-high-volume]] added to Related decisions; [[feature-tagging-moves-to-inrisk]] refinement note.
+- [[party-application-architecture]] — AWS estate (existing 3-account/4-env); Lambdas confirmed; two component libraries documented under Technologies & services; sanctions/spine-rewrite link added under Known constraints; new related decisions linked.
+
+**Phase + summary updated**:
+
+- [[party-rearch-phase-1]] — outer gate / inner gate framing introduced; InRisk row in Scope-Applications table raised from "medium" to "high" intensity with story-level detail; new **Cutover sequence** diagram; new **Out of Phase 1** sub-section (feature tagging unchanged at cutover; sanctions/NTT/Boomi orchestration; Anna's UX team involvement); done-state extended to include InRisk-first cutover and old-feature-tagging-backend-alive-past-cutover lines; OQ-035/036 added to gating questions; sources 2 → 3.
+- [[party-rearch-phase-1-summary]] — mirror updates: outer/inner gate framing; InRisk row updated to the concrete epic; new "Flagged but out of Phase 1" line for sanctions; new ADR listed under Phase-1 decisions; OQ-035/036 added to highest-leverage; follow-ups list extended; Confidence section updated.
+
+**Project overview updated**:
+
+- [[party-rearch]] — sources 2 → 3. Pillars restructured: new pillar #3 ("InRisk cuts over before HV") slotted in; pillar #5 split out as "Party tagging in, feature tagging out". Tensions revised: Chakra tension removed (resolved); new tension on mid-August inner-gate; new tension on sanctions-domain location. What I'd want to know next re-ranked: OQ-035 added at #3; OQ-032/008 added at #6; OQ-005 dropped. Resolved clarifications section appended with OQ-005.
+
+**Standing analyses refreshed**:
+
+- [[party-rearch-ownership-matrix]] — InRisk workstream description updated to reflect concrete epic; new **Sanctions-domain ownership** workstream added; Widget/Chakra workstream marked resolved; 8 new actions appended (#21–28) covering Thursday/Tuesday cadence, widget-mechanic brush-up, Billy's Thursday attendance, Joe's second library, Suzy's static-list investigation, sanctions escalation, Anna warming, widget-response field alignment; action #11 marked resolved; total open actions now **27**; source-history entry added.
+- [[party-rearch-dependency-map]] — current-state diagram extended with Boomi → InRisk-API → NTT call-chain; Phase-1 target diagram updated to reflect InRisk-first cutover, two-component-libraries widget split, sanctions-orchestration-unchanged-in-Phase-1, additive client+broker data-model, cutover-window dual-write; Key Phase-1 changes list rewritten; cross-cutting rows added for cutover sequencing, Joe's second library, widget-response field alignment, sanctions-domain ownership; Chakra row marked resolved; feature-tagging row note updated; source-history entry added.
+
+**Index regenerated**: counts updated (3 sources · 9 decisions · 4 concepts · 2 platforms · 33 open questions · 17 resolved); [[ntt]] added under Platforms; [[sanctions-processing]] added under Concepts; [[inrisk-cuts-over-before-high-volume]] added under Decisions; 2026-05-13 source listed; existing per-application and per-architecture bullets refreshed with the new framing.
+
+**Notes / things not done per user steers**:
+
+- "Ringo special" terminology — **explicitly not referenced anywhere in the wiki** per user direction.
+- **CDM** — origin context for feature tagging touched only obliquely; **not given its own wiki coverage** (user direction: unrelated initiative).
+- **Anna** and **Marty** — kept as OQ entries ([[open-questions#OQ-033]], [[open-questions#OQ-034]]) rather than entity stubs; insufficient surname/team detail for first-class entity pages.
+
+**Pages with breaking-change risk** (none, all changes are additive or refinements):
+
+- Existing wiki-links unchanged; no path rewrites required.
+- ADR file added; ADR file modified (additions only); no superseded markers needed yet.
+
+- touched (new, 4): [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]], [[ntt]], [[sanctions-processing]], [[inrisk-cuts-over-before-high-volume]].
+- touched (edited, 14): [[strangle-the-graph-via-proxy-events]], [[feature-tagging-moves-to-inrisk]], [[inrisk]], [[inrisk-architecture]], [[party-application]], [[party-application-architecture]], [[party-rearch-phase-1]], [[party-rearch-phase-1-summary]], [[party-rearch-ownership-matrix]], [[party-rearch-dependency-map]], [[party-rearch]], [[open-questions]], [[index]], [[log]] (this entry).

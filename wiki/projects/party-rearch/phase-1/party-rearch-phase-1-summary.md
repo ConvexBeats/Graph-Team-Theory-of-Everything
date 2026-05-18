@@ -2,12 +2,12 @@
 type: analysis
 title: party-rearch Phase 1 — Summary & Applications-Affected
 created: 2026-04-22
-updated: 2026-04-22
+updated: 2026-05-18
 tags: [analysis, summary, phase-1]
 project: party-rearch
 phase: [phase-1]
-sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2]
-source_count: 2
+sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up]
+source_count: 3
 status: draft
 ---
 
@@ -24,32 +24,38 @@ Synthesised from the [[party-rearch]] project overview, the [[party-rearch-phase
 ## Findings
 
 ### What Phase 1 is
-**MDM + PCT co-ship to the 1 September [[high-volume]] go-live.** One phase, one gate, one feature-flag. The new MDM (DynamoDB + OpenSearch) and the new [[party-curation-tool]] ship together under a **single feature-flag coupled rollout** ([[pct-and-mdm-go-live-together]]); the legacy Neo4j Knowledge Graph is kept alive behind a proxy-event strangler during cutover ([[strangle-the-graph-via-proxy-events]]) so [[data-universe]] sees no schema change; historical migrations are deliberately bounded — MDM carries party-version history from cutover forward, with **no pre-cutover InRisk client snapshots** ([[no-historic-client-backfill-into-mdm]]) and **no Jira PCT audit history** ([[no-pct-audit-backfill]]) brought across.
+**MDM + PCT co-ship, then [[inrisk]] cuts over to MDM, then [[high-volume]] goes live at the 1 September gate.** One phase, one outer gate, with an inner sequencing constraint added by [[inrisk-cuts-over-before-high-volume]] (2026-05-13): InRisk's MDM integration lands **≥ 2 weeks before 1 Sep**, so HV consumes MDM only after real production traffic has exercised the new contract. The new MDM (DynamoDB + OpenSearch) and the new [[party-curation-tool]] ship together under a **single feature-flag coupled rollout** ([[pct-and-mdm-go-live-together]]); the legacy Neo4j Knowledge Graph is kept alive behind a proxy-event strangler during cutover ([[strangle-the-graph-via-proxy-events]] — refined 2026-05-13 with a brief dual-write to the old graph for revertability during the cutover window) so [[data-universe]] sees no schema change; historical migrations are deliberately bounded — MDM carries party-version history from cutover forward, with **no pre-cutover InRisk client snapshots** ([[no-historic-client-backfill-into-mdm]]) and **no Jira PCT audit history** ([[no-pct-audit-backfill]]) brought across.
 
-**Gate**: **2026-09-01**. [[high-volume]] production requires MDM as its Party source-of-truth; everything in this phase is scoped against that date.
+**Outer gate**: **2026-09-01**. [[high-volume]] production requires MDM as its Party source-of-truth.
+**Inner gate (new 2026-05-13)**: InRisk's MDM-integration cutover, **≥ 2 weeks before 1 Sep**, concrete date TBC at [[open-questions#OQ-035]]. Slipping this compresses HV's buffer.
 
 ### Applications affected in Phase 1
 
 | Application | Change intensity | Shape of change |
 |---|---|---|
-| [[party-application]] | **high** — core subject | Neo4j Knowledge Graph retires as primary datastore; DynamoDB + OpenSearch stood up; proxy-event strangler in place; bulk-migration CLI delivered by [[graph-team]] ([[bulk-migrations-owned-by-mdm-phase-1]]) |
-| [[party-curation-tool]] | **high** — co-ships | Next.js UI on the new MDM; single-flag coupled rollout with the search widget; Jira workflow retired live (no dual-running); no audit backfill |
-| [[inrisk]] | **medium** — interim changes | Party-ID reference table; Party-ID stamped on outgoing messaging; broker retrieval moved direct from InRisk (URD path removed) |
+| [[party-application]] | **high** — core subject | Neo4j Knowledge Graph retires as primary datastore; DynamoDB + OpenSearch stood up on existing 3-account / 4-env AWS estate; proxy-event strangler in place; bulk-migration CLI delivered by [[graph-team]] ([[bulk-migrations-owned-by-mdm-phase-1]]); **two widget component libraries** published — Chakra-3-with-design-system for [[party-curation-tool]] and design-system-agnostic for [[inrisk]] ([[inrisk-cuts-over-before-high-volume]]) |
+| [[party-curation-tool]] | **high** — co-ships | Next.js UI on the new MDM; single-flag coupled rollout with the search widget; Jira workflow retired live (no dual-running); no audit backfill; consumes the Chakra-3 + design-system widget |
+| [[inrisk]] | **high** _(raised from "medium" 2026-05-13)_ — Party MDM Integration epic | Concrete epic of 4–5 stories: (1) remove manual client-creation on new requirement → widget; (2) backwards-compatible data-model addition on existing client + broker tables (party-ID + version-ID); (3) client-widget integration, feature-flagged; (4) broker-widget integration, feature-flagged; (5) party-tagging integration. **Party tagging in scope; feature tagging out** (old backend stays alive past cutover). SDK-style widget integration via Joe's design-system-agnostic library. InRisk's cutover lands ≥ 2 weeks before HV. |
 | [[inrisk-engine]] | **none** — out of scope | Explicitly scoped out of Phase 1: targets the **final-state** Party contract, not the interim. Phase-1 work should not design for it. |
-| [[high-volume]] | **integration only** | Consumes MDM via the new versioned-reference API; integration shape still being specified ([[open-questions#OQ-013]]) |
+| [[high-volume]] | **integration only** | Consumes MDM via the new versioned-reference API at the 1-Sep gate, **after** the InRisk-first cutover window. API-only via Boomi; no widget. Integration shape still being specified ([[open-questions#OQ-013]]) |
 | [[eclipse]] | **scope call** | Ongoing ingestion into [[party-application]] under review ([[open-questions#OQ-001]]) |
 
 Every application currently tracked for the project is listed. "`none` with a reason" ([[inrisk-engine]]) is an explicit scope call, not an omission.
 
+**Flagged but out of Phase 1**: sanctions / [[ntt]] / Boomi orchestration. By group consensus the current Boomi-hosted orchestration is in the wrong place; audit pressure is significant this year; not a Phase-1 deliverable. See [[sanctions-processing]] · [[open-questions#OQ-032]].
+
 ### Phase-1 decisions (all accepted, all `project: party-rearch · phase: [phase-1]`)
 
-- [[strangle-the-graph-via-proxy-events]] — MDM emits Graph-shape proxy events; no dual-running.
+- [[strangle-the-graph-via-proxy-events]] — MDM emits Graph-shape proxy events; sources-of-truth stay single (refined 2026-05-13: brief dual-write to old graph during cutover window for revertability, not a contradiction).
 - [[pct-and-mdm-go-live-together]] — new PCT + MDM ship together under one feature flag.
+- [[inrisk-cuts-over-before-high-volume]] **(new 2026-05-13)** — InRisk's MDM cutover lands ≥ 2 weeks before 1 Sep; HV switches on at the gate. Rolls in the design-system call: Joe maintains two component libraries (Chakra-3 + design-system for PCT; design-system-agnostic for InRisk). Resolves [[open-questions#OQ-005]].
 - [[no-historic-client-backfill-into-mdm]] — MDM history starts at cutover.
 - [[no-pct-audit-backfill]] — Snowflake remains the cross-period audit store.
 - [[bulk-migrations-owned-by-mdm-phase-1]] — [[graph-team]]-owned CLI (not self-serve in Phase 1).
 - [[d-and-b-caching-and-auto-parent]] — D&B cached in Dynamo with TTL; scheduled refresh → curation revision loop.
 - [[uuid-system-id-with-display-id]] — system ID = UUID, display ID = legacy Graph party ID.
+
+**Refined for Phase 1 (Phase-2-target ADR, scope clarification)**: [[feature-tagging-moves-to-inrisk]] — direction unchanged (Phase-2+ migration to InRisk); 2026-05-13 added the party-tagging-vs-feature-tagging boundary, the old-backend-stays-alive-past-cutover carve-out, and the static-list-hypothesis investigation ([[open-questions#OQ-019]]).
 
 ### Delivery shape
 [[intercept-backfill-projection]] — the three-step delivery pattern that implements [[strangle-the-graph-via-proxy-events]]:
@@ -67,14 +73,18 @@ Drawn from [[open-questions]] (filter `project: party-rearch`, `phase: phase-1`)
 - [[open-questions#OQ-013]] — HV integration-shape specifics.
 - [[open-questions#OQ-017]] — MDM delivery squad shape (blocks sprint-planning).
 - [[open-questions#OQ-014]] — DataOps change-management lead time.
+- [[open-questions#OQ-035]] **(new 2026-05-13)** — Concrete InRisk MDM-cutover date. Sizes HV's buffer.
+- [[open-questions#OQ-036]] **(new 2026-05-13)** — Widget-response field alignment between MDM and InRisk's needs.
 
 ## Confidence
-**High on structure**, because this digest is a re-assembly of already-filed, already-reviewed content from Sessions 1 and 2 with user-confirmed corrections through Pass B and the lint pass. **Medium-to-low on some specifics** — notably the **HV integration shape** (OQ-013) and the **MDM squad shape** (OQ-017); these are still open questions and anything in this summary about them is provisional.
+**High on structure**, because this digest is a re-assembly of already-filed, already-reviewed content from Sessions 1, 2, and the 2026-05-13 follow-up. **Medium-to-low on some specifics** — notably the **HV integration shape** (OQ-013), the **MDM squad shape** (OQ-017), and the **concrete InRisk cutover date** (OQ-035); these are still open questions and anything in this summary about them is provisional.
 
 ## Follow-ups
 - When [[open-questions#OQ-013]] is resolved, update this summary's [[high-volume]] row.
 - When [[open-questions#OQ-002]] is resolved, update the [[data-universe]] / [[inrisk]] proxy-event framing on this page and on [[party-rearch-phase-1]] in lockstep.
+- When [[open-questions#OQ-035]] is resolved (concrete InRisk cutover date set), update both the Outer/Inner gate framing on this page and on [[party-rearch-phase-1]].
 - Revisit **Confidence** after the Graph-API consumer audit ([[open-questions#OQ-004]]) lands — that spike may materially change the [[party-application]] row by re-scoping decommissioning.
+- After Thursday's high-level (2026-05-14) and Tuesday's low-level (2026-05-19), revisit the InRisk row to reflect any story-shape changes.
 
 ## Related
 - [[party-rearch-phase-1]] — canonical Phase-1 page (full scope table, done-state, predecessors/successors).
@@ -86,3 +96,4 @@ Drawn from [[open-questions]] (filter `project: party-rearch`, `phase: phase-1`)
 ## Sources
 - [[sources/20260422-meeting-transcript-session-1]] — Phase-1 scope calls (no-backfill; feature-tagging deferred; bulk-migration CLI; MDM-squad-shape tension).
 - [[sources/20260422-meeting-transcript-session-2]] — strangler pattern, PCT co-delivery, InRisk interim changes, D&B and UUID decisions.
+- [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] — InRisk-first cutover sequence; concrete Party MDM Integration epic (4–5 stories); two component-libraries call; party-tagging vs feature-tagging boundary; sanctions / NTT / Boomi flagged.

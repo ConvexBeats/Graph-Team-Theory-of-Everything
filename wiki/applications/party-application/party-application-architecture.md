@@ -2,12 +2,12 @@
 type: application-architecture
 title: Party Application — Current-state Architecture
 created: 2026-04-22
-updated: 2026-04-22
+updated: 2026-05-18
 tags: [architecture, current-state]
 application: party-application
 state: current
-sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2]
-source_count: 2
+sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up]
+source_count: 3
 status: stub
 ---
 
@@ -25,7 +25,11 @@ _Populate from raw ingest. Known so far:_
 
 - **Primary datastore**: **Neo4j (Knowledge Graph)** — in-scope for retirement as primary store under [[party-rearch-phase-1]]; see [[strangle-the-graph-via-proxy-events]].
 - **Secondary stores / caches**: _unknown — pending ingest_
-- **Compute**: _unknown — pending ingest_
+- **Compute**: AWS Lambdas (per [[joe-worsfold]], 2026-05-13: _"basically just Lambdas running everything, including the UI"_). Other compute pending ingest.
+- **AWS estate**: existing **3 accounts × 4 environments** (the shared current AWS world; **not** AWS 2.0 yet). Confirmed 2026-05-13; reduces a cross-account integration unknown for [[inrisk]]'s Phase-1 work.
+- **Widget surface (new MDM)**: two component libraries published from the [[graph-team]] side:
+  - **Chakra 3 + design-system widget** — consumed by [[party-curation-tool]] / [[dataops-team]].
+  - **Design-system-agnostic component library** (to be published) — consumed by [[inrisk]], matched to InRisk's current look. Per [[inrisk-cuts-over-before-high-volume]].
 - **Event platform / message bus**: _unknown — payload events currently emitted to [[data-universe]] and [[inrisk]]; mechanism TBC_
 - **Observability**: _unknown — pending ingest_
 - **Other infrastructure**: _unknown — pending ingest_
@@ -62,6 +66,7 @@ _From transcripts:_
 - **Payload events, not reference events** — downstream consumers snapshot-cache party payloads rather than resolving by ID + version. This is the constraint the [[party-rearch]] project exists to remove. See [[contract-buckets]] "data distribution" bucket.
 - **Graph API surface** — current consumers of the Knowledge-Graph API are incompletely mapped; a spike is open to audit endpoint-by-consumer ([[open-questions#OQ-004]]).
 - **[[eclipse]] ingestion** — third-party data flows from [[eclipse]] into the Party Application are under scope review ([[open-questions#OQ-001]]).
+- **Spine-rewrite-on-every-event drives sanctions noise** — every InRisk event causes Graph to rewrite the whole spine and emit one event; Boomi consumes those events to drive [[sanctions-processing]] checks, which produces noise on irrelevant changes. Not a Phase-1 fix; [[open-questions#OQ-032]].
 
 ## Relationships to other architecture pages
 - [[party-curation-tool-architecture]] — PCT is the primary curation frontend for parties; tightly coupled data model
@@ -79,9 +84,12 @@ _None yet — this page has not yet been through a phase-completion fold-in._
 ## Related
 - [[party-application]] — identity page (owner, role, aliases)
 - [[party-rearch-dependency-map]] — cross-app view of touchpoints
-- [[strangle-the-graph-via-proxy-events]] — the migration strategy for moving off Neo4j
+- [[strangle-the-graph-via-proxy-events]] — the migration strategy for moving off Neo4j; refined 2026-05-13 with cutover-window dual-write
+- [[inrisk-cuts-over-before-high-volume]] — InRisk-first cutover; two component-library widget call
 - [[uuid-system-id-with-display-id]] — identifier scheme being adopted in the re-architecture
+- [[sanctions-processing]] · [[ntt]] — sanctions touchpoint
 
 ## Sources
 - [[sources/20260422-meeting-transcript-session-1]] — partial current-state framing in the three-bucket contract discussion
 - [[sources/20260422-meeting-transcript-session-2]] — mentions of Neo4j-as-primary, payload events, downstream consumer list
+- [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] — AWS estate (existing 3-account / 4-env world; not AWS 2.0); Lambdas confirmed; two component libraries; cutover-window dual-write
