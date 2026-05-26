@@ -2,12 +2,12 @@
 type: decision
 title: Feature-tagging moves to InRisk ownership (Phase 2+)
 created: 2026-04-22
-updated: 2026-05-18
+updated: 2026-05-26
 tags: [decision, ownership, phase-2, feature-tagging]
 application: [party-application, inrisk]
 owner: graph-team
-sources: [20260422-meeting-transcript-session-1, 20260513-inrisk-integration-with-party-mdm-follow-up]
-source_count: 2
+sources: [20260422-meeting-transcript-session-1, 20260513-inrisk-integration-with-party-mdm-follow-up, 20260514-inrisk-high-level-refinement]
+source_count: 3
 status: accepted
 project: party-rearch
 phase: [phase-2]
@@ -63,6 +63,10 @@ Phase 1: no change — feature-tagging stays on its current Postgres table and w
 4. **Static-list hypothesis** — Suzanna Whitefield offered to investigate whether the feature-tag list has become genuinely static (no new options added in two years). If yes, the migration becomes meaningfully simpler — a one-time data move plus an InRisk-side surface, rather than a maintained dynamic substrate. Tracked under [[open-questions#OQ-019]]; result will shape the trigger condition for this ADR's eventual execution.
 5. **The decision direction is unchanged** — Phase 2+; InRisk-owned; [[graph-team]] hands over. The 2026-05-13 follow-up adds detail about _how_ the handover may look once Suzy's investigation lands, and adds an explicit Phase-1 carve-out for the old backend's continued life.
 
+### Reinforcement (2026-05-14 wider InRisk HL)
+
+The party-tagging-vs-feature-tagging boundary was re-stated to the wider InRisk audience by [[john-trahearn]] in response to a Billy-Calladine clarifying question ([[sources/20260514-inrisk-high-level-refinement]]): _"Feature tagging is, yes, it's driven by party. It's not going to be part of this initial phase. But it is something that is on the agenda to kind of, I think, basically reassign, because it doesn't make sense to the party kind of own feature tagging."_ Carve-out restated: _"The old party system will remain to support it. Until we get a plan to change it over."_ No content change — just public re-affirmation of the Phase-1 boundary in front of the BAs and PO running InRisk's wider high-level.
+
 ## Consequences
 
 - **Positive**
@@ -99,3 +103,4 @@ Phase 1: no change — feature-tagging stays on its current Postgres table and w
 ## Sources
 - [[sources/20260422-meeting-transcript-session-1]] — locus of the decision (morning session, feature-tagging discussion)
 - [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] — Phase-1 carve-out (old backend alive past cutover); party-tagging vs feature-tagging boundary; static-list hypothesis; likely InRisk-classifications-style migration shape
+- [[sources/20260514-inrisk-high-level-refinement]] — wider-InRisk-audience reinforcement of the Phase-1 carve-out; no substantive change

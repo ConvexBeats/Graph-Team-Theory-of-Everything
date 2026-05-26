@@ -372,3 +372,130 @@ Kinds: `ingest` · `query` · `analysis` · `lint` · `schema` · `note`
 
 - touched (new, 4): [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]], [[ntt]], [[sanctions-processing]], [[inrisk-cuts-over-before-high-volume]].
 - touched (edited, 14): [[strangle-the-graph-via-proxy-events]], [[feature-tagging-moves-to-inrisk]], [[inrisk]], [[inrisk-architecture]], [[party-application]], [[party-application-architecture]], [[party-rearch-phase-1]], [[party-rearch-phase-1-summary]], [[party-rearch-ownership-matrix]], [[party-rearch-dependency-map]], [[party-rearch]], [[open-questions]], [[index]], [[log]] (this entry).
+
+## [2026-05-26] ingest | 20260514 InRisk High Level Refinement
+
+- **Source**: `raw/20260514 - InmRisk High Level Refinement.md` — Thursday-after-the-2026-05-13-follow-up. 27-minute Party-MDM portion of the wider InRisk High Level call where [[john-trahearn]] walked the 5-story Party MDM Integration epic through the wider InRisk team. First substantive appearance of [[prebind-team]]'s BA cohort + second PO in the wiki.
+- **Attendees**: [[john-trahearn]], [[joe-worsfold]], [[billy-calladine]], [[kris-mokrzycki]], [[jason-owen]] (new), [[andrew-turner]] (new; resolves OQ-030), [[katarina-voskarova]] (new), [[rastislav-sepelak]] (new). Amardeep Badhan opened the call with one MC-style line; role/team unconfirmed; not stubbed (per user steer — insufficient signal). [[alex-sillars]] referenced but not in room.
+- **Source page created**: [[sources/20260514-inrisk-high-level-refinement]] — keyed by 7 thematic claim clusters (epic ordering, parity-not-enhancement widget, spike-required, feature-tagging carve-out reinforced, cutover sequencing reinforced, InRisk-side backfill question, TOBA + Lloyd's-broker context), decisions made (none new — refinements only), 6 actions, applications/entities/concepts mentioned, contradictions/reinforces, LLM notes, open-questions section.
+
+**No new ADRs.** This source is concretisation + refinement of decisions already on the books, plus four new people and one new "pending decision" strand.
+
+**Refinements**:
+
+- **[[inrisk-cuts-over-before-high-volume]]** — added the **parity-not-enhancement principle** for the InRisk widget itself (refinement of part B). The two-libraries call was a styling-stack decision; the 2026-05-14 refinement extends it into a full posture on the InRisk widget surface: same auth / RBAC / session, same filter parameters (including **TOBA status** for the Lloyd's-vs-retail broker split), same look-and-feel; UX improvements deferred. Joe rolled back his "modern and different" vision in front of the wider audience. Open-risks section extended with the TOBA-parity requirement (surfaced by [[jason-owen]]) and the widget-integration spike (pair Joe + Billy + Alex + Andrew Turner) gating Stories 3/4/5.
+- **[[feature-tagging-moves-to-inrisk]]** — reinforced by re-statement to the wider audience; new "Reinforcement (2026-05-14 wider InRisk HL)" section quotes John's restated carve-out. No content change.
+- **[[inrisk]]** — Phase-1 epic restructured into the new ordered + gated table; **Stories 1 & 2 ready for low level immediately** (manual-client-creation cleanup as the foundational "demon"; data-model migration on **three tables** — party + broker + party_snapshot — with `party_id` UUID v7 + `version_id` int); **Stories 3/4/5 spike-gated** (widget-integration spike with Joe + Billy + Alex + Andrew Turner). Drop-in-replacement / parity-not-enhancement principle captured. Renewals flow folds into the client story. Pending / unknown section gains the **InRisk-side backfill** note (per user steer, not formalised as an OQ).
+- **[[inrisk-architecture]]** — datastore detail updated: three independent tables (party_table keyed by legacy `client_id`, broker_table, party_snapshot) get UUID v7 + int columns. Widget-integration section rewritten to reflect query-parameter-driven current flow vs SDK-style new flow + TOBA-status filter parity. Manual-create flow change captured.
+- **[[party-application]]** + **[[party-application-architecture]]** — widget-surface description updated with the parity-not-enhancement framing on the InRisk-side library; Pending / unknown section on [[party-application]] gains the InRisk-side backfill note (sanctions-impact called out).
+- **[[party-rearch-phase-1]]** + **[[party-rearch-phase-1-summary]]** — scope-applications table InRisk row rewritten to reflect Stories 1 & 2 ready + 3/4/5 gated + drop-in-replacement posture. Out-of-Phase-1 + new **Pending Phase-1 decisions** section on the phase page captures the backfill question. Summary's Follow-ups list: 2026-05-14 follow-up marked done; new follow-ups added for spike completion + backfill decision.
+- **[[party-rearch-dependency-map]]** — Phase-1 diagram InRisk arrow refined (3 tables; UUID v7 + int types; manual-create flow change; drop-in-replacement posture). Key Phase-1 changes list updated. Three new cross-cutting rows: widget-integration spike (gates Stories 3/4/5); TOBA-status filter parity; InRisk-side backfill decision.
+- **[[party-rearch-ownership-matrix]]** — InRisk workstream description updated. Action #22 (widget-mechanic brush-up) marked **resolved 2026-05-14** (current flow confirmed query-parameter-driven). Actions #21 + #23 marked **partial** (Thursday HL done; Stories 1 & 2 only at Tuesday low-level; Billy attended). **Three new actions** added (#29 widget-integration spike; #30 InRisk-side backfill policy; #31 TOBA-filter parity confirmation). Total open: 27 − 1 + 3 = **29**. Ownership-gaps refreshed: Andrew Tennant resolved → Andrew Turner; Anna / Marty / Amardeep notes added.
+- **[[party-rearch]]** — Pillar #4 ("InRisk does the minimum for Phase 1") extended with the ordering + gating + parity-not-enhancement framing. Source count 3 → 4.
+
+**New person stubs (4) — all on [[prebind-team]]**:
+
+- [[andrew-turner]] — Product Owner. **Resolves [[open-questions#OQ-030]]** ("Andrew Tennant"): per user, transcription drift; same person. The 2026-05-14 line "MR Andrew" is also him. Aliases on the page: `andrew-tennant`, `mr-andrew`.
+- [[jason-owen]] — Business Analyst. Only one of the four to make substantive MDM contributions (surfaced TOBA-status filter parity requirement; manual-record provenance question).
+- [[katarina-voskarova]] ("Kati") — Business Analyst. Peripheral on this source (Ajax-related workstream).
+- [[rastislav-sepelak]] ("Rasto") — Business Analyst. Peripheral on this source (Syndicate workstream).
+
+**Team page updated**: [[prebind-team]] — members table extended (2 POs, 2 TLs, 3 BAs known); claim added that division of PO remit between [[daria-romanovskaia]] and [[andrew-turner]] is not formally documented; source-history bumped.
+
+**Open-questions register**:
+
+- **[[open-questions#OQ-030]] resolved** → [[andrew-turner]] (PO, [[prebind-team]]); "Andrew Tennant" was a Pass-A transcription drift; "MR Andrew" (2026-05-14) is the same person.
+- **No new OQs** per user steer. The InRisk-side backfill question is tracked as a pending note on the affected pages, not as an OQ.
+- Source-history entry appended.
+- Open count: 33 − 1 = **32**; resolved count: 17 + 1 = **18**.
+
+**Index regenerated**: counts updated (4 sources · 24 people · prebind-team members refreshed · 32 open OQs / 18 resolved); new source listed under Sources; OQ-030 resolution noted on [[andrew-turner]]'s person entry; InRisk row updated with the new framing; status-line date moved to 2026-05-26.
+
+**Notes / things flagged but not done**:
+
+- **Amardeep Badhan** — single MC-style line, role/team unconfirmed. Mentioned by name on the source page only; no entity page; no OQ. Will revisit if surfaces again.
+- **TOBA (Terms of Business Agreement)** — captured on the source page and as parity-requirement context across [[inrisk]] / [[inrisk-architecture]] / [[inrisk-cuts-over-before-high-volume]] / [[party-rearch-dependency-map]], but **not given its own concept page**. Single-source mention; flag for a concept page when it appears again. Also fixed the "October status" transcription error per user direction — the raw transcript reads "October status" but the substance is TOBA.
+- **InRisk-side backfill** — captured as a Pending Phase-1 decision on [[party-rearch-phase-1]] + Pending/unknown on [[inrisk]] + [[party-application]] + ownership-matrix action #30 + dependency-map cross-cutting row. **Not** an OQ per user steer.
+- **"MR Andrew"** transcription drift documented as an alias on [[andrew-turner]] and on the source page only; not added to the open-questions resolved table (resolution is OQ-030 = Andrew Tennant).
+
+**Pages with breaking-change risk**: none — additive or refinement only; no wiki-link path rewrites required.
+
+**Incidental lint-fixes uncovered by the OQ-030 resolution**:
+
+- [[sources/20260422-meeting-transcript-session-1]] — two lines updated to remove "Andrew Tennant" from the "still pending" list and add him to the resolved list pointing at [[andrew-turner]].
+- [[eclipse]] — pre-existing bug discovered (independent of today's ingest): four references to `OQ-030` should have been `OQ-001` (the Eclipse retirement scope question; OQ-030 is the Andrew Tennant identification question). The bug pre-dated this ingest but was newly exposed because following `OQ-030` from [[eclipse]] would have landed readers on the resolved Andrew-Turner entry rather than the Eclipse scope conversation. All four refs corrected; one of them also extended with the OQ-004 pairing per the open-questions register.
+
+- touched (new, 5): [[sources/20260514-inrisk-high-level-refinement]], [[jason-owen]], [[andrew-turner]], [[katarina-voskarova]], [[rastislav-sepelak]].
+- touched (edited, 15): [[prebind-team]], [[open-questions]], [[inrisk]], [[inrisk-architecture]], [[inrisk-cuts-over-before-high-volume]], [[feature-tagging-moves-to-inrisk]], [[party-rearch-phase-1]], [[party-rearch-phase-1-summary]], [[party-rearch-ownership-matrix]], [[party-rearch-dependency-map]], [[party-rearch]], [[party-application]], [[party-application-architecture]], [[sources/20260422-meeting-transcript-session-1]], [[eclipse]], [[index]], [[log]] (this entry).
+
+## [2026-05-26] note | Amardeep Badhan promoted to a person entity (correction to today's ingest)
+
+Corrects the "Notes / things flagged but not done" bullet on the 2026-05-14 InRisk HL Refinement ingest entry above (line _"Amardeep Badhan — single MC-style line, role/team unconfirmed…"_). User-declared: [[amardeep-badhan]] is **Scrum Master on [[prebind-team]]**.
+
+- **New entity page**: [[amardeep-badhan]] — stub, source_count: 1, role recorded as PreBind Scrum Master and counterpart to [[sergiu-postolachi]] ([[graph-team]] SM) for the cross-team Party-MDM-Integration cadence.
+- [[prebind-team]] — members table extended to 8 (added SM row); claims + sources updated to reflect the addition.
+- [[sources/20260514-inrisk-high-level-refinement]] — author list extended; attendees line promotes Amardeep from "facilitator unconfirmed" to "PreBind Scrum Master, chaired the call"; transcription-artefacts bullet removed; "Entities mentioned" extended; "My notes" updated to "Five new PreBind people (BA × 3, PO × 1, SM × 1)" with a sentence on the SM-counterpart framing.
+- [[index]] — totals bumped (35 → 36 entities; 24 → 25 people); [[prebind-team]] summary updated to "8 known members (2 POs, 2 TLs, 1 SM, 3 BAs)"; new People row inserted between [[kris-mokrzycki]] and [[jason-owen]].
+- **No OQ activity.** No decisions revised. No architecture pages touched.
+
+- touched (new, 1): [[amardeep-badhan]].
+- touched (edited, 4): [[prebind-team]], [[sources/20260514-inrisk-high-level-refinement]], [[index]], [[log]] (this entry).
+
+## [2026-05-26] schema | Added §5.5 Person departure workflow + `departed:` / `succeeded_by:` person frontmatter + Past members team sub-table
+
+User-triggered by the [[andrew-turner]] → [[daria-romanovskaia]] PreBind-PO handover. Captured as a generic schema convention so future departures follow the same rules.
+
+**AGENTS.md edits**:
+
+- **§4 frontmatter spec** — added optional `departed: YYYY-MM-DD` and `succeeded_by: <person-slug>` fields for person pages.
+- **§4 page-type-specific sections** — extended the Person bullet to flag the new fields and the required `Departure` section; extended the Team bullet to add the optional `Past members` sub-table.
+- **§5.5 Person departure (handover to a successor)** — new workflow. Eight numbered steps codifying the historical-record-stays-verbatim / forward-looking-references-redirect rule. Covers entity-page frontmatter, successor claim, team `Past members` move, project / decision / app redirects, source-page inline footnotes, peripheral Related-list repoints, index annotation, and the log-append rule. Explicitly notes that future ingests inherit the convention automatically when a `departed:` field is set.
+
+**Why surface-level vs deep schema change**: the convention is additive — no existing pages were invalidated, no required fields changed, no folder layout changed. Departing people are an inevitable wiki event and the rule needed to exist before the first departure rather than be hand-rolled per incident.
+
+- touched (edited, 1): `AGENTS.md`.
+
+## [2026-05-26] note | Applied PreBind-PO handover: [[andrew-turner]] → [[daria-romanovskaia]]
+
+First exercise of the §5.5 departure convention. User-declared (no source page): [[daria-romanovskaia]] took over from [[andrew-turner]] as PreBind PO on 2026-05-26; Andrew leaves the organisation on 2026-05-29. All forward-looking references redirected to Daria; historical source-page references preserved verbatim with a small inline footnote.
+
+**Person & team pages**:
+
+- [[andrew-turner]] — frontmatter `departed: 2026-05-29` + `succeeded_by: daria-romanovskaia` added; new `## Departure` section right after Summary; Summary restated to past-tense PO; Open-questions section closed (the "Division of PO remit" question is resolved by the handover). Historical claims, aliases, and source references retained verbatim.
+- [[daria-romanovskaia]] — Summary restated to "sole Product Owner from 2026-05-26"; new Claim citing the user-declared handover; `## Sources` extended with [[sources/20260514-inrisk-high-level-refinement]] under a "not present at the call; inherits forward-looking PO responsibilities" framing; source_count 1 → 2; Open-questions section refreshed (added spike-scheduling question).
+- [[prebind-team]] — Members table split: active members (7 rows) + new `## Past members` sub-table (1 row: Andrew, departed 2026-05-29, succeeded by Daria). "Division of PO remit not formally documented" line removed (resolved). Claims refreshed with handover detail. Related list moved Andrew to a past-member line. Sources updated with a user-declared 2026-05-26 entry.
+
+**Forward-looking redirects** (Andrew → Daria, with first-mention attribution to Andrew preserved):
+
+- [[party-rearch-ownership-matrix]] — InRisk workstream Primary-owner cell; action #29 (widget-integration spike pairing). Ownership-gaps section refreshed. Source history appended with the 2026-05-26 user-declared entry.
+- [[party-rearch-dependency-map]] — Phase-1 narrative bullet on the InRisk 5-story epic; Widget-integration spike cross-cutting row.
+- [[party-rearch-phase-1]] — InRisk row in `## Scope — applications` (spike pairing list).
+- [[inrisk]] — opening paragraph of `### Phase-1 epic and stories` (spike pairing); Widget-integration spike paragraph.
+- [[inrisk-cuts-over-before-high-volume]] — Open-risks paragraph on the widget-integration spike; Sources line for the 2026-05-14 source.
+
+**Historical source-page footnotes** (preserve original text; append inline redirect):
+
+- [[sources/20260514-inrisk-high-level-refinement]] — attendees line, on first Andrew mention.
+- [[sources/20260422-meeting-transcript-session-1]] — pending-identification line where Andrew Tennant resolved.
+
+**Peripheral Related-lists repointed** (nav aids; Andrew → Daria):
+
+- [[amardeep-badhan]] — Relationships paragraph + Related line.
+- [[jason-owen]] · [[katarina-voskarova]] · [[rastislav-sepelak]] — Related lines.
+
+**Index**:
+
+- [[index]] — status-line annotated with the handover + AGENTS §5.5 addition. [[prebind-team]] summary line restated to 7 active + 1 past member. [[daria-romanovskaia]] row updated to sole PO (src 1→2). [[andrew-turner]] row annotated as departed.
+
+**Open-questions register**:
+
+- No new OQs. The "Division of PO remit" question (carried implicitly on [[andrew-turner]]) is resolved by the handover, not by source evidence — no formal OQ-NNN was ever opened for it (it was a wiki-internal note), so no Resolved-table row added.
+
+**Deliberately not touched**:
+
+- Older claim "PO on [[prebind-team]] — user-declared (2026-05-26)" on [[andrew-turner]] stayed verbatim. The departure is additive context.
+- `wiki/sources/20260514-inrisk-high-level-refinement.md` action-table row (line 83) listing Andrew Turner on the spike pairing — kept as the historical record of who was named at the time; the redirect is captured at the attendee-line footnote and on the project-scoped pages.
+- All `## Claims` and `## Sources` sections on Andrew Turner's peers — those are historical evidence, not forward-looking nav.
+
+- touched (new, 0).
+- touched (edited, 15): `AGENTS.md` (separate `schema` entry above), [[andrew-turner]], [[daria-romanovskaia]], [[prebind-team]], [[party-rearch-ownership-matrix]], [[party-rearch-dependency-map]], [[party-rearch-phase-1]], [[inrisk]], [[inrisk-cuts-over-before-high-volume]], [[sources/20260514-inrisk-high-level-refinement]], [[sources/20260422-meeting-transcript-session-1]], [[amardeep-badhan]], [[jason-owen]], [[katarina-voskarova]], [[rastislav-sepelak]], [[open-questions]] (OQ-030 row annotated with the redirect note), [[index]], [[log]] (this entry).

@@ -2,12 +2,12 @@
 type: analysis
 title: party-rearch Phase 1 — Summary & Applications-Affected
 created: 2026-04-22
-updated: 2026-05-18
+updated: 2026-05-26
 tags: [analysis, summary, phase-1]
 project: party-rearch
 phase: [phase-1]
-sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up]
-source_count: 3
+sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up, 20260514-inrisk-high-level-refinement]
+source_count: 4
 status: draft
 ---
 
@@ -35,7 +35,7 @@ Synthesised from the [[party-rearch]] project overview, the [[party-rearch-phase
 |---|---|---|
 | [[party-application]] | **high** — core subject | Neo4j Knowledge Graph retires as primary datastore; DynamoDB + OpenSearch stood up on existing 3-account / 4-env AWS estate; proxy-event strangler in place; bulk-migration CLI delivered by [[graph-team]] ([[bulk-migrations-owned-by-mdm-phase-1]]); **two widget component libraries** published — Chakra-3-with-design-system for [[party-curation-tool]] and design-system-agnostic for [[inrisk]] ([[inrisk-cuts-over-before-high-volume]]) |
 | [[party-curation-tool]] | **high** — co-ships | Next.js UI on the new MDM; single-flag coupled rollout with the search widget; Jira workflow retired live (no dual-running); no audit backfill; consumes the Chakra-3 + design-system widget |
-| [[inrisk]] | **high** _(raised from "medium" 2026-05-13)_ — Party MDM Integration epic | Concrete epic of 4–5 stories: (1) remove manual client-creation on new requirement → widget; (2) backwards-compatible data-model addition on existing client + broker tables (party-ID + version-ID); (3) client-widget integration, feature-flagged; (4) broker-widget integration, feature-flagged; (5) party-tagging integration. **Party tagging in scope; feature tagging out** (old backend stays alive past cutover). SDK-style widget integration via Joe's design-system-agnostic library. InRisk's cutover lands ≥ 2 weeks before HV. |
+| [[inrisk]] | **high** _(raised from "medium" 2026-05-13; story-ordered + gated 2026-05-14)_ — Party MDM Integration epic | Concrete epic of 5 stories; **Stories 1 & 2 ready for low level (2026-05-19); Stories 3/4/5 gated on widget-integration spike**: (1) remove manual client-creation on new requirement → widget — foundational "demon" cleared; (2) data-model migration — `party_id` (UUID v7) + `version_id` (int) added to **party + broker + party_snapshot** tables (three tables, not two — third confirmed 2026-05-14); (3/4/5) client / broker / party-tagging widget integration, feature-flagged. **Party tagging in scope; feature tagging out** (old backend stays alive past cutover). SDK-style widget integration via Joe's design-system-agnostic library, on **parity-not-enhancement** posture (drop-in replacement now, enhancement later). InRisk's cutover lands ≥ 2 weeks before HV. |
 | [[inrisk-engine]] | **none** — out of scope | Explicitly scoped out of Phase 1: targets the **final-state** Party contract, not the interim. Phase-1 work should not design for it. |
 | [[high-volume]] | **integration only** | Consumes MDM via the new versioned-reference API at the 1-Sep gate, **after** the InRisk-first cutover window. API-only via Boomi; no widget. Integration shape still being specified ([[open-questions#OQ-013]]) |
 | [[eclipse]] | **scope call** | Ongoing ingestion into [[party-application]] under review ([[open-questions#OQ-001]]) |
@@ -84,7 +84,9 @@ Drawn from [[open-questions]] (filter `project: party-rearch`, `phase: phase-1`)
 - When [[open-questions#OQ-002]] is resolved, update the [[data-universe]] / [[inrisk]] proxy-event framing on this page and on [[party-rearch-phase-1]] in lockstep.
 - When [[open-questions#OQ-035]] is resolved (concrete InRisk cutover date set), update both the Outer/Inner gate framing on this page and on [[party-rearch-phase-1]].
 - Revisit **Confidence** after the Graph-API consumer audit ([[open-questions#OQ-004]]) lands — that spike may materially change the [[party-application]] row by re-scoping decommissioning.
-- After Thursday's high-level (2026-05-14) and Tuesday's low-level (2026-05-19), revisit the InRisk row to reflect any story-shape changes.
+- ~~After Thursday's high-level (2026-05-14) and Tuesday's low-level (2026-05-19), revisit the InRisk row to reflect any story-shape changes.~~ **Done 2026-05-14**: epic ordered and gated; updated above. Tuesday 2026-05-19 low-level only covers Stories 1 & 2 (Stories 3/4/5 wait on widget-integration spike).
+- When the widget-integration spike completes (timing TBC at ad-hoc HL on 2026-05-15), revisit the InRisk row + [[inrisk-cuts-over-before-high-volume]]'s Open Risks section to reflect resolved widget mechanics + response-shape.
+- When the **InRisk-side backfill** decision lands (backfill old client / broker / party-snapshot rows with MDM IDs vs null + go-forward) — note that decision on [[inrisk]], [[party-application]], and here. Sanctions impact is the main consideration.
 
 ## Related
 - [[party-rearch-phase-1]] — canonical Phase-1 page (full scope table, done-state, predecessors/successors).
@@ -97,3 +99,4 @@ Drawn from [[open-questions]] (filter `project: party-rearch`, `phase: phase-1`)
 - [[sources/20260422-meeting-transcript-session-1]] — Phase-1 scope calls (no-backfill; feature-tagging deferred; bulk-migration CLI; MDM-squad-shape tension).
 - [[sources/20260422-meeting-transcript-session-2]] — strangler pattern, PCT co-delivery, InRisk interim changes, D&B and UUID decisions.
 - [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] — InRisk-first cutover sequence; concrete Party MDM Integration epic (4–5 stories); two component-libraries call; party-tagging vs feature-tagging boundary; sanctions / NTT / Boomi flagged.
+- [[sources/20260514-inrisk-high-level-refinement]] — InRisk epic ordered + gated (Stories 1 & 2 ready; 3/4/5 spike-gated); data-model story expanded to three tables (+ party_snapshot); parity-not-enhancement widget posture; TOBA-status filter parity; InRisk-side backfill question raised.

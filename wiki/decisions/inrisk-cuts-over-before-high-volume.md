@@ -2,12 +2,12 @@
 type: decision
 title: InRisk cuts over to MDM before High Volume's 1 Sep go-live
 created: 2026-05-18
-updated: 2026-05-18
+updated: 2026-05-26
 tags: [decision, cutover, sequencing, widget, design-system]
 application: [inrisk, party-application, high-volume, party-curation-tool]
 owner: tech-tooling
-sources: [20260513-inrisk-integration-with-party-mdm-follow-up]
-source_count: 1
+sources: [20260513-inrisk-integration-with-party-mdm-follow-up, 20260514-inrisk-high-level-refinement]
+source_count: 2
 status: accepted
 project: party-rearch
 phase: [phase-1]
@@ -64,7 +64,9 @@ These two threads — the cutover sequencing and the styling-stack call — are 
 
 **B: Option 3 — two component libraries.** [[joe-worsfold]] publishes a **second, design-system-agnostic component library** for [[inrisk]] to consume; the Chakra-3-with-design-system widget remains in place for [[party-curation-tool]] / [[dataops-team]]. Joe to manage the two libraries in parallel — explicitly accepted as the easier of the available trade-offs.
 
-This ADR therefore covers both: (a) the cutover sequencing across Phase 1's three production consumers (InRisk, then HV; PCT co-ships with MDM under [[pct-and-mdm-go-live-together]]), and (b) the styling-stack call that makes the [[inrisk]] cutover achievable inside the buffer window.
+**B (refined 2026-05-14): parity-not-enhancement principle.** The InRisk-side widget on the second library is committed to **drop-in replacement** of today's behaviour — same auth / RBAC / session flow, same look-and-feel, same filter parameters (including **TOBA status** for brokers — [[jason-owen]] surfaced this in-call). UX enhancements are explicitly deferred to a separate change, post-cutover. Joe rolled back his original "modern and different" vision in front of the wider InRisk audience: _"my original scope was don't affect in-risk too much, so I just went crazy and was like, no, I want it to be really modern and different, but, yeah, we can roll it back a bit until that."_ [[john-trahearn]]: _"For as much as possible, it's going to be a drop-in replacement for now, and then should we need to change things in the future, that'll be something that comes separately."_ This sharpens part B of the ADR from a styling-stack choice into a full posture on the InRisk widget surface.
+
+This ADR therefore covers: (a) the cutover sequencing across Phase 1's three production consumers (InRisk, then HV; PCT co-ships with MDM under [[pct-and-mdm-go-live-together]]); (b) the styling-stack call (two component libraries); and (c) (refined 2026-05-14) the parity-not-enhancement posture for the InRisk widget itself, capping its Phase-1 surface area to what's needed for drop-in replacement.
 
 ## Consequences
 
@@ -82,8 +84,9 @@ This ADR therefore covers both: (a) the cutover sequencing across Phase 1's thre
 
 ### Open risks
 - **The concrete InRisk cutover date is not fixed in this ADR** — only the buffer rule ("≥ 2 weeks before 1 Sep, minimum"). Confirming the date is open at [[open-questions#OQ-035]]. Slip propagates to HV's cutover quality.
-- **[[inrisk]]'s existing widget integration mechanic is not fully understood.** Today's flow appears to use query parameters; the new flow is SDK-style (instantiate MDM SDK, pass methods / hooks to components). [[john-trahearn]] to brush up before Thursday's high-level; [[billy-calladine]] to attend as the local expert on InRisk's existing widget integration. Tracked on [[party-rearch-ownership-matrix]].
-- **Widget response-shape alignment is open** — Sergiu raised in-call: will the new widget's response give InRisk every field it needs, given OpenSearch indexes differently than Dynamo storage? Joe expects to adjust as integration starts; tracked at [[open-questions#OQ-036]].
+- **[[inrisk]]'s existing widget integration mechanic** is confirmed as **query-parameter-driven** today (2026-05-14); the new flow is SDK-style (instantiate MDM SDK, pass methods / hooks to components). The full mechanic-alignment / response-shape question is **gated on a widget-integration spike** between [[joe-worsfold]] + [[billy-calladine]] (ex-Striker) + [[alex-sillars]] + [[daria-romanovskaia]] (PreBind-PO slot inherited from [[andrew-turner]] on his 2026-05-29 departure) before Stories 3/4/5 of the Party MDM Integration epic can take low level. Spike timing to be confirmed at the ad-hoc HL on 2026-05-15. Tracked on [[party-rearch-ownership-matrix]].
+- **Widget response-shape alignment is open** — Sergiu raised at the 2026-05-13 follow-up: will the new widget's response give InRisk every field it needs, given OpenSearch indexes differently than Dynamo storage? The spike above is the resolution path; Joe expects to adjust the response shape as integration starts. Tracked at [[open-questions#OQ-036]].
+- **Parity must include current widget filter parameters** (refined 2026-05-14) — particularly **TOBA status** for the Lloyd's-vs-retail broker workflow split. If the new widget loses filter parameters that today's widget supports, parity is breached and either rework lands inside the cutover window or InRisk has to compensate in application code. [[jason-owen]] surfaced this in-call; commit to feature parity logged by [[joe-worsfold]].
 
 ## Relationship to other decisions
 
@@ -110,3 +113,4 @@ This ADR therefore covers both: (a) the cutover sequencing across Phase 1's thre
 
 ## Sources
 - [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] — the meeting where both halves of this decision were made.
+- [[sources/20260514-inrisk-high-level-refinement]] — wider-audience reinforcement; parity-not-enhancement principle for the InRisk widget; TOBA-status filter as a parity requirement; widget-integration spike scoped (Joe + Billy + Alex + [[andrew-turner]] — PreBind-PO slot now [[daria-romanovskaia]] following 2026-05-29 handover) as the gate on Stories 3/4/5.

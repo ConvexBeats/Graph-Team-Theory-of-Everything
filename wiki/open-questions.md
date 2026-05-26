@@ -2,10 +2,10 @@
 type: analysis
 title: Open Questions Register
 created: 2026-04-22
-updated: 2026-05-18
+updated: 2026-05-26
 tags: [analysis, standing, open-questions]
-sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up]
-source_count: 3
+sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up, 20260514-inrisk-high-level-refinement]
+source_count: 4
 status: draft
 ---
 
@@ -76,7 +76,6 @@ A standing register of unresolved questions raised across the programme. One row
 | OQ-027 | party-rearch | **Michael Hay** — stakeholder in feature-tagging functionality. Team and scope of stakeholder role still TBD. | [[sources/20260422-meeting-transcript-session-1]] | [[rory-beattie]] | open |
 | OQ-028 | party-rearch | **Kartik** — name-only mention in Session 1; context thin. | [[sources/20260422-meeting-transcript-session-1]] | [[rory-beattie]] | open |
 | OQ-029 | party-rearch | **Jenny / Ginny** — name-only mention in Session 1; GraphQL-endpoint context. | [[sources/20260422-meeting-transcript-session-1]] | [[rory-beattie]] | open |
-| OQ-030 | party-rearch | **Andrew Tennant** — name-only mention in Session 1; acting head for MRS team, on leave. | [[sources/20260422-meeting-transcript-session-1]] | [[rory-beattie]] | open |
 | OQ-033 | party-rearch | **Anna** — first-name-only reference in 2026-05-13 follow-up; UX / product lead working on an alternative party UX. [[rory-beattie]] to speak to Anna ahead of cutover to warm users to the UX change. Team and surname TBD. | [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] | [[rory-beattie]] | open |
 | OQ-034 | party-rearch | **Marty** — first-name-only reference in 2026-05-13 follow-up; sanctions / [[inrisk]] / Boomi-adjacent figure referenced by [[joe-worsfold]] (_"Marty has so much information about in-risk stuff"_). Likely a stakeholder in the [[sanctions-processing]] context. Team and surname TBD. | [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] | [[rory-beattie]] | open |
 ### ADR candidates (deferred)
@@ -114,6 +113,7 @@ Historical items — resolved before the register formally existed, captured her
 | OQ-010 | party-rearch | Knowledge Graph owner and future | **Not a separate application** — the "Knowledge Graph" is a **Neo4j instance internal to [[party-application]]**, acting as the primary datastore in the current state. It is replaced by DynamoDB + OpenSearch in the target state. Removed from the data-distribution bucket on [[party-rearch-dependency-map]] and [[contract-buckets]]. | 2026-04-22 | user correction, lint pass |
 | OQ-031 | party-rearch | PreBind Product Owner identity | **Daria Romanovskaia** — Product Owner on [[prebind-team]]. See [[daria-romanovskaia]]. | 2026-04-22 | user correction, lint pass |
 | OQ-005 | party-rearch | Chakra V2 vs V3 widget strategy — V2, minimal-render, or V3-only-when-InRisk-upgrades? Settled by an InRisk-in-the-room workshop. | **Two component libraries from [[joe-worsfold]]**: a Chakra-3-with-design-system widget for [[party-curation-tool]] / [[dataops-team]], and a **design-system-agnostic component library** for [[inrisk]] matched to InRisk's current look. InRisk does **not** absorb Chakra 3 + design-system migration under the September gate. [[high-volume]] is unaffected (API-only). Joe explicitly accepted maintaining the two libraries in parallel as the easier of the available trade-offs. Captured in [[inrisk-cuts-over-before-high-volume]]. | 2026-05-13 | [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] |
+| OQ-030 | party-rearch | **Andrew Tennant** — name-only mention in Session 1; acting head for MRS team, on leave. | **[[andrew-turner]] — Product Owner on [[prebind-team]]**. "Andrew Tennant" was a Pass-A transcription drift; the same person appeared on 2026-05-14 running the wider InRisk High Level, and also as "MR Andrew" in a 2026-05-14 transcription line — both resolve to the same person. _Note (2026-05-26 follow-up): [[andrew-turner]] departs 2026-05-29 and is succeeded by [[daria-romanovskaia]]; forward-looking references redirect per [[AGENTS|§5.5]]._ | 2026-05-26 | [[sources/20260514-inrisk-high-level-refinement]] + user confirmation |
 
 ---
 
@@ -135,3 +135,4 @@ Historical items — resolved before the register formally existed, captured her
 - 2026-04-22 — Session 1 Pass B: register created; seeded with 31 open questions (Session 1 + Session 2 carryover) and 14 resolved entries from the pre-register triage.
 - 2026-04-22 — lint pass: **OQ-010** (Knowledge Graph) resolved — reclassified as internal Neo4j datastore inside [[party-application]]. **OQ-031** (PreBind PO) resolved — [[daria-romanovskaia]]. Open-question count now 29; resolved count now 16.
 - 2026-05-18 — [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] ingest: **OQ-005** (Chakra V2/V3) resolved → two component libraries from Joe; closed by [[inrisk-cuts-over-before-high-volume]]. **OQ-008** (end-state sanctions flow) sharpened with the "wrong place" framing and pairing to the new OQ-032 location question. **OQ-019** (feature-tagging migration timing) advanced with Suzy's static-list investigation and the InRisk-classifications-style target shape. **5 new OQs added**: OQ-032 (sanctions-domain location), OQ-035 (concrete InRisk MDM-cutover date), OQ-036 (widget-response field alignment), OQ-033 (Anna identification), OQ-034 (Marty identification). Open count: 29 − 1 (OQ-005 resolved) + 5 (new) = **33 open**; resolved count now **17**.
+- 2026-05-26 — [[sources/20260514-inrisk-high-level-refinement]] ingest: **OQ-030** (Andrew Tennant identification) resolved → [[andrew-turner]] (PO, [[prebind-team]]); user-confirmed that "Andrew Tennant" was a Pass-A transcription drift and "MR Andrew" (2026-05-14) is the same person. **OQ-036** (widget-response field alignment) reinforced — the planned spike between Joe + Billy + Alex + Andrew Turner is the resolution path. No new OQs added (per user steer; InRisk-side backfill of new ID columns captured as a pending note on [[inrisk]], [[party-application]], [[party-rearch-phase-1]] rather than as a formal OQ). Open count: 33 − 1 (OQ-030 resolved) = **32 open**; resolved count now **18**.

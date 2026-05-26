@@ -2,11 +2,11 @@
 type: analysis
 title: Party Re-Architecture — Dependency Map
 created: 2026-04-22
-updated: 2026-05-18
+updated: 2026-05-26
 tags: [analysis, standing, dependencies]
 project: party-rearch
-sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up]
-source_count: 3
+sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up, 20260514-inrisk-high-level-refinement]
+source_count: 4
 status: draft
 ---
 
@@ -75,9 +75,10 @@ Notable quirks:
       │         └── see [[strangle-the-graph-via-proxy-events]]
       │
       ├─── (R, ID+version)  ────►  [[inrisk]] (IR2)      [Phase 1 — InRisk-side changes required, cuts over ≥ 2 weeks before HV]
-      │         ├── InRisk stores Party ID + version on existing client + broker tables (additive)
+      │         ├── InRisk stores Party ID (UUID v7) + version (int) on existing party + broker + party_snapshot tables (additive, 3 independent tables)
       │         ├── Outgoing InRisk messages include Party ID
-      │         ├── Widget integration via Joe's design-system-agnostic component library (SDK-style)
+      │         ├── Widget integration via Joe's design-system-agnostic component library (SDK-style; drop-in replacement / parity-not-enhancement)
+      │         ├── Manual client creation on new-requirement flow moves to the widget (Story 1; foundational "demon" cleared)
       │         └── Broker retrieval moves to direct-from-InRisk (URD path removed)
       │
       ├─── (R, API via Boomi)  ────►  [[high-volume]]     [Phase 1 — switches on at 1 Sep gate, after InRisk cutover]
@@ -99,9 +100,9 @@ Graph DB — read-only during stabilisation; brief dual-write from MDM for cutov
 
 Key Phase-1 changes:
 - **DU sees no change** on cutover — proxy events in Graph shape.
-- **InRisk gets a concrete 4–5-story epic** (Party MDM Integration): tech-debt clear, additive data-model change on existing client + broker tables, client + broker widget integration (feature-flagged), party-tagging integration. Now sized as a full deliverable in its own right that lands ≥ 2 weeks before HV ([[inrisk-cuts-over-before-high-volume]]).
-- **Party-tagging in scope; feature-tagging out** — party-tagging gets a Phase-1 story; the feature-tagging Postgres table + widget stay alive past cutover unchanged so [[inrisk]] keeps pulling its static list ([[feature-tagging-moves-to-inrisk]] refined 2026-05-13).
-- **Two widget component libraries** — Joe publishes a design-system-agnostic library for [[inrisk]] alongside the Chakra-3 + design-system widget for [[party-curation-tool]] / [[dataops-team]]. HV doesn't use a widget. Closes [[open-questions#OQ-005]].
+- **InRisk gets a concrete 5-story epic** (Party MDM Integration), **ordered + gated 2026-05-14**: Stories 1 (manual-client-creation cleanup, foundational) and 2 (additive data-model change on 3 tables: party + broker + party_snapshot) ready for low level immediately; Stories 3/4/5 (client / broker / party-tagging widget integration, feature-flagged) gated on a widget-integration spike (Joe + Billy + Alex + [[daria-romanovskaia]] — slot inherited from [[andrew-turner]] on his 2026-05-29 departure). Now sized as a full deliverable in its own right that lands ≥ 2 weeks before HV ([[inrisk-cuts-over-before-high-volume]]).
+- **Party-tagging in scope; feature-tagging out** — party-tagging gets a Phase-1 story; the feature-tagging Postgres table + widget stay alive past cutover unchanged so [[inrisk]] keeps pulling its static list ([[feature-tagging-moves-to-inrisk]] refined 2026-05-13; reinforced 2026-05-14).
+- **Two widget component libraries** — Joe publishes a design-system-agnostic library for [[inrisk]] alongside the Chakra-3 + design-system widget for [[party-curation-tool]] / [[dataops-team]]. HV doesn't use a widget. Closes [[open-questions#OQ-005]]. **Drop-in-replacement / parity-not-enhancement posture for the InRisk widget** (refined 2026-05-14) — same auth / RBAC / session / look-and-feel / filter parameters (incl. **TOBA status**); UX improvements deferred.
 - **HV** integrates via Boomi API — widget question does not block HV; switches on at 1 Sep after InRisk-first cutover window.
 - **Sanctions / Boomi orchestration unchanged in Phase 1** — proxy events drive Boomi just as Graph events did; the "wrong place" rework is Phase 2+ ([[open-questions#OQ-032]]).
 - **Cutover-window dual-write to old graph** for revertability — refinement of [[strangle-the-graph-via-proxy-events]]; not a contradiction of "no dual sources of truth".
@@ -151,8 +152,11 @@ Key Phase-1 changes:
 | HV Party-integration shape | [[tech-tooling]] ([[rory-beattie]]) · [[graph-team]] | [[high-volume-team]] ([[simon-hulbert]]) | 1 | 1 Sep is fixed; HV switches on **after** InRisk-first cutover window per [[inrisk-cuts-over-before-high-volume]] |
 | InRisk-cutover sequencing | [[graph-team]] · [[prebind-team]] | [[high-volume-team]] | 1 | InRisk lands on MDM ≥ 2 weeks before 1 Sep; HV consumes only after that buffer. [[inrisk-cuts-over-before-high-volume]]; concrete date [[open-questions#OQ-035]] |
 | ~~Chakra V2/V3 widget decision~~ | ~~[[graph-team]] · [[tech-tooling]]~~ | ~~[[prebind-team]]~~ | ~~1~~ | **Resolved 2026-05-13**: two component libraries — Chakra-3 + design-system for PCT, design-system-agnostic for InRisk. See [[inrisk-cuts-over-before-high-volume]] |
-| Joe's design-system-agnostic component library for InRisk | [[graph-team]] ([[joe-worsfold]]) | [[prebind-team]] | 1 | New 2026-05-13; underpins InRisk's widget stories |
-| Widget-response field alignment (MDM ↔ InRisk consumer needs) | [[graph-team]] ([[joe-worsfold]]) | [[prebind-team]] ([[sergiu-postolachi]] raised) | 1 | OpenSearch indexed differently than Dynamo storage; iterate as integration starts. [[open-questions#OQ-036]] |
+| Joe's design-system-agnostic component library for InRisk | [[graph-team]] ([[joe-worsfold]]) | [[prebind-team]] | 1 | New 2026-05-13; underpins InRisk's widget stories. Posture refined 2026-05-14: parity-not-enhancement; drop-in replacement on the widget itself |
+| Widget-integration spike (pre-low-level for Stories 3/4/5) | [[graph-team]] ([[joe-worsfold]], [[billy-calladine]]) + [[graph-team]] ([[alex-sillars]]) | [[prebind-team]] ([[daria-romanovskaia]] — took over from [[andrew-turner]] 2026-05-29) | 1 | New 2026-05-14. Bottom out SDK posture, OpenSearch/Dynamo response shape, integration mechanic. Timing TBC at ad-hoc HL 2026-05-15. PreBind PO slot redirected 2026-05-26 |
+| Widget-response field alignment (MDM ↔ InRisk consumer needs) | [[graph-team]] ([[joe-worsfold]]) | [[prebind-team]] ([[sergiu-postolachi]] raised) | 1 | OpenSearch indexed differently than Dynamo storage; iterate as integration starts. Spike (above) is the resolution path. [[open-questions#OQ-036]] |
+| TOBA-status filter parity in new widget | [[graph-team]] ([[joe-worsfold]]) | [[prebind-team]] ([[jason-owen]] raised) | 1 | New 2026-05-14. Current widget filters by TOBA status (1984-approved / 1987-approved cohorts) for the Lloyd's-vs-retail broker split; new widget must do the same. Feeds [[inrisk-cuts-over-before-high-volume]] parity refinement |
+| InRisk-side backfill of new ID columns (decide before Story 2 low-level) | [[graph-team]] ([[joe-worsfold]]) | [[prebind-team]] ([[john-trahearn]]) | 1 | New 2026-05-14. Backfill old client / broker / party-snapshot rows with MDM IDs, or null + go-forward from cutover? Sanctions is the principal impact surface. Not formalised as an OQ |
 | Sanctions-domain ownership rework (off Boomi) | [[tech-tooling]] ([[rory-beattie]] · [[suzanna-whitefield]]) | [[andrea-read]] (escalation), then unassigned | 2+ | Audit pressure this year; group consensus on wrong place. [[sanctions-processing]] · [[ntt]] · [[open-questions#OQ-032]] |
 | PCT rollout sponsor / business-case messaging | [[tech-tooling]] ([[will-bone]]) | [[data-quality-team]] ([[hugh-lobban]]) → [[dataops-team]] | 1 | Sponsor-level framing for the curator-facing change |
 | Final-state Party contract definition | [[graph-team]] | [[devx-team]] ([[antonie-labuschagne]]) for [[inrisk-engine]] | End-state | DevX consumes final-state; not interim |
@@ -174,3 +178,4 @@ Key Phase-1 changes:
 - 2026-04-22 — [[sources/20260422-meeting-transcript-session-1]] — added contract-buckets scaffolding; named Eclipse retirement, broker-variant event, spine-rewrite behaviour; explicit Phase-1 scope notes on backfill, feature-tagging, coupled rollout, bulk-migration CLI; end-state notes on broker-UID retirement, feature-tagging handover, S&P API; new cross-cutting rows for Graph-API audit spike, D&B scheduled refresh, S&P end-state
 - 2026-04-22 — lint pass — **Knowledge Graph reclassified** as the internal Neo4j datastore inside [[party-application]]; no longer a separate data-distribution consumer on this map. Also added [[data-universe]] as the explicit platform owned by [[analytics-team]]; added [[eclipse]] as an application stub consumed by [[inrisk]].
 - 2026-05-18 — [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] — sanctions / Boomi / [[ntt]] expanded on the current-state diagram (orchestration flagged as wrong place); Phase-1 diagram updated to reflect InRisk-first cutover sequencing, two-component-libraries widget split, sanctions flow unchanged, additive client+broker table data model, cutover-window dual-write nuance; cross-cutting rows added for cutover sequencing, Joe's second component library, widget-response field alignment, and sanctions-domain ownership; Chakra V2/V3 row marked resolved; feature-tagging row note updated with the refined ADR framing.
+- 2026-05-26 — [[sources/20260514-inrisk-high-level-refinement]] — Phase-1 diagram updated: data-model story specifies 3 tables (party + broker + party_snapshot) with UUID v7 + integer types; manual-client-creation cleanup added as a Phase-1 InRisk arrow; widget posture annotated as drop-in-replacement / parity-not-enhancement. Key Phase-1 changes list updated to reflect 5-story epic ordering + gating + parity posture. Cross-cutting rows added for: widget-integration spike (gates Stories 3/4/5); TOBA-status filter parity; InRisk-side backfill decision. Joe's-library row note refined with parity posture.

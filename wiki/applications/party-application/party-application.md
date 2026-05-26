@@ -3,12 +3,12 @@ type: application
 title: Party Application
 aliases: [graph, party-mdm, mdm]
 created: 2026-04-22
-updated: 2026-05-18
+updated: 2026-05-26
 tags: [application, in-scope, core]
 owner: graph-team
 state: current
-sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up]
-source_count: 3
+sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up, 20260514-inrisk-high-level-refinement]
+source_count: 4
 status: draft
 projects: [party-rearch]
 ---
@@ -48,9 +48,9 @@ Provide version-controlled party records to every application that needs to disp
 - **Owner**: [[graph-team]] (unchanged)
 - **Tech stack**: **DynamoDB** (party records, views, cache of D&B data) + **OpenSearch** (discoverability, fuzzy matching)
 - **Cloud estate (Phase-1 confirmation, 2026-05-13)**: MDM runs on the **existing 3-account × 4-environment AWS estate** (not AWS 2.0 — Joe would have preferred AWS 2.0 but it's not ready). Removes a potential cross-account integration unknown for [[inrisk]]'s Phase-1 work.
-- **Widget surface — two component libraries (2026-05-13)**:
+- **Widget surface — two component libraries (2026-05-13; parity posture confirmed 2026-05-14)**:
   - The **Chakra-3-with-design-system widget** Joe has already published — consumed by [[party-curation-tool]] / [[dataops-team]].
-  - A second, **design-system-agnostic component library** matched to [[inrisk]]'s current look — to be published by [[joe-worsfold]] for [[inrisk]] to consume. See [[inrisk-cuts-over-before-high-volume]] for the rationale.
+  - A second, **design-system-agnostic component library** matched to [[inrisk]]'s current look — to be published by [[joe-worsfold]] for [[inrisk]] to consume. **Drop-in-replacement / parity-not-enhancement** on this library (refinement 2026-05-14): same auth / RBAC / session flow as InRisk's current widget, same filter parameters (incl. **TOBA status** for the Lloyd's-vs-retail broker workflow), same look-and-feel. UX improvements deferred to a separate change post-cutover. See [[inrisk-cuts-over-before-high-volume]] for the rationale.
   - [[high-volume]] doesn't use a widget — API-only via Boomi.
 - **Integration shape**: consumers receive a **party ID + version**; they call back near-real-time with any of:
   - `get by ID + version` — pinned snapshot
@@ -114,7 +114,9 @@ All Party-Application-facing open items are tracked in [[open-questions]]:
 - [[open-questions#OQ-018]] — final-state Party contract specification.
 - [[open-questions#OQ-032]] — sanctions-domain location (orchestration off Boomi). New 2026-05-13.
 - [[open-questions#OQ-035]] — concrete InRisk MDM-cutover date (≥ 2 weeks before 1 Sep).
-- [[open-questions#OQ-036]] — widget-response field alignment (Sergiu's question).
+- [[open-questions#OQ-036]] — widget-response field alignment (Sergiu's question); widget-integration spike is the resolution path.
+
+**Pending decision (not an OQ per user steer, flagged 2026-05-14)** — _InRisk-side backfill of MDM ID columns on existing client / broker / party-snapshot rows_. Story 2 of the InRisk Phase-1 epic adds `party_id` (UUID v7) + `version_id` (int) to three InRisk tables. For pre-cutover rows: backfill with known MDM party-IDs, or null + go-forward from cutover? Mirror of [[no-historic-client-backfill-into-mdm]] on the consumer side; sanctions is the principal impact surface. Owners: [[joe-worsfold]] · [[john-trahearn]]; to be decided ahead of Story 2 low-level (2026-05-19). Tracked also on [[inrisk]] and [[party-rearch-phase-1]].
 
 ## Related decisions
 - [[strangle-the-graph-via-proxy-events]] (refined 2026-05-13 with cutover-window dual-write nuance)
@@ -144,3 +146,4 @@ All Party-Application-facing open items are tracked in [[open-questions]]:
 - [[sources/20260422-meeting-transcript-session-1]] — morning; three-bucket contract framing, strangler invention, Eclipse retirement, feature-tagging scope, bulk-migration shape, team-size tension
 - [[sources/20260422-meeting-transcript-session-2]] — afternoon; consolidation and promotion of ADRs
 - [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] — cutover-window dual-write nuance; AWS estate confirmation; two-library widget call; sanctions / Boomi / NTT framing; party-tagging vs feature-tagging boundary
+- [[sources/20260514-inrisk-high-level-refinement]] — InRisk widget posture refined to drop-in-replacement / parity-not-enhancement; TOBA-status filter parity surfaced; InRisk-side backfill question raised at the Party side

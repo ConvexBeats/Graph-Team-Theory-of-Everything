@@ -3,13 +3,13 @@ type: project
 title: Party Application Re-Architecture (party-rearch)
 aliases: [party-rearc, party-mdm-rearch, party-application-rearch]
 created: 2026-04-22
-updated: 2026-05-18
+updated: 2026-05-26
 tags: [project]
 slug: party-rearch
 status: in-flight
 applications: [party-application, party-curation-tool, inrisk, inrisk-engine, high-volume, eclipse]
-sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up]
-source_count: 3
+sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up, 20260514-inrisk-high-level-refinement]
+source_count: 4
 ---
 
 # Party Application Re-Architecture
@@ -39,7 +39,7 @@ The re-architecture is explicitly *interim-first*: it ships a Phase 1 that makes
 1. **Strangle the graph via proxy events** — [[strangle-the-graph-via-proxy-events]]. Sources of truth stay single (MDM); during the cutover window MDM dual-writes to the old graph for revertability (refinement 2026-05-13, not a contradiction). **Invented in Session 1's DU-events segment**; consolidated in Session 2 with Ben Joseph's bidirectional-mappability criterion.
 2. **PCT + MDM ship together** — [[pct-and-mdm-go-live-together]]. Dropping PCT would need a messy interim curation path; the value of the re-architecture is partly the UX. Operationally: **one feature flag** switches both the search widget and the PCT UI in a single cutover event.
 3. **InRisk cuts over before HV** — [[inrisk-cuts-over-before-high-volume]] (new 2026-05-13). InRisk's MDM-integration is a deliverable in its own right that lands **≥ 2 weeks before** [[high-volume]]'s 1-Sep go-live; HV switches on only after real production traffic has exercised the new contract. Phase 1's critical path now narrows around an **inner gate** at mid-August.
-4. **InRisk does the minimum for Phase 1** — concrete Party MDM Integration epic of 4–5 stories ([[inrisk]]). Backwards-compatible data-model addition; no rewrite. That's [[inrisk-engine]]'s job, on a different clock. Crucially, InRisk _wants_ the change — the Tech Leads have flagged the interim path as simplifying their own model, which is the precondition that makes the whole strategy work. Story-level work as of 2026-05-13.
+4. **InRisk does the minimum for Phase 1** — concrete Party MDM Integration epic of 5 stories ([[inrisk]]); **ordered and gated 2026-05-14**: Stories 1 (manual-client-creation cleanup) & 2 (data-model addition on party + broker + party_snapshot tables) ready for low level; Stories 3/4/5 (client + broker + party-tagging widget integration) gated on a widget-integration spike. Backwards-compatible data-model addition; no rewrite. **Drop-in-replacement / parity-not-enhancement** on the new widget itself (refinement to [[inrisk-cuts-over-before-high-volume]] from 2026-05-14). That rewrite path is [[inrisk-engine]]'s job, on a different clock. Crucially, InRisk _wants_ the change — the Tech Leads have flagged the interim path as simplifying their own model, which is the precondition that makes the whole strategy work.
 5. **Party tagging in, feature tagging out** — Phase-1 boundary clarified 2026-05-13. Party tags (obligor, loss-leader, role-like) are _party_ data and get a Phase-1 story; feature tagging is submission attributes that only piggy-backed on Party's UX/DB pattern, **out of Phase 1**, old backend stays alive past cutover. Refined [[feature-tagging-moves-to-inrisk]] holds the eventual handover direction.
 6. **HV is API-only via Boomi** — no widget dependency; not a blocker on widget decisions.
 7. **Line in the sand on historical migration** — [[no-historic-client-backfill-into-mdm]] on the MDM side; [[no-pct-audit-backfill]] on the PCT side. MDM starts version history at cutover; pre-cutover InRisk client-ID-scoped history stays in InRisk / [[data-universe]]. Jira stays read-only; Snowflake is the cross-period audit/SLA store.
@@ -108,4 +108,4 @@ All resolutions are logged with IDs in [[open-questions#Resolved]]. Highlights:
 - [[party-rearch-dependency-map]] · [[party-rearch-ownership-matrix]] · [[open-questions]]
 - [[contract-buckets]] · [[sanctions-processing]] — Session 1 scaffolding framework + new sanctions-domain concept page
 - [[strangle-the-graph-via-proxy-events]] · [[pct-and-mdm-go-live-together]] · [[inrisk-cuts-over-before-high-volume]] · [[no-historic-client-backfill-into-mdm]] · [[no-pct-audit-backfill]] · [[feature-tagging-moves-to-inrisk]] · [[bulk-migrations-owned-by-mdm-phase-1]] · [[d-and-b-caching-and-auto-parent]] · [[uuid-system-id-with-display-id]]
-- [[sources/20260422-meeting-transcript-session-1]] · [[sources/20260422-meeting-transcript-session-2]] · [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]]
+- [[sources/20260422-meeting-transcript-session-1]] · [[sources/20260422-meeting-transcript-session-2]] · [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] · [[sources/20260514-inrisk-high-level-refinement]]

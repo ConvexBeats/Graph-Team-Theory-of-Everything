@@ -3,12 +3,12 @@ type: application
 title: InRisk
 aliases: [ir2]
 created: 2026-04-22
-updated: 2026-05-18
+updated: 2026-05-26
 tags: [application, in-scope, consumer]
 owner: prebind-team
 state: current
-sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up]
-source_count: 3
+sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up, 20260514-inrisk-high-level-refinement]
+source_count: 4
 status: draft
 projects: [party-rearch]
 ---
@@ -38,25 +38,31 @@ Capture all pre-bind policy information — submissions, requirements, insureds,
 
 ## Target state (interim, this programme)
 
-### Phase-1 epic and stories (concrete as of 2026-05-13)
+### Phase-1 epic and stories (concrete as of 2026-05-13; ordered and gated as of 2026-05-14)
 
-[[john-trahearn]] condensed the prior architecture sessions into a concrete **"Party MDM Integration" epic** with **four to five stories** ([[sources/20260513-inrisk-integration-with-party-mdm-follow-up]]). All carry [[prebind-team]] as the delivery team:
+[[john-trahearn]] condensed the prior architecture sessions into a concrete **"Party MDM Integration" epic** ([[sources/20260513-inrisk-integration-with-party-mdm-follow-up]]). The 2026-05-14 InRisk High Level Refinement ordered the stories explicitly: **Stories 1 & 2 ready for low level immediately; Stories 3/4/5 gated on a widget-integration spike** between [[joe-worsfold]] / [[billy-calladine]] / [[alex-sillars]] / [[daria-romanovskaia]] (PreBind-PO slot inherited from [[andrew-turner]] on his 2026-05-29 departure). All carry [[prebind-team]] as the delivery team:
 
-| # | Story | Notes | Dependencies |
-|---:|---|---|---|
-| 1 | **Remove manual client creation on new requirement** — route manual creation via the widget rather than InRisk pages | Tech-debt clearance; widget already supports this elsewhere in InRisk. [[billy-calladine]] to confirm widget commonality at Thursday's high-level | none in scope of party-rearch |
-| 2 | **Backwards-compatible data-model addition** — store party-ID + version-IDs on existing client and broker tables, with DTO updates | Snapshots and all existing fields retained; this story does **not** cover continued extraction of today's fields from the new feed (separate concern about response shape) | [[open-questions#OQ-036]] (response-shape alignment) |
-| 3 | **Client-widget integration, feature-flagged** | Flag-on: render the new MDM widget + persist new IDs. Flag-off: behave as today | Story 2 (data model) · [[inrisk-cuts-over-before-high-volume]] (component-library choice) |
-| 4 | **Broker-widget integration, feature-flagged** | Mirror of story 3 for brokers. May collapse with story 3 if straightforward | Story 2 · same |
-| 5 | **Party-tagging integration** (raised in-call by [[joe-worsfold]], [[john-trahearn]] to add) | Party tags (obligor / loss-leader / role-like) are _legitimately_ party data and need MDM-side + widget-side support. **Not** to be conflated with feature tagging (out of scope) | Story 2 · Joe-side widget work |
+| # | Story | Ready for low level? | Notes | Dependencies |
+|---:|---|:---:|---|---|
+| 1 | **Remove manual client creation on new requirement** — route manual creation via the widget rather than InRisk pages | **yes** (2026-05-14) | The "demon" Joe cited that has to clear before MDM cutover. One remaining flow on requirement creation when selecting a client where the widget defers back to InRisk for manual creation if Party Search + D&B fallback both miss. [[billy-calladine]] confirmed at the 2026-05-14 HL that the widget side already supports this path (used in renewals today) — a flag toggle plus removal of the InRisk-side legacy logic | none in scope of party-rearch |
+| 2 | **Backwards-compatible data-model addition** — store MDM party-ID (UUID v7) + version-ID (int) on the existing **party, broker, and party-snapshot tables** (three independent tables), with DTO updates | **yes** (2026-05-14) | All three tables get the same two additive columns. Note the InRisk party table is keyed by `client_id` — the schema name is legacy ("badly named" per [[john-trahearn]]) but the change itself is mechanical. Snapshots and all existing fields retained | [[open-questions#OQ-036]] (response-shape alignment) · pending **backfill decision** (see Pending / unknown) |
+| 3 | **Client-widget integration, feature-flagged** | **gated on spike** | Flag-on: render the new MDM widget + persist new IDs. Flag-off: behave as today. **Renewals flow folds into this story** ([[billy-calladine]] / [[kris-mokrzycki]] in-call: renewals already uses the widget; new widget is a 1:1 rewire) | Story 2 (data model) · [[inrisk-cuts-over-before-high-volume]] (component-library choice) · widget-integration spike |
+| 4 | **Broker-widget integration, feature-flagged** | **gated on spike** | Mirror of story 3 for brokers. May collapse with story 3 if straightforward | Story 2 · same |
+| 5 | **Party-tagging integration** | **gated on spike** | Party tags (obligor / loss-leader / role-like) are _legitimately_ party data and need MDM-side + widget-side support. **Not** to be conflated with feature tagging (out of scope) | Story 2 · Joe-side widget work · widget-integration spike |
 
-**Cadence**: high-level session Thursday this week (May 14); low-level Tuesday next week (May 19); sprint starts following Wednesday (May 20). [[john-trahearn]] to brush up on InRisk's existing widget integration mechanic ahead of the high-level — current behaviour is believed to be query-parameter-driven, the new widget is SDK-style (instantiate the MDM SDK, pass methods / hooks to components). Alignment is a Thursday's session input.
+**Widget-integration spike (gates Stories 3/4/5).** Surfaced at the 2026-05-14 HL: low-level conversation on the widget stories can't progress until SDK posture, the new widget's OpenSearch-vs-Dynamo response shape, and the integration mechanic are pinned. **Pairing**: [[joe-worsfold]] + [[billy-calladine]] (ex-Striker) + [[alex-sillars]] + [[daria-romanovskaia]] (PreBind-PO slot inherited from [[andrew-turner]] on his 2026-05-29 departure). **Timing**: not next sprint (Joe needs to rebuild some of the Chakra-3-only work into the design-system-agnostic library first); confirmation at the **ad-hoc HL on 2026-05-15**. Tracked on [[party-rearch-ownership-matrix]].
+
+**Drop-in-replacement principle (2026-05-14)**: Joe explicitly rolled back his "modern and different" widget vision and committed to a **bespoke, parity-only widget for InRisk** matching the current auth / RBAC / session flow. _"For as much as possible, it's going to be a drop-in replacement for now, and then should we need to change things in the future, that'll be something that comes separately"_ ([[john-trahearn]]). Joe agreed: _"my original scope was don't affect in-risk too much, so I just went crazy and was like, no, I want it to be really modern and different, but, yeah, we can roll it back a bit."_ This sharpens [[inrisk-cuts-over-before-high-volume]]'s two-libraries call from a styling-stack decision to a full **parity-not-enhancement** posture on the InRisk widget.
+
+**Feature parity must include current widget filtering parameters.** The party-search widget today filters by **TOBA status** (Terms of Business Agreement — 1984-approved / 1987-approved cohorts) when selecting brokers. The new widget must support the same filter parameters. Surfaced by [[jason-owen]] at the 2026-05-14 HL in the context of the Lloyd's-vs-retail broker workflow split.
+
+**Cadence**: high-level session Thursday this week (May 14) — _done; this source_; ad-hoc HL Fri 2026-05-15 to confirm spike scheduling; low-level Tuesday 2026-05-19 (Stories 1 & 2 only); sprint starts Wed 2026-05-20. Widget-integration spike runs separately; Stories 3/4/5 enter low level after the spike.
 
 ### Underlying integration changes (the three from Sessions 1 & 2, now slotted under the epic)
 
 The three changes laid out in Sessions 1 & 2 are still the right framing of the underlying work — the 13 May follow-up gave them story-shape under the epic above:
 
-1. **Store Party ID on InRisk's party table** — _originated in the "prior call" Joe references in Session 1 with [[john-trahearn]] and [[kris-mokrzycki]], and confirmed again in Session 2._ Per Session 1: this lands as a **new reference table** holding `(client_id → party_id, version)`. Per 2026-05-13: the data-model story (story 2) implements this as additive columns on the existing **client and broker tables**, with snapshots retained — backwards-compatible and minimal schema change.
+1. **Store Party ID on InRisk's party table** — _originated in the "prior call" Joe references in Session 1 with [[john-trahearn]] and [[kris-mokrzycki]], and confirmed again in Session 2._ Per Session 1: this lands as a **new reference table** holding `(client_id → party_id, version)`. Per 2026-05-13 and refined 2026-05-14: the data-model story (story 2) implements this as additive columns on **three independent tables** — the existing **party table** (keyed by `client_id` — legacy name), **broker table**, and **party_snapshot table** — with snapshots retained. Backwards-compatible and mechanical.
 2. **Include Party ID in outgoing InRisk messaging** — so downstream systems can resolve against MDM instead of relying on embedded snapshots. (Confirmed via story 2 by [[sergiu-postolachi]]'s in-call question about MDM-side corresponding fields.)
 3. **Change broker retrieval**: broker data retrieved **directly from InRisk** rather than via the current URD flow. Requires a dedicated workshop (Scott to attend) — this is the highest-effort of the three. _Session 1 phasing_: in Phase 1, a broker UID is still sent alongside the party ID so InRisk isn't forced into a simultaneous schema migration. Phase 2+: broker UID retires; broker becomes just another role on a party.
 
@@ -122,6 +128,8 @@ All InRisk-facing open items are tracked in [[open-questions]]:
 - [[open-questions#OQ-035]] — concrete InRisk MDM-cutover date (≥ 2 weeks before 1 Sep).
 - [[open-questions#OQ-036]] — widget-response field alignment (Sergiu's question — does the new widget return everything InRisk needs?).
 
+**Pending decision (flagged but not an OQ per user steer, 2026-05-14)** — _InRisk-side backfill of the new ID columns_. The data-model story adds `party_id` (UUID v7) and `version_id` (int) to party, broker, and party_snapshot tables. For **existing pre-cutover rows**, do we backfill those columns with known MDM party-IDs, or leave them **null** and operate go-forward from cutover? Joe surfaced this at the close of the 2026-05-14 HL: _"we just decide whether or not we're gonna backfill them with party IDs that we have for old records, or leave them as null, and go from a point in time… it's going to have an impact on… mostly on sanctions, but some other stuff."_ This is the InRisk-side mirror of [[no-historic-client-backfill-into-mdm]]; sanctions is the principal impact surface (pre-cutover party-ID resolution affects whether a sanctions re-check can be ID-driven or has to keep using the snapshot). Owners: [[joe-worsfold]] · [[john-trahearn]] — to be decided ahead of Story 2 low-level.
+
 ## Related decisions
 - [[strangle-the-graph-via-proxy-events]] — indirectly: flattening decision shapes proxy-event emission; the cutover-window dual-write nuance (added 2026-05-13) is what makes the InRisk-first cutover reversible
 - [[inrisk-cuts-over-before-high-volume]] — InRisk's MDM cutover is a deliverable in its own right preceding HV's 1-Sep go-live; rolls in the design-system-agnostic component-library decision that closes [[open-questions#OQ-005]]
@@ -144,3 +152,4 @@ All InRisk-facing open items are tracked in [[open-questions]]:
 - [[sources/20260422-meeting-transcript-session-1]] — morning; party-ID-table shape, broker UID retirement phasing, roles-vs-views, feature-tagging long-term ownership, manual-create edge case
 - [[sources/20260422-meeting-transcript-session-2]] — afternoon; interim-changes confirmation, broker workshop framing
 - [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] — Party MDM Integration epic + 4–5 stories; party-tagging vs feature-tagging Phase-1 boundary; InRisk-first cutover and two-component-libraries call; sanctions / NTT / Boomi flagged; SDK-style widget integration mechanic
+- [[sources/20260514-inrisk-high-level-refinement]] — wider InRisk HL walkthrough; epic ordered (Stories 1 & 2 ready for low level; 3/4/5 gated on spike); manual-client-creation as the "demon" foundational story; data-model story expanded to three tables (party + broker + party_snapshot); UUID-v7 + integer types confirmed; drop-in-replacement / parity-not-enhancement widget posture; TOBA-status filter parity requirement; InRisk-side backfill question raised

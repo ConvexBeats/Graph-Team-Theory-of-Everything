@@ -2,11 +2,11 @@
 type: analysis
 title: Party Re-Architecture — Ownership Matrix
 created: 2026-04-22
-updated: 2026-05-18
+updated: 2026-05-26
 tags: [analysis, standing, ownership, actions]
 project: party-rearch
-sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up]
-source_count: 3
+sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up, 20260514-inrisk-high-level-refinement]
+source_count: 4
 status: draft
 ---
 
@@ -21,7 +21,7 @@ A standing analysis of workstreams, owners, and open actions for the Party Appli
 | **MDM core build** (data model, intercept, 100% backfill, projections, proxy adapter) | [[graph-team]] | [[tech-tooling]] (oversight) | ~2 sprints with focused squad |
 | **New PCT build** (Next.js on open-API spec) | [[graph-team]] | [[dataops-team]] (user-side), [[data-quality-team]] (sponsor via [[hugh-lobban]]) | Ships with MDM — [[pct-and-mdm-go-live-together]] |
 | **Proxy-event emission to Data Universe** | [[graph-team]] | [[analytics-team]] (consumer) | [[strangle-the-graph-via-proxy-events]] |
-| **InRisk interim changes** (Party MDM Integration epic: 4–5 stories — tech-debt clearance, data-model addition, client + broker widget integration, party tagging) | [[prebind-team]] ([[john-trahearn]], [[kris-mokrzycki]]) | [[graph-team]] ([[joe-worsfold]], [[billy-calladine]] for widget Q&A), [[tech-tooling]] ([[rory-beattie]]), [[architecture-team]] ([[scott-gruber]] on broker SME) | Now sized via concrete epic ([[inrisk]]); broker-retrieval change still the largest; cutover lands ≥ 2 weeks before HV per [[inrisk-cuts-over-before-high-volume]] |
+| **InRisk interim changes** (Party MDM Integration epic: 5 stories — tech-debt clearance, data-model addition, client + broker + tagging widget integration) | [[prebind-team]] ([[john-trahearn]], [[kris-mokrzycki]], [[daria-romanovskaia]] PO — took over from [[andrew-turner]] 2026-05-29) | [[graph-team]] ([[joe-worsfold]], [[billy-calladine]] for widget Q&A), [[tech-tooling]] ([[rory-beattie]]), [[architecture-team]] ([[scott-gruber]] on broker SME) | **Ordered + gated 2026-05-14**: Stories 1 (manual-client-creation cleanup) & 2 (data-model: 3 tables — party + broker + party_snapshot) ready for low level 2026-05-19; Stories 3/4/5 gated on widget-integration spike (Joe + Billy + Alex + [[daria-romanovskaia]] — inherited from [[andrew-turner]]). Drop-in-replacement / parity-not-enhancement widget posture. Cutover lands ≥ 2 weeks before HV per [[inrisk-cuts-over-before-high-volume]] |
 | **Analytics Team schema-impact check** | [[analytics-team]] ([[paul-rogers]]) | [[graph-team]] ([[joe-worsfold]]) | Gating for flatten-vs-reconstruct decision |
 | **D&B caching + auto-parent flow** | [[graph-team]] | "enriched team" (name TBD) | [[d-and-b-caching-and-auto-parent]] |
 | **S&P ingestion (Phase 1)** | [[analytics-team]] → [[graph-team]] | — | Stays manual; no change in Phase 1 |
@@ -43,7 +43,7 @@ A standing analysis of workstreams, owners, and open actions for the Party Appli
 
 ## Open actions
 
-Total open: **27** (12 from Session 2 + 9 from Session 1 − 1 resolved in Pass B + 8 new from 2026-05-13 follow-up − 1 resolved by 2026-05-13 follow-up).
+Total open: **29** (12 from Session 2 + 9 from Session 1 − 1 resolved in Pass B + 8 new from 2026-05-13 follow-up − 1 resolved by 2026-05-13 follow-up + 3 new from 2026-05-14 InRisk HL − 1 resolved by 2026-05-14 — see action #22).
 
 _This section tracks actions ("things to do"). Open **questions** ("things to find out") live in [[open-questions]] and are referenced from individual action rows where relevant._
 
@@ -69,25 +69,31 @@ _This section tracks actions ("things to do"). Open **questions** ("things to fi
 | 18 | Graph-API consumer audit spike — resolves Eclipse retirement question | [[joe-worsfold]] · [[billy-calladine]] | [[party-application]] | open — Session 1; [[open-questions#OQ-001]] · [[open-questions#OQ-004]] |
 | 19 | Build MDM-owned bulk-migration CLI (CSV → preview → approved revision) | [[joe-worsfold]] | [[party-application]] | open — Session 1; scoped under [[bulk-migrations-owned-by-mdm-phase-1]] |
 | 20 | Identify remaining Session 1 PCT-neighbourhood people (Michael Hay) | [[rory-beattie]] | [[party-curation-tool]] | open — [[open-questions#OQ-027]] |
-| 21 | Bring InRisk Phase-1 epic ("Party MDM Integration") + 4–5 stories through Thursday high-level (2026-05-14) and Tuesday low-level (2026-05-19); sprint starts Wed 2026-05-20 | [[john-trahearn]] | [[inrisk]] | open — 2026-05-13 |
-| 22 | Brush up on InRisk's current widget integration mechanic (query-param flow vs SDK-style new flow) before Thursday's high-level | [[john-trahearn]] | [[inrisk]] | open — 2026-05-13 |
-| 23 | Attend Thursday's InRisk Phase-1 high-level to validate widget commonality and integration mechanic | [[billy-calladine]] | [[inrisk]] · [[party-application]] | open — 2026-05-13 |
+| 21 | Bring InRisk Phase-1 epic ("Party MDM Integration") + 4–5 stories through Thursday high-level (2026-05-14) and Tuesday low-level (2026-05-19); sprint starts Wed 2026-05-20 | [[john-trahearn]] | [[inrisk]] | **partial 2026-05-14** — Thursday HL done; Stories 1 & 2 go to low-level on Tuesday; Stories 3/4/5 wait on widget-integration spike |
+| 22 | Brush up on InRisk's current widget integration mechanic (query-param flow vs SDK-style new flow) before Thursday's high-level | [[john-trahearn]] | [[inrisk]] | **resolved 2026-05-14** — current flow confirmed query-parameter-driven; new flow SDK-style; gap will be closed via the spike |
+| 23 | Attend Thursday's InRisk Phase-1 high-level to validate widget commonality and integration mechanic | [[billy-calladine]] | [[inrisk]] · [[party-application]] | **partial 2026-05-14** — Billy attended, confirmed manual-create widget path already supported in renewals flow; spike pairing role open |
 | 24 | Publish a second, design-system-agnostic component library for [[inrisk]] to consume | [[joe-worsfold]] | [[party-application]] | open — 2026-05-13; feeds [[inrisk-cuts-over-before-high-volume]] |
 | 25 | Investigate whether feature tagging can be treated as a fully static list (no dynamic management), potentially simplifying its later migration into InRisk classifications | [[suzanna-whitefield]] | [[inrisk]] | open — 2026-05-13; feeds [[open-questions#OQ-019]] |
 | 26 | Escalate sanctions / Boomi orchestration ownership to [[andrea-read]] | [[rory-beattie]] · [[suzanna-whitefield]] | [[ntt]] · [[party-application]] · [[inrisk]] | open — 2026-05-13; [[open-questions#OQ-032]] |
 | 27 | Speak to Anna ahead of cutover to warm users to the UX change | [[rory-beattie]] | [[party-curation-tool]] · [[inrisk]] | open — 2026-05-13; Anna identity: [[open-questions#OQ-033]] |
 | 28 | Confirm widget-response shape covers all fields InRisk needs once integration starts | [[joe-worsfold]] | [[party-application]] · [[inrisk]] | open — 2026-05-13; [[open-questions#OQ-036]] |
+| 29 | Run **widget-integration spike** (pair Joe + Billy + Alex + [[daria-romanovskaia]] — slot inherited from [[andrew-turner]] on his 2026-05-29 departure) to bottom out SDK posture, OpenSearch/Dynamo response shape, integration mechanic before Stories 3/4/5 go to low level. Confirmation of spike scheduling at the ad-hoc HL on 2026-05-15 | [[joe-worsfold]] · [[billy-calladine]] · [[alex-sillars]] · [[daria-romanovskaia]] | [[inrisk]] · [[party-application]] | open — 2026-05-14 (spike pairing redirected 2026-05-26 per departure of [[andrew-turner]]); gates Stories 3/4/5; [[open-questions#OQ-036]] is the principal output |
+| 30 | Decide **InRisk-side backfill** policy for new ID columns on existing client / broker / party-snapshot rows (backfill with known MDM party-IDs vs null + go-forward); sanctions is the principal impact surface. Decision needed before Story 2 low-level on 2026-05-19 | [[joe-worsfold]] · [[john-trahearn]] | [[inrisk]] · [[party-application]] | open — 2026-05-14; not formalised as an OQ |
+| 31 | Confirm bespoke InRisk widget on the design-system-agnostic library preserves all current widget filter parameters at parity — particularly **TOBA status** (Lloyd's-vs-retail broker workflow) | [[joe-worsfold]] | [[party-application]] · [[inrisk]] | open — 2026-05-14; surfaced by [[jason-owen]]; feeds [[inrisk-cuts-over-before-high-volume]] parity-not-enhancement refinement |
 
 ## Ownership gaps
 
 All identity gaps are tracked centrally in [[open-questions]]. Summary of currently-unidentified people touching this matrix:
-- _(resolved — PreBind PO is [[daria-romanovskaia]])_
+- _(resolved — PreBind PO is [[daria-romanovskaia]]; [[andrew-turner]] departs 2026-05-29 — [[daria-romanovskaia]] becomes sole PO; the dual-PO state was transitional)_
+- _(resolved — "Andrew Tennant" is [[andrew-turner]]; transcription drift. Forward-looking references redirect to [[daria-romanovskaia]] per [[AGENTS|§5.5]].)_
 - "Enriched team" identity — [[open-questions#OQ-012]]
 - QA / test lead — no open-question ID yet (low-urgency; revisit when go-live checklist begins)
 - Michael Hay — [[open-questions#OQ-027]]
 - Session 2 first-name-only: Sam ([[open-questions#OQ-024]]), Bob ([[open-questions#OQ-025]]), Josie ([[open-questions#OQ-026]])
-- Session 1 first-name-only: Kartik ([[open-questions#OQ-028]]), Jenny/Ginny ([[open-questions#OQ-029]]), Andrew Tennant ([[open-questions#OQ-030]])
+- Session 1 first-name-only: Kartik ([[open-questions#OQ-028]]), Jenny/Ginny ([[open-questions#OQ-029]])
 - Session 2 speakers: Speakers 7 and 15 ([[open-questions#OQ-023]])
+- 2026-05-13 follow-up first-name-only: Anna ([[open-questions#OQ-033]]), Marty ([[open-questions#OQ-034]])
+- 2026-05-14 walk-on: **Amardeep Badhan** — facilitator-style line only; insufficient signal for an OQ; revisit if surfaces again
 
 ## Resolved
 
@@ -108,3 +114,5 @@ _Historical resolutions; current resolutions now live in [[open-questions#Resolv
 - 2026-04-22 — [[sources/20260422-meeting-transcript-session-1]] Pass A — added 9 new actions (spike, walkthrough, squad shape, ticketisation, D&B cadence, Eclipse retirement, bulk-CLI, people identification, speaker ID); added 6 new workstreams
 - 2026-04-22 — [[sources/20260422-meeting-transcript-session-1]] Pass B — collapsed people-identification actions into [[open-questions]] (OQ-017, OQ-023–031); dropped the "identify Speakers 6/7" action (resolved); dropped the "PCT neighbourhood people" combined action in favour of per-person OQ rows; promoted three candidate ADRs ([[no-pct-audit-backfill]], [[feature-tagging-moves-to-inrisk]], [[bulk-migrations-owned-by-mdm-phase-1]]) — relevant workstream rows updated to cite them.
 - 2026-05-18 — [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] — InRisk workstream re-scoped from "3 interim changes" framing to concrete "Party MDM Integration epic" with 4–5 stories; added a new **Sanctions-domain ownership / off-Boomi migration** workstream (out of Phase 1, escalation owner Rory + Suzy → Andrea); marked the **Widget / SDK / Chakra strategy** workstream resolved and the Chakra-V2-vs-V3 action (#11) resolved by [[inrisk-cuts-over-before-high-volume]]; added 8 new actions (#21–28) covering Thursday/Tuesday cadence, widget-mechanic brush-up, Billy to validate, Joe's second library, Suzy's static-list investigation, sanctions escalation, Anna warming, widget-response field alignment.
+- 2026-05-26 — [[sources/20260514-inrisk-high-level-refinement]] — InRisk workstream description updated to reflect 5-story ordering (Stories 1 & 2 ready; 3/4/5 gated) + drop-in-replacement / parity-not-enhancement posture + 3-table data-model. **Resolved** action #22 (current widget mechanic now confirmed query-parameter-driven). **Partial** actions #21 + #23 (Thursday HL done; Tuesday low-level scope reduced to Stories 1 & 2). **Added 3 new actions** (#29 widget-integration spike pairing; #30 InRisk-side backfill policy; #31 TOBA-filter parity confirmation). Ownership-gaps refreshed: Andrew Tennant resolved → [[andrew-turner]]; added Anna / Marty / Amardeep notes.
+- 2026-05-26 — user-declared handover (no source page) — [[andrew-turner]] departing 2026-05-29; [[daria-romanovskaia]] takes over as sole PreBind PO (handover effective 2026-05-26). InRisk workstream Primary-owner cell and action #29 spike pairing redirected from [[andrew-turner]] → [[daria-romanovskaia]]; ownership-gaps refreshed; departure convention captured in [[AGENTS|§5.5]].

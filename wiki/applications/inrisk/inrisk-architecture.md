@@ -2,12 +2,12 @@
 type: application-architecture
 title: InRisk — Current-state Architecture
 created: 2026-04-22
-updated: 2026-05-18
+updated: 2026-05-26
 tags: [architecture, current-state]
 application: inrisk
 state: current
-sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up]
-source_count: 3
+sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up, 20260514-inrisk-high-level-refinement]
+source_count: 4
 status: stub
 ---
 
@@ -23,7 +23,7 @@ _Populated at first architecture ingest. From transcripts so far: InRisk (IR2) i
 ## Technologies & services
 _Populate from raw ingest. Known so far:_
 
-- **Datastore**: relational; existing **client and broker tables** are the structures into which Phase-1 adds party-ID + version-ID columns (additive, backwards-compatible). Specific RDBMS engine pending ingest.
+- **Datastore**: relational; three independent tables receive the Phase-1 party-ID + version-ID additive columns: the **party table** (keyed by `client_id` — legacy naming), the **broker table**, and the **party_snapshot table** ([[sources/20260514-inrisk-high-level-refinement]]). All three are mechanical schema additions plus DTO updates; snapshots and existing fields are retained. Column types: `party_id` is **UUID v7**, `version_id` is an **integer**. Specific RDBMS engine pending ingest.
 - **Feature tagging**: currently lives elsewhere (originally mapped into the party domain because [[party-application]] had a usable widget at the time); **moves to InRisk in Phase 2+** per [[feature-tagging-moves-to-inrisk]]. Per [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]], the likely target shape is an InRisk-classifications-style surface rather than a Postgres-table handover, contingent on [[suzanna-whitefield]]'s static-list investigation ([[open-questions#OQ-019]]). Phase 1: no change — [[joe-worsfold]] keeps the old backend, API, and widget alive past cutover so InRisk's pull is not interrupted.
 - **Party-tagging surface**: _existing widget pattern_ (likely the same Party search widget used elsewhere, to be confirmed by [[billy-calladine]] at Thursday's high-level). Phase-1 work adds the new MDM ID/version fields and feature-flagged routing through Joe's new widget.
 - **Integration shape with [[high-volume]]**: open — see [[open-questions#OQ-013]].
@@ -50,8 +50,9 @@ _Populate from raw ingest. Known so far:_
 
 ### Widget integration (today, and changing in Phase 1)
 
-- **Today**: party-search widget embedded in [[inrisk]]; integration is believed to be **query-parameter-driven** (Rory + Joe in [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]]; precise mechanic to be re-validated by [[john-trahearn]] / [[billy-calladine]] before Thursday's high-level).
-- **Phase-1 target**: SDK-style integration — instantiate the MDM SDK, pass methods / hooks to the widget components. The new widget is already published from [[joe-worsfold]]'s side. The specific component library InRisk consumes will be the **design-system-agnostic** variant Joe is publishing as a second library (per [[inrisk-cuts-over-before-high-volume]]), matched to InRisk's current look — distinct from the Chakra-3-with-design-system widget that [[party-curation-tool]] / [[dataops-team]] consume.
+- **Today**: party-search widget embedded in [[inrisk]]; integration is **query-parameter-driven**. The widget passes filter parameters (e.g. **TOBA status** — Terms of Business Agreement, with cohorts like `1984-approved` / `1987-approved` for brokers — and the Lloyd's-vs-retail broker workflow split) and receives party records. The new widget must support the same filter parameters at parity (raised by [[jason-owen]], [[sources/20260514-inrisk-high-level-refinement]]).
+- **Phase-1 target**: bespoke, parity-only widget on Joe's design-system-agnostic library. **SDK-style** integration — instantiate the MDM SDK, pass methods / hooks to the widget components — but matched to InRisk's current auth / RBAC / session flow and look-and-feel. **Drop-in replacement now, enhancement later** (rolled back from Joe's original "modern and different" vision at the 2026-05-14 HL): _"my original scope was don't affect in-risk too much, so I just went crazy and was like, no, I want it to be really modern and different, but, yeah, we can roll it back a bit"_ ([[joe-worsfold]]). The widget is already published in its Chakra-3-with-design-system form; Joe to re-build into the design-system-agnostic library before InRisk's spike. See [[inrisk-cuts-over-before-high-volume]].
+- **Manual party creation flow change (Phase-1 Story 1)**: today, the requirement-creation flow falls back to **InRisk-side manual creation** if both Party Search and the D&B fallback miss. After Story 1, the widget's existing manual-create path is enabled (already supported, used in the renewals flow — [[billy-calladine]] confirmed at the 2026-05-14 HL) and the InRisk-side legacy logic is removed. Joe: this is the foundational story that clears the decks before MDM cutover can proceed.
 
 ### Batch / scheduled integrations
 - Ingestion from [[eclipse]] — third-party inflow; InRisk is the application that uses Eclipse. Shape TBC.
@@ -92,3 +93,4 @@ _None yet._
 - [[sources/20260422-meeting-transcript-session-1]] — client-ID / submission / requirement framing, interim-state carrier scope
 - [[sources/20260422-meeting-transcript-session-2]] — feature-tagging ownership, payload-contract pressure
 - [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] — concrete data-model story (client + broker tables); SDK-style widget integration; design-system-agnostic library; sanctions-orchestration pain points (one-at-a-time submission lookup, no batch endpoint)
+- [[sources/20260514-inrisk-high-level-refinement]] — data-model expanded to three tables (party + broker + party_snapshot); UUID-v7 + integer column types confirmed; party-table-keyed-by-`client_id` legacy naming captured; manual-client-creation cleanup as Story 1 (foundational); TOBA-status filter parity requirement; drop-in-replacement / parity-not-enhancement widget posture

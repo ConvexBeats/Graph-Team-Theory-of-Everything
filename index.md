@@ -1,8 +1,8 @@
 # Index
 
-_Last updated: 2026-05-18 (2026-05-13 InRisk follow-up ingested)_
-_Pages: 1 portfolio-overview · 2 projects · 3 phases · 4 project-scoped analyses · 4 application-architectures (current-state) · 1 global register · 3 sources · 6 applications · 31 entities (9 teams + 2 platforms + 20 people) · 4 concepts · 9 decisions_
-_Status: wiki now organised around **projects**. [[party-rearch]] is the primary in-flight project (Sessions 1/2 + 2026-05-13 follow-up). [[secrets-management]] stubbed as the second project — ASG-mandated secrets-management standardisation post Shai-Hulud 2.0. `[[overview]]` is the portfolio view. Architecture detail lives on dedicated `*-architecture` pages alongside identity pages; see "Application architecture" below._
+_Last updated: 2026-05-26 (2026-05-14 InRisk High Level Refinement ingested; PreBind-PO handover [[andrew-turner]] → [[daria-romanovskaia]] applied; AGENTS §5.5 departure convention added)_
+_Pages: 1 portfolio-overview · 2 projects · 3 phases · 4 project-scoped analyses · 4 application-architectures (current-state) · 1 global register · 4 sources · 6 applications · 36 entities (9 teams + 2 platforms + 25 people) · 4 concepts · 9 decisions_
+_Status: wiki now organised around **projects**. [[party-rearch]] is the primary in-flight project (Sessions 1/2 + 2026-05-13 follow-up + 2026-05-14 InRisk HL refinement). [[secrets-management]] stubbed as the second project — ASG-mandated secrets-management standardisation post Shai-Hulud 2.0. `[[overview]]` is the portfolio view. Architecture detail lives on dedicated `*-architecture` pages alongside identity pages; see "Application architecture" below._
 
 > The LLM reads this first on every query. Entries = link + one-line summary + optional metadata (`src: N` = number of sources, `owner: …`, date, etc.).
 
@@ -12,14 +12,14 @@ _Status: wiki now organised around **projects**. [[party-rearch]] is the primary
 ## Projects
 
 ### party-rearch — Party Application re-architecture (in-flight)
-- [[party-rearch]] — project thesis: payload-snapshot → versioned-reference; outer gate 1-Sep HV; **inner gate** mid-August InRisk cutover (added 2026-05-13) (src: 3)
+- [[party-rearch]] — project thesis: payload-snapshot → versioned-reference; outer gate 1-Sep HV; **inner gate** mid-August InRisk cutover (added 2026-05-13) (src: 4)
 - **Phases**:
-  - [[party-rearch-phase-1]] — MDM + PCT co-ship + InRisk-first cutover to mid-August, HV at 1 Sep; single-flag coupled rollout; no audit / no historic-client backfill (in-flight) (src: 3)
+  - [[party-rearch-phase-1]] — MDM + PCT co-ship + InRisk-first cutover to mid-August, HV at 1 Sep; single-flag coupled rollout; no audit / no historic-client backfill; InRisk epic ordered+gated 2026-05-14 (in-flight) (src: 4)
   - [[party-rearch-phase-2]] — post-cutover end-state: direct Dynamo→DU stream, feature-tagging hand-over, end-state sanctions, sanctions-domain rework, InRisk-Engine final contract (planned stub)
 - **Project-scoped analyses**:
-  - [[party-rearch-dependency-map]] — inter-application dependencies; current vs Phase-1 target vs end-state; contract-buckets scaffolding; sanctions/Boomi/NTT current-state added 2026-05-13 (src: 3)
-  - [[party-rearch-ownership-matrix]] — workstreams × owners; **27 open actions** (src: 3)
-  - [[party-rearch-phase-1-summary]] — focused Phase-1 digest: what it is, applications affected, decisions, delivery shape, top-leverage open questions (filed from a query, 2026-04-22; updated 2026-05-18) (src: 3)
+  - [[party-rearch-dependency-map]] — inter-application dependencies; current vs Phase-1 target vs end-state; contract-buckets scaffolding; sanctions/Boomi/NTT current-state added 2026-05-13; widget-integration spike + TOBA-filter + backfill rows added 2026-05-14 (src: 4)
+  - [[party-rearch-ownership-matrix]] — workstreams × owners; **29 open actions** (src: 4)
+  - [[party-rearch-phase-1-summary]] — focused Phase-1 digest: what it is, applications affected, decisions, delivery shape, top-leverage open questions (filed from a query, 2026-04-22; updated 2026-05-26) (src: 4)
 
 ### secrets-management — Standardise Secrets Management (planned, stub)
 - [[secrets-management]] — ASG-mandated transition following Shai-Hulud 2.0 (INC-140574): eliminate long-lived CI/CD credentials; AWS Secrets Manager unified schema; automated rotation (stub, src: 0)
@@ -27,9 +27,9 @@ _Status: wiki now organised around **projects**. [[party-rearch]] is the primary
   - [[secrets-management-phase-1]] — scope, timeline, and decisions TBD at first ingest (planned stub)
 
 ## Applications _(cross-project)_
-- [[party-application]] — core Party store + routing; re-architecture subject; Neo4j Knowledge Graph → Dynamo+OpenSearch; AWS estate confirmed existing 3-account/4-env (owner: [[graph-team]], projects: [party-rearch], src: 3)
+- [[party-application]] — core Party store + routing; re-architecture subject; Neo4j Knowledge Graph → Dynamo+OpenSearch; AWS estate confirmed existing 3-account/4-env; InRisk-widget parity posture confirmed 2026-05-14 (owner: [[graph-team]], projects: [party-rearch], src: 4)
 - [[party-curation-tool]] — PCT; Next.js UI for party curation; co-ships with MDM; consumes Chakra-3 + design-system widget (owner: [[graph-team]], user: [[dataops-team]], projects: [party-rearch], src: 2)
-- [[inrisk]] — IR2; Policy Admin System; **Party MDM Integration epic of 4–5 stories** (sized 2026-05-13); cutover ≥ 2 weeks before HV (owner: [[prebind-team]], projects: [party-rearch], src: 3)
+- [[inrisk]] — IR2; Policy Admin System; **Party MDM Integration epic, 5 stories ordered + gated 2026-05-14** (Stories 1 & 2 ready for low level; 3/4/5 spike-gated); cutover ≥ 2 weeks before HV (owner: [[prebind-team]], projects: [party-rearch], src: 4)
 - [[inrisk-engine]] — InRisk Core; API-first rewrite targeting **final-state** Party contract; out of Phase-1 interim scope (owner: [[devx-team]], projects: [party-rearch], src: 2)
 - [[high-volume]] — HV; API-via-Boomi consumer; production 1 Sep (forcing-function for Phase 1); turns on after InRisk-first cutover window (owner: [[high-volume-team]], projects: [party-rearch], src: 1)
 - [[eclipse]] — external data feed consumed by [[inrisk]]; stub; scope call on ongoing ingestion tracked at [[open-questions#OQ-001]] (projects: [party-rearch], src: 1)
@@ -38,16 +38,16 @@ _Status: wiki now organised around **projects**. [[party-rearch]] is the primary
 
 _Living reference pages; folded-into on phase completion per AGENTS.md §5.4. Phase-target architectures live under `wiki/projects/<project>/<phase-id>-<app>-architecture.md`._
 
-- [[party-application-architecture]] — stub; Neo4j Knowledge Graph primary datastore; payload-event contract to downstream consumers; AWS estate (existing 3-account/4-env) confirmed; two component-library widget split (baseline for [[party-rearch]] targets) (src: 3)
+- [[party-application-architecture]] — stub; Neo4j Knowledge Graph primary datastore; payload-event contract to downstream consumers; AWS estate (existing 3-account/4-env) confirmed; two component-library widget split with parity-not-enhancement posture on the InRisk library (baseline for [[party-rearch]] targets) (src: 4)
 - [[party-curation-tool-architecture]] — stub; Next.js on Jira workflow; D&B integration; Chakra-3 + design-system widget (src: 2)
-- [[inrisk-architecture]] — stub; integration-surface focus (payload-consumer today); client + broker tables to gain party-ID + version-ID columns; SDK-style widget integration with design-system-agnostic library; sanctions touchpoint via Boomi → [[ntt]] (src: 3)
+- [[inrisk-architecture]] — stub; integration-surface focus (payload-consumer today); **party + broker + party_snapshot tables** to gain `party_id` (UUID v7) + `version_id` (int) columns; SDK-style widget integration on design-system-agnostic library; current widget filters by **TOBA status** (parity requirement); sanctions touchpoint via Boomi → [[ntt]] (src: 4)
 - [[high-volume-architecture]] — lean stub; greenfield build; no production state yet; consumes MDM at 1 Sep after InRisk-first cutover window (src: 1)
 
 ## Entities _(cross-project)_
 
 ### Teams / working units
 - [[graph-team]] — owns [[party-application]] and [[party-curation-tool]]; aka "The Party Team"; ~13 people (src: 2)
-- [[prebind-team]] — owns [[inrisk]]; aka "The Strikers" (src: 2)
+- [[prebind-team]] — owns [[inrisk]]; aka "The Strikers"; 7 active members (1 PO, 2 TLs, 1 SM, 3 BAs) + 1 past member ([[andrew-turner]], departed 2026-05-29 → [[daria-romanovskaia]]) (src: 2)
 - [[devx-team]] — owns [[inrisk-engine]] (src: 2)
 - [[dataops-team]] — primary users of [[party-curation-tool]]; sponsored by [[data-quality-team]] (src: 1)
 - [[tech-tooling]] — portfolio-level oversight; [[andrea-read]] heads engineering, [[will-bone]] heads product (interim), [[rory-beattie]] programme oversight (src: 2)
@@ -73,9 +73,14 @@ _Living reference pages; folded-into on phase completion per AGENTS.md §5.4. Ph
 - [[suzanna-whitefield]] — Architect, [[architecture-team]] ("Suzy") (src: 2)
 - [[scott-gruber]] — Architect, [[architecture-team]]; broker-retrieval SME (src: 1)
 - [[antonie-labuschagne]] — Tech Lead, [[devx-team]] ("Anton"); explicitly scoped out of Phase-1 design (src: 2)
-- [[daria-romanovskaia]] — Product Owner, [[prebind-team]] (src: 1)
+- [[daria-romanovskaia]] — **sole** Product Owner, [[prebind-team]] from 2026-05-26 (took over from [[andrew-turner]]) (src: 2)
+- [[andrew-turner]] — Product Owner, [[prebind-team]] _(departed 2026-05-29 → [[daria-romanovskaia]]; resolves [[open-questions#OQ-030]] Andrew Tennant + "MR Andrew" transcription drift)_ (src: 1)
 - [[john-trahearn]] — Tech Lead, [[prebind-team]]; prototyped the InRisk party-ID reference table (src: 2)
 - [[kris-mokrzycki]] — Tech Lead, [[prebind-team]] (phonetic "Chris"); co-prototyped with John (src: 2)
+- [[amardeep-badhan]] — Scrum Master, [[prebind-team]]; counterpart to [[sergiu-postolachi]] on [[graph-team]] (new 2026-05-26) (src: 1)
+- [[jason-owen]] — Business Analyst, [[prebind-team]]; surfaced TOBA-status filter parity requirement (new 2026-05-26) (src: 1)
+- [[katarina-voskarova]] — Business Analyst, [[prebind-team]] ("Kati") (new 2026-05-26) (src: 1)
+- [[rastislav-sepelak]] — Business Analyst, [[prebind-team]] ("Rasto"); Syndicate workstream (new 2026-05-26) (src: 1)
 - [[hugh-lobban]] — Head of Data Quality, [[data-quality-team]]; PCT-rollout sponsor figure (src: 1)
 - [[paul-rogers]] — Data & Process Analyst, [[analytics-team]]; flattening-decision counterpart (src: 1)
 - [[steve-perry]] — Programme Manager, [[data-universe]] (src: 1)
@@ -94,21 +99,22 @@ _Candidates for future concept pages: proxy-event strangler (standalone), versio
 _All current ADRs belong to `party-rearch`._
 - [[strangle-the-graph-via-proxy-events]] — **accepted** · phase-1 · MDM emits Graph-shape proxy events to DU; no dual sources of truth; cutover-window dual-write to old graph for revertability (refined 2026-05-13) (src: 3)
 - [[pct-and-mdm-go-live-together]] — **accepted** · phase-1 · new PCT + MDM as one release; single-flag coupled rollout (src: 2)
-- [[inrisk-cuts-over-before-high-volume]] — **accepted** · phase-1 · InRisk cuts over to MDM ≥ 2 weeks before 1 Sep; HV switches on at the gate; two component libraries (Chakra-3 + design-system for PCT, design-system-agnostic for InRisk); resolves OQ-005 (src: 1, new 2026-05-13)
+- [[inrisk-cuts-over-before-high-volume]] — **accepted** · phase-1 · InRisk cuts over to MDM ≥ 2 weeks before 1 Sep; HV switches on at the gate; two component libraries (Chakra-3 + design-system for PCT, design-system-agnostic for InRisk); parity-not-enhancement on the InRisk widget (refined 2026-05-14); resolves OQ-005 (src: 2)
 - [[d-and-b-caching-and-auto-parent]] — **accepted** · phase-1 · D&B cached in Dynamo; auto-create draft + ultimate-parent; scheduled refresh → revision loop (src: 2)
 - [[uuid-system-id-with-display-id]] — **accepted** · phase-1 · system ID = UUID, display ID = legacy Graph party ID (src: 1)
 - [[no-historic-client-backfill-into-mdm]] — **accepted** · phase-1 · MDM history starts at cutover (src: 1)
 - [[no-pct-audit-backfill]] — **accepted** · phase-1 · new PCT doesn't carry Jira audit history; Snowflake is the cross-period store (src: 1)
-- [[feature-tagging-moves-to-inrisk]] — **accepted** · phase-2 · Phase-1 no change (old backend stays alive past cutover); Phase-2+ migrate ownership to InRisk; static-list hypothesis under investigation (refined 2026-05-13) (src: 2)
+- [[feature-tagging-moves-to-inrisk]] — **accepted** · phase-2 · Phase-1 no change (old backend stays alive past cutover); Phase-2+ migrate ownership to InRisk; static-list hypothesis under investigation (refined 2026-05-13; reinforced 2026-05-14) (src: 3)
 - [[bulk-migrations-owned-by-mdm-phase-1]] — **accepted** · phase-1 · [[graph-team]]-owned CLI; self-serve UX is Phase 2+ (src: 1)
 
 ## Sources _(cross-project; each carries `project:` frontmatter)_
 - [[sources/20260422-meeting-transcript-session-1]] — party-rearch · 1st architecture-design session (morning); three-bucket framework; strangler origin; Eclipse retirement scope call; feature-tagging long-term ownership; bulk-migration CLI scope; MDM-squad-shape tension; no-historic-backfill decision (2026-04-22)
 - [[sources/20260422-meeting-transcript-session-2]] — party-rearch · 2nd architecture-design session (afternoon); strangle pattern, PCT co-delivery, InRisk interim-state changes, D&B + UUID decisions (2026-04-22)
 - [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] — party-rearch · 3rd architecture-design session (follow-up); concrete InRisk Phase-1 epic (4–5 stories); party-tagging vs feature-tagging boundary; InRisk-first cutover sequencing and two-component-libraries call (resolves OQ-005); sanctions/Boomi/NTT surfaced; AWS estate confirmed (2026-05-13)
+- [[sources/20260514-inrisk-high-level-refinement]] — party-rearch · 4th architecture-design session (InRisk-side HL); epic ordered + gated (Stories 1 & 2 ready for low level; 3/4/5 gated on spike); 3rd data-model table added (party_snapshot); UUID-v7 + integer types confirmed; drop-in-replacement / parity-not-enhancement widget posture; TOBA-status filter as a parity requirement; InRisk-side backfill question raised; new PreBind members (Andrew Turner PO, Jason Owen BA, Kati Voskarova BA, Rasto Sepelak BA); resolves OQ-030 (Andrew Tennant = Andrew Turner) (2026-05-14)
 
 ## Global standing register
-- [[open-questions]] — open-questions register across all projects; OQ-NNN IDs are global; filter by `Project` column (**33 open**, 17 resolved; all currently scoped `party-rearch`) (src: 3)
+- [[open-questions]] — open-questions register across all projects; OQ-NNN IDs are global; filter by `Project` column (**32 open**, 18 resolved; all currently scoped `party-rearch`) (src: 4)
 
 ## Portfolio-level analyses
 - _None yet — `wiki/analyses/` reserved for cross-project synthesis._

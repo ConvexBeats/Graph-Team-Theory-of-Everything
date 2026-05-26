@@ -142,6 +142,8 @@ status: stub | draft | mature             # general pages
                                            # for projects: planned | in-flight | on-hold | complete | cancelled
                                            # for phases:   planned | in-flight | complete | cancelled
                                            # for architectures: stub | draft | mature | superseded
+departed: YYYY-MM-DD                      # person pages only — last day in the org / programme (see §5.5)
+succeeded_by: <person-slug>               # person pages only — successor for forward-looking references (see §5.5)
 ---
 
 # Title
@@ -169,8 +171,8 @@ status: stub | draft | mature             # general pages
 - **Phase-end target architecture** (`wiki/projects/<slug>/phase-N/<slug>-phase-N-<app-slug>-architecture.md`): `Summary`, `Delta from current state` (load-bearing section), `Full end-of-phase shape` (same skeleton as current-state, for standalone readability), `Decisions driving this target`, `Open questions gating this target`. **One per (project, phase, app) where change-intensity is medium or higher.** Template: `_templates/phase-application-architecture.md`.
 - **Decision** (`wiki/decisions/`): `Context`, `Options considered`, `Decision`, `Consequences`, `Supersedes / superseded by`. Frontmatter includes `project:` and `phase:`.
 - **Entity** — three sub-types, each with its own template:
-  - **Person** (`wiki/entities/people/`): `Key facts` (Role, Team, Role in programme), `Relationships`, `Claims (with citations)`, `Open questions`. Frontmatter includes a `team:` slug.
-  - **Team** (`wiki/entities/teams/`): `Key facts`, `Members (known in this wiki)` (table), `Applications / platforms owned`, `Current workstreams`, `Deferred / future decisions owned`, `Relationships`, `Claims`.
+  - **Person** (`wiki/entities/people/`): `Key facts` (Role, Team, Role in programme), `Relationships`, `Claims (with citations)`, `Open questions`. Frontmatter includes a `team:` slug. **Departed people** carry `departed:` + `succeeded_by:` frontmatter and add a `Departure` section right after `Summary`; their historical claims stay verbatim — see §5.5.
+  - **Team** (`wiki/entities/teams/`): `Key facts`, `Members (known in this wiki)` (table), `Past members` (sub-table, optional — populated by §5.5 departures), `Applications / platforms owned`, `Current workstreams`, `Deferred / future decisions owned`, `Relationships`, `Claims`.
   - **Platform** (`wiki/entities/platforms/`): `Key facts` (Owning team, Core technology, Role in programme), `Current shape (today)`, `Target-state exposure`, `Relationships`, `Claims`. Frontmatter includes an `owner:` slug.
 - **Concept** (`wiki/concepts/`): `Definition`, `Mechanics / how it works`, `Variants`, `Contradictions or open debates`.
 - **Source** (`wiki/sources/`): `Bibliographic info`, `Key claims`, `Decisions made` (if meeting), `Actions` (if meeting, with owner + state), `Entities/concepts mentioned`, `Contradicts`, `Reinforces`. Frontmatter includes `project:`.
@@ -259,6 +261,30 @@ For each phase-target architecture page `[[<project-slug>-<phase-id>-<app-slug>-
 6. **Log it.** Append an `analysis` (or `note`) entry to `log.md` summarising the fold-in, including the list of claims that were superseded.
 
 This workflow is the only reason the current-state architecture pages don't rot. Skip it and every phase increases drift.
+
+### 5.5 Person departure (handover to a successor)
+
+**Trigger**: the human declares that a person is leaving the organisation or the programme, and names a successor.
+
+The core rule: **historical record stays verbatim; forward-looking references redirect.** A source page captures what was true at the time of the meeting — if Andrew was the PO and was in the room, that doesn't stop being true when he leaves three weeks later. But a list of spike participants on a project-scoped page _is_ forward-looking — if Andrew won't be there to participate, the list has to redirect.
+
+Steps:
+
+1. **Mark the person page.** On the departed person's entity page:
+   - Set frontmatter `departed: YYYY-MM-DD` and `succeeded_by: <successor-slug>`.
+   - Add a `## Departure` section immediately after `## Summary` recording the last day, the successor, and a one-line context.
+   - Leave existing `## Claims` and `## Sources` sections untouched — these are historical.
+2. **Update the successor page.** Add a Claim citing the user declaration: _"Took over from [[<departed-slug>]] as <role> on [[<team-slug>]] — user-declared (YYYY-MM-DD)."_ Refresh the summary if the successor's responsibilities materially change.
+3. **Update the team page.** Move the departed row from `## Members (known in this wiki)` to a new `## Past members` sub-table with columns `Name | Role | Departed | Succeeded by`. Update team-level claims if the move resolves an outstanding ambiguity (e.g. "two POs, division of remit unclear" → "one PO post-handover").
+4. **Redirect forward-looking references.** For project-scoped pages, decision pages, application identity pages, and ownership matrices, replace `[[<departed-slug>]]` with `[[<successor-slug>]]` in any forward-looking list (action ownership, future spike pairings, named decision-makers, planned-meeting attendees). Add a one-liner `(took over from [[<departed-slug>]] YYYY-MM-DD)` on first mention so the trail is preserved without cluttering every subsequent appearance.
+5. **Preserve historical source pages.** Do **not** rewrite past meeting transcripts, attendee lists in source pages, or already-completed-action rows. Instead, on the first mention of the departed person in each source page, append an inline footnote: `(departed YYYY-MM-DD → succeeded by [[<successor-slug>]])`. The historical claim stays; the redirect is visible.
+6. **Repoint peripheral Related-lists.** On other persons' entity pages that list the departed person in their `## Related` section as a navigational aid (not as a historical claim), swap to the successor. The `## Claims` and `## Sources` sections on those same pages are historical and stay.
+7. **Update `index.md`.** Annotate the departed person's row with `(departed YYYY-MM-DD → [[<successor-slug>]])`. Refresh the successor's row.
+8. **Log it.** Append a `note` entry to `log.md` enumerating the redirected pages. If the departure triggered a schema change, also append a `schema` entry. Per §8 rule 8, schema co-evolution flows through `log.md` under the `schema` kind.
+
+Future ingests automatically inherit the convention: when a source mentions a person who has `departed:` set, treat substantive forward-looking attribution as a reference to their `succeeded_by:`, but record the literal mention on the source page (it captures what was said).
+
+This workflow is the only reason team rosters and forward-looking action-owner lists don't go stale when people leave.
 
 ---
 

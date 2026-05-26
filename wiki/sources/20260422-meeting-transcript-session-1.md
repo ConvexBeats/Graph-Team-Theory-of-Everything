@@ -48,7 +48,8 @@ Identified-by-reference (mentioned but not attending):
 - **Chris / Kris** → [[kris-mokrzycki]], [[prebind-team]] Tech Lead. Context: same prototype context as John.
 - **Tom Ash / Tomas** → [[tomas-sivo]], Business Analyst on [[graph-team]]. Context: owns the **functional-requirements workstream** for the new [[party-curation-tool]]. Transcription drifted "Tomas" → "Tom Ash" across references. **Resolved Pass B.**
 - **Michael Hay** — stakeholder in the feature-tagging functionality. Team and stakeholder-role scope still open — see [[open-questions#OQ-027]].
-- **Kartik**, **Jenny / Ginny**, **Andrew Tennant** — name-only references, context thin. See [[open-questions#OQ-028]], [[open-questions#OQ-029]], [[open-questions#OQ-030]].
+- **Kartik**, **Jenny / Ginny** — name-only references, context thin. See [[open-questions#OQ-028]], [[open-questions#OQ-029]].
+- **Andrew Tennant** — resolved 2026-05-26 to [[andrew-turner]] (Product Owner, [[prebind-team]]); transcription drift. See [[open-questions#OQ-030]] (resolved). _Note: [[andrew-turner]] departs 2026-05-29 → succeeded by [[daria-romanovskaia]]; forward-looking references redirect per [[AGENTS|§5.5]]._
 
 ### Transcription artefacts (not people)
 Two references previously treated as unidentified people were **transcription mispronunciations** and should not be resolved as entities:
@@ -148,7 +149,7 @@ _Pass B resolutions to the Pass A action list:_
 ## Entities mentioned
 - Teams: [[graph-team]], [[tech-tooling]], [[architecture-team]], [[prebind-team]], [[devx-team]], [[analytics-team]], [[dataops-team]].
 - People (attendees): [[rory-beattie]], [[sergiu-postolachi]], [[alex-sillars]], [[joe-worsfold]] (Speakers 5 and 7), [[billy-calladine]] (Speakers 4 and 6), [[suzanna-whitefield]]. All attendee speakers identified.
-- People (mentioned): [[antonie-labuschagne]], [[john-trahearn]], [[kris-mokrzycki]], [[tomas-sivo]] (formerly "Tom Ash / Tomas"). Still pending identification: **Michael Hay** ([[open-questions#OQ-027]]), **Kartik** ([[open-questions#OQ-028]]), **Jenny / Ginny** ([[open-questions#OQ-029]]), **Andrew Tennant** ([[open-questions#OQ-030]]).
+- People (mentioned): [[antonie-labuschagne]], [[john-trahearn]], [[kris-mokrzycki]], [[tomas-sivo]] (formerly "Tom Ash / Tomas"), [[andrew-turner]] (formerly "Andrew Tennant", resolved 2026-05-26 — [[open-questions#OQ-030]]). Still pending identification: **Michael Hay** ([[open-questions#OQ-027]]), **Kartik** ([[open-questions#OQ-028]]), **Jenny / Ginny** ([[open-questions#OQ-029]]).
 - Non-entities (transcription artefacts): **"Darius"** = mispronunciation of "InRisk"; **"Boyle"** = mispronunciation of "Will" (= [[will-bone]]) in the context of his afternoon-session attendance. Both removed from the people-to-identify list.
 - Platforms: Neo4j + Cypher (legacy backend), DynamoDB (target), OpenSearch (target), Jira (being removed from PCT path), Boomi (D&B integration), Eventbridge / SNS topics (event transport), Snowflake / Data Universe (consumer of proxy events), AWS Lambda (re-index trigger).
 

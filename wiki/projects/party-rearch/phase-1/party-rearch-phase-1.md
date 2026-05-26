@@ -2,7 +2,7 @@
 type: phase
 title: party-rearch — Phase 1 (MDM + PCT co-ship, 1 Sep HV gate)
 created: 2026-04-22
-updated: 2026-05-18
+updated: 2026-05-26
 tags: [phase, in-flight]
 project: party-rearch
 phase_id: phase-1
@@ -24,7 +24,7 @@ First phase of the [[party-rearch]] project. Ships the new MDM (DynamoDB + OpenS
 |---|---|---|
 | [[party-application]] | **high** — core subject | Neo4j Knowledge Graph retires as primary datastore; DynamoDB + OpenSearch stood up on existing 3-account / 4-env AWS estate; proxy-event strangler in place; bulk-migration CLI delivered by [[graph-team]]; **two widget component libraries** published (Chakra-3 + design-system for PCT, design-system-agnostic for InRisk) per [[inrisk-cuts-over-before-high-volume]] |
 | [[party-curation-tool]] | **high** — co-ships | Next.js UI on the new MDM; single-flag coupled rollout with the search widget; Jira workflow retired live (no dual-running); no audit backfill |
-| [[inrisk]] | **high** — concrete epic of 4–5 stories (raised from "medium" 2026-05-13) | "Party MDM Integration" epic: (1) remove manual client-creation on new requirement → widget; (2) backwards-compatible data-model addition (party-ID + version-ID on existing client + broker tables); (3) client-widget integration, feature-flagged; (4) broker-widget integration, feature-flagged; (5) party-tagging integration (in-call addition). Plus the underlying 3 changes (party-ID storage / messaging / broker retrieval). **Feature tagging is out of Phase 1** — old backend stays alive past cutover; party tagging _is_ in scope |
+| [[inrisk]] | **high** — concrete epic of 5 stories, **ordered + gated as of 2026-05-14** | "Party MDM Integration" epic: **Stories 1 & 2 ready for low level immediately**: (1) remove manual client-creation on new requirement → widget — the foundational "demon" that has to clear before MDM cutover; (2) backwards-compatible data-model addition — `party_id` (UUID v7) + `version_id` (int) on **party + broker + party_snapshot** tables. **Stories 3/4/5 gated on a widget-integration spike** (Joe + Billy + Alex + [[daria-romanovskaia]] — slot inherited from [[andrew-turner]] on his 2026-05-29 departure): (3) client-widget integration, feature-flagged (renewals folds in here); (4) broker-widget integration; (5) party-tagging integration. **Drop-in-replacement / parity-not-enhancement** on the widget per [[inrisk-cuts-over-before-high-volume]] refinement; current widget filters (incl. **TOBA status**) must continue. **Feature tagging is out of Phase 1** — old backend stays alive past cutover; party tagging _is_ in scope |
 | [[inrisk-engine]] | **none** — out of scope | Explicitly scoped out: targets final-state Party contract, not the interim. Phase-1 work should not design for [[inrisk-engine]]. |
 | [[high-volume]] | **integration only** | HV consumes MDM via the new versioned-reference API at the 1-Sep gate, **after** the InRisk-first cutover window. API-only via Boomi; no widget. Integration shape still being specified ([[open-questions#OQ-013]]) |
 | [[eclipse]] | **scope call** | Ongoing ingestion into [[party-application]] under review ([[open-questions#OQ-001]]) — confirmed dropped pending the Graph-API audit spike |
@@ -79,9 +79,13 @@ All carry `project: party-rearch` · `phase: [phase-1]`:
 
 ## Out of Phase 1 (flagged but not done here)
 
-- **Feature tagging** — InRisk continues pulling its static list from the existing Postgres table + widget past cutover; eradication deferred to a later phase as an InRisk-specific change. See [[feature-tagging-moves-to-inrisk]] (refined 2026-05-13).
+- **Feature tagging** — InRisk continues pulling its static list from the existing Postgres table + widget past cutover; eradication deferred to a later phase as an InRisk-specific change. See [[feature-tagging-moves-to-inrisk]] (refined 2026-05-13; reinforced to the wider InRisk audience 2026-05-14).
 - **Sanctions / NTT / Boomi orchestration** — wrong place by group consensus, audit pressure this year; not a Phase-1 deliverable. See [[sanctions-processing]] · [[ntt]] · [[open-questions#OQ-032]]. Phase 1 leaves the flow unchanged: proxy events drive Boomi just as Graph events do today.
-- **Anna's UX team involvement** — UX improvements to the new widget surface are deferred; Phase 1 ships UX as similar to today's as practical to avoid layering pretty-up onto cutover. Rory to speak to Anna ahead of cutover to warm users; Anna identity tracked at [[open-questions#OQ-033]].
+- **Anna's UX team involvement** — UX improvements to the new widget surface are deferred; Phase 1 ships UX as similar to today's as practical to avoid layering pretty-up onto cutover. Reinforced 2026-05-14: Joe's InRisk widget is now committed to **parity-not-enhancement** explicitly. Rory to speak to Anna ahead of cutover to warm users; Anna identity tracked at [[open-questions#OQ-033]].
+
+## Pending Phase-1 decisions (not OQs)
+
+- **InRisk-side backfill of the new ID columns** (raised 2026-05-14 by [[joe-worsfold]]). Story 2 adds `party_id` + `version_id` to InRisk's party / broker / party_snapshot tables. For **existing pre-cutover rows**: backfill with known MDM party-IDs, or leave null + go-forward from cutover? Sanctions is the principal impact surface — pre-cutover party-ID resolution affects whether a sanctions re-check can be ID-driven or has to keep using the snapshot. Mirror of the [[no-historic-client-backfill-into-mdm]] question on the InRisk side. Owners: [[joe-worsfold]] · [[john-trahearn]]; to be decided ahead of Story 2 low-level on 2026-05-19. _Not formalised as an OQ per user steer._
 
 ## Delivery shape
 The Phase-1 delivery trio is [[intercept-backfill-projection]]:
@@ -125,3 +129,4 @@ See [[open-questions]] (filter by `project: party-rearch`, `phase: phase-1`). Hi
 - [[sources/20260422-meeting-transcript-session-1]] — Phase-1 scope calls (no-backfill; feature-tagging deferred; bulk-migration CLI)
 - [[sources/20260422-meeting-transcript-session-2]] — strangler pattern, PCT co-delivery, InRisk interim changes, D&B and UUID decisions
 - [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] — InRisk-first cutover sequence; two component-libraries call; party-tagging vs feature-tagging Phase-1 boundary; sanctions / NTT / Boomi flagged out-of-Phase-1; AWS estate confirmation
+- [[sources/20260514-inrisk-high-level-refinement]] — InRisk epic ordered + gated (Stories 1 & 2 ready; 3/4/5 spike-gated); third InRisk table (party_snapshot) added to data-model story; drop-in-replacement / parity-not-enhancement principle for the InRisk widget; TOBA-status filter as a parity requirement; InRisk-side backfill question raised

@@ -3,10 +3,10 @@ type: entity
 title: PreBind Team
 aliases: [strikers]
 created: 2026-04-22
-updated: 2026-04-22
+updated: 2026-05-26
 tags: [team]
-sources: [20260422-meeting-transcript-session-2]
-source_count: 1
+sources: [20260422-meeting-transcript-session-2, 20260514-inrisk-high-level-refinement]
+source_count: 2
 status: draft
 ---
 
@@ -24,11 +24,21 @@ The working unit that owns [[inrisk]], the current production Policy Admin Syste
 
 | Name | Role |
 |---|---|
-| [[daria-romanovskaia]] | Product Owner |
+| [[daria-romanovskaia]] | Product Owner _(sole PO from 2026-05-26)_ |
 | [[john-trahearn]] | Tech Lead |
 | [[kris-mokrzycki]] | Tech Lead |
+| [[amardeep-badhan]] | Scrum Master |
+| [[jason-owen]] | Business Analyst |
+| [[katarina-voskarova]] | Business Analyst ("Kati") |
+| [[rastislav-sepelak]] | Business Analyst ("Rasto") |
 
 _Other members pending._
+
+## Past members
+
+| Name | Role | Departed | Succeeded by |
+|---|---|---|---|
+| [[andrew-turner]] | Product Owner | 2026-05-29 | [[daria-romanovskaia]] |
 
 ## Applications owned
 - [[inrisk]]
@@ -53,16 +63,23 @@ _Other members pending._
 ## Claims
 - Owns [[inrisk]] — user-declared.
 - [[john-trahearn]] and [[kris-mokrzycki]] are Tech Leads on this team — user-declared (Pass B).
-- [[daria-romanovskaia]] is Product Owner on this team — user-declared (lint pass).
+- [[daria-romanovskaia]] is Product Owner on this team — user-declared (lint pass). **Sole PO from 2026-05-26 following the [[andrew-turner]] handover.**
+- [[andrew-turner]] was Product Owner on this team — user-declared (2026-05-26 ingest); resolves "Andrew Tennant" (Session 1 transcription drift) and "MR Andrew" (2026-05-14 transcription drift) as references to the same person. **Departing the organisation 2026-05-29; succeeded by [[daria-romanovskaia]]** — user-declared (2026-05-26 follow-up). Forward-looking references redirect to [[daria-romanovskaia]] per [[AGENTS|departure convention §5.5]].
+- [[jason-owen]], [[katarina-voskarova]] ("Kati"), [[rastislav-sepelak]] ("Rasto") are Business Analysts on this team — user-declared (2026-05-26 ingest).
+- [[amardeep-badhan]] is Scrum Master on this team — user-declared (2026-05-26 follow-up).
 
 ## Open questions
-- Team size and composition beyond the known PO and two Tech Leads.
+- Team size and composition beyond the known core (PO, 2 TLs, SM, 3 BAs).
 - Stance on InRisk's retirement timeline — who decides when [[inrisk]] sunsets in favour of [[inrisk-engine]]?
+- Whether [[daria-romanovskaia]] picks up additional handover detail (e.g. wider InRisk High Level agenda chairing previously run by [[andrew-turner]]) or whether that moves elsewhere.
 
 ## Related
 - [[inrisk]] · [[inrisk-engine]]
-- [[daria-romanovskaia]] · [[john-trahearn]] · [[kris-mokrzycki]]
+- [[daria-romanovskaia]] · [[john-trahearn]] · [[kris-mokrzycki]] · [[amardeep-badhan]] · [[jason-owen]] · [[katarina-voskarova]] · [[rastislav-sepelak]]
+- [[andrew-turner]] (past member; departed 2026-05-29 → succeeded by [[daria-romanovskaia]])
 - [[graph-team]] · [[devx-team]] · [[architecture-team]]
 
 ## Sources
-- [[sources/20260422-meeting-transcript-session-2]]
+- [[sources/20260422-meeting-transcript-session-2]] — original team identification (Pass B)
+- [[sources/20260514-inrisk-high-level-refinement]] — added the BA cohort + second PO + Scrum Master; resolved Andrew Tennant / "MR Andrew" → [[andrew-turner]]
+- 2026-05-26 follow-up (user-declared, no source page) — [[andrew-turner]] handover to [[daria-romanovskaia]]; Andrew departs 2026-05-29; dual-PO arrangement resolved to sole-PO ([[daria-romanovskaia]]) from 2026-05-26.
