@@ -6,8 +6,8 @@ updated: 2026-05-26
 tags: [decision, cutover, sequencing, widget, design-system]
 application: [inrisk, party-application, high-volume, party-curation-tool]
 owner: tech-tooling
-sources: [20260513-inrisk-integration-with-party-mdm-follow-up, 20260514-inrisk-high-level-refinement, 20260519-party-integration-timelines]
-source_count: 3
+sources: [20260513-inrisk-integration-with-party-mdm-follow-up, 20260514-inrisk-high-level-refinement, 20260519-party-integration-timelines, 20260519-mdm-implementation-strategy]
+source_count: 4
 status: accepted
 project: party-rearch
 phase: [phase-1]
@@ -68,7 +68,16 @@ These two threads — the cutover sequencing and the styling-stack call — are 
 
 **B (refined 2026-05-14): parity-not-enhancement principle.** The InRisk-side widget on the second library is committed to **drop-in replacement** of today's behaviour — same auth / RBAC / session flow, same look-and-feel, same filter parameters (including **TOBA status** for brokers — [[jason-owen]] surfaced this in-call). UX enhancements are explicitly deferred to a separate change, post-cutover. Joe rolled back his original "modern and different" vision in front of the wider InRisk audience: _"my original scope was don't affect in-risk too much, so I just went crazy and was like, no, I want it to be really modern and different, but, yeah, we can roll it back a bit until that."_ [[john-trahearn]]: _"For as much as possible, it's going to be a drop-in replacement for now, and then should we need to change things in the future, that'll be something that comes separately."_ This sharpens part B of the ADR from a styling-stack choice into a full posture on the InRisk widget surface.
 
-This ADR therefore covers: (a) the cutover sequencing across Phase 1's three production consumers (InRisk, then HV; PCT co-ships with MDM under [[pct-and-mdm-go-live-together]]); (b) the styling-stack call (two component libraries); and (c) (refined 2026-05-14) the parity-not-enhancement posture for the InRisk widget itself, capping its Phase-1 surface area to what's needed for drop-in replacement.
+**B (refined 2026-05-19): InRisk is primarily Tailwind, not Chakra; widget = raw React + close-to-raw CSS; one component, three parameterised variants; owned by [[billy-calladine]].**
+The "design-system-agnostic library" language from B has been **sharpened in three ways** by [[sources/20260519-mdm-implementation-strategy]]:
+
+- **Tailwind correction.** Earlier wiki passes (including this ADR's original framing) leaned on "Chakra 2 components" as InRisk's UI baseline. [[rory-beattie]]: _"that's a bit of a lie. They have some Chakra V2 components, but it's like a drop-down list here, and a button there. They're primarily on Tailwind and a few other bits and pieces. So the closer you can get to raw CSS when you build it, the better."_ Implication: the InRisk widget should be built in **raw React + close-to-raw CSS**, reusing existing InRisk components where possible. [[joe-worsfold]]: _"I'll try and keep it to just raw react and yeah … I will just reuse them if I can rewire in the OpenSearch results."_
+- **Widget structure: one shell, three parameterised variants.** The widget is **a single component** with three parameterised variants — _parties_, _brokers_, and _other_ — each rendering different cards and hitting a different OpenSearch endpoint, all hosted inside a **shell container** (Rory's framing: _"a shell component which is the container — the drawer that manifests in the in-risk world — and then within that, you can manifest either one variant, another variant, or the third variant of the widget components within that one shell"_). Joe: _"that is how I've built it"_, with parameter-passed differentiation.
+- **InRisk-side dispatch code change.** [[alex-sillars]] flagged that **InRisk's existing code chooses which widget to call** — _"in-risk have something in their code that determines which of our widgets they call. Yes, they pass parameters to us, but they specifically request it, so we'd need to change that on InRisk's side."_ That dispatch-code change is the InRisk-side half of the Phase-1 widget integration.
+- **Ownership formalisation: [[billy-calladine]] owns the widget rebuild AND the InRisk-side dispatch-code change.** Rory: _"Let's formalize that, Alex. Let's make it very clear to Billy that he's responsible for that, and we need him to kind of just own it and run with it."_ Joe: _"there's a part of me that's like — I'm sitting on the epic which is around the data-model proxying and the legacy migration, and Ben's been helping with that one, and then I think Billy's perfectly placed to help with this one, for party search and integration within RISC."_ Captured on [[party-rearch-ownership-matrix]] action #38; [[billy-calladine]]'s page updated.
+- **PCT is unaffected.** PCT is standalone (no package-dependency clashes) and keeps the Chakra 3 + design-system widget.
+
+This ADR therefore covers: (a) the cutover sequencing across Phase 1's three production consumers (InRisk, then HV; PCT co-ships with MDM under [[pct-and-mdm-go-live-together]]); (b) the styling-stack call (two component libraries — PCT on Chakra-3 + design system, InRisk on raw React + close-to-raw CSS); and (c) (refined 2026-05-14 and 2026-05-19) the parity-not-enhancement posture for the InRisk widget itself — single shell hosting three parameterised variants, with an explicit InRisk-side dispatch-code change owned by [[billy-calladine]].
 
 ## Consequences
 
@@ -117,3 +126,4 @@ This ADR therefore covers: (a) the cutover sequencing across Phase 1's three pro
 - [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] — the meeting where both halves of this decision were made.
 - [[sources/20260514-inrisk-high-level-refinement]] — wider-audience reinforcement; parity-not-enhancement principle for the InRisk widget; TOBA-status filter as a parity requirement; widget-integration spike scoped (Joe + Billy + Alex + [[andrew-turner]] — PreBind-PO slot now [[daria-romanovskaia]] following 2026-05-29 handover) as the gate on Stories 3/4/5.
 - [[sources/20260519-party-integration-timelines]] — sequencing restated to [[artificial]] ahead of the 2026-05-20 Convex × Artificial kick-off; HV (as Convex's implementation of Artificial) explicitly waits for InRisk-first.
+- [[sources/20260519-mdm-implementation-strategy]] — Part B sharpened: Tailwind correction; widget = raw React + close-to-raw CSS; one component with three parameterised variants (parties / brokers / other) in a shell container; InRisk-side dispatch-code change explicitly required; ownership of both formalised to [[billy-calladine]]. PCT stays on Chakra 3 + design system because it's standalone (no package-dependency clashes).

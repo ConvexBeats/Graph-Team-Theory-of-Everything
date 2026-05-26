@@ -3,10 +3,10 @@ type: entity
 title: Graph Team
 aliases: [party-team]
 created: 2026-04-22
-updated: 2026-04-22
+updated: 2026-05-26
 tags: [team]
-sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2]
-source_count: 2
+sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260519-mdm-implementation-strategy]
+source_count: 3
 status: draft
 ---
 
@@ -36,6 +36,7 @@ _Team is ~13 people per Session 1; 6 are identified in this wiki. See [[open-que
 ## Applications owned
 - [[party-application]]
 - [[party-curation-tool]]
+- [[knowledge-graph]] — sibling read-replica graph DB; powers [[inrisk]] search. **Added 2026-05-26** following the Knowledge Graph correction ingest ([[sources/20260519-mdm-implementation-strategy]] · [[open-questions#OQ-010-R]]); KG is one of multiple graph DBs the team owns.
 
 ## Current workstreams
 - **Core MDM build** — data model revisions, intercept, 100% backfill, projections, proxy adapter. Estimated ~2 focused sprints for the core pieces.
@@ -51,6 +52,7 @@ _Team is ~13 people per Session 1; 6 are identified in this wiki. See [[open-que
 
 ## Claims
 - Graph Team owns both [[party-application]] and [[party-curation-tool]] — user-declared; reinforced by [[sources/20260422-meeting-transcript-session-2]].
+- Graph Team **also owns [[knowledge-graph]]** — a separate read-replica graph DB containing InRisk + Party data, powering [[inrisk]] search. User-declared 2026-05-26 during the [[sources/20260519-mdm-implementation-strategy]] ingest: _"KG is Knowledge Graph - One of the Graph Databases that the Graph team own."_ Corrects the 2026-04-22 lint-pass conclusion that KG was internal to [[party-application]].
 - [[alex-sillars]] is PO; [[joe-worsfold]] is Tech Lead / Architect; [[sergiu-postolachi]] is Scrum Master; [[ben-joseph]] and [[billy-calladine]] are Engineers — user-declared.
 - Team has committed estimate of ~2 sprints for core MDM build with a focused subset; ~2–3 months for the full programme — [[sources/20260422-meeting-transcript-session-2]], see [[alex-sillars]].
 
@@ -66,3 +68,4 @@ _Team is ~13 people per Session 1; 6 are identified in this wiki. See [[open-que
 ## Sources
 - [[sources/20260422-meeting-transcript-session-1]]
 - [[sources/20260422-meeting-transcript-session-2]]
+- [[sources/20260519-mdm-implementation-strategy]] — added [[knowledge-graph]] as a third Graph-team-owned application (correction); detailed MDM implementation state

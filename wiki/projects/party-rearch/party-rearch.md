@@ -7,9 +7,9 @@ updated: 2026-05-26
 tags: [project]
 slug: party-rearch
 status: in-flight
-applications: [party-application, party-curation-tool, inrisk, inrisk-engine, high-volume, eclipse]
-sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up, 20260514-inrisk-high-level-refinement, 20260519-party-integration-timelines]
-source_count: 5
+applications: [party-application, party-curation-tool, inrisk, inrisk-engine, high-volume, eclipse, knowledge-graph]
+sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up, 20260514-inrisk-high-level-refinement, 20260519-party-integration-timelines, 20260519-mdm-implementation-strategy]
+source_count: 6
 ---
 
 # Party Application Re-Architecture
@@ -64,6 +64,7 @@ The re-architecture is explicitly *interim-first*: it ships a Phase 1 that makes
 - [[inrisk]] — interim-state consumer, 3 required changes
 - [[inrisk-engine]] — end-state target only; out of interim scope
 - [[high-volume]] — forcing function; API-only consumer (Convex's implementation of the [[artificial]] vendor platform — clarified 2026-05-19)
+- [[knowledge-graph]] — sibling Graph-team-owned graph DB; read-replica of InRisk + Party data; powers [[inrisk]] search. **Not** internal to [[party-application]] (correction 2026-05-26 per [[open-questions#OQ-010-R]]; previously mis-classified by the 2026-04-22 lint pass). Out of scope for re-architecture under [[party-rearch]] except as **Option B** on the proxy-event-with-InRisk-data design fork ([[open-questions#OQ-041]])
 
 **External / vendor platforms consuming Party in Phase 1** (via [[boomi]] as gateway):
 - [[artificial]] — third-party vendor platform underpinning [[high-volume]]; reads MDM API + receives event-pushes back (Phase 1)
@@ -85,15 +86,21 @@ The re-architecture is explicitly *interim-first*: it ships a Phase 1 that makes
 
 The register of _all_ unresolved questions lives in [[open-questions]]. The highest-leverage ones, in priority order:
 
-1. **Analytics Team's answer on the flattened schema** ([[paul-rogers]]) — [[open-questions#OQ-002]]. Single biggest Phase-1 branch point.
-2. **Graph API consumer audit** ([[joe-worsfold]] · [[billy-calladine]]) — [[open-questions#OQ-004]]. Sizes decommissioning scope; resolves [[open-questions#OQ-001]] ([[eclipse]] retirement) in one stroke.
-3. **Concrete InRisk MDM-cutover date** — [[open-questions#OQ-035]]. The inner gate; sizes HV's buffer; sprint-planning input.
-4. **MDM delivery squad shape** — [[open-questions#OQ-017]]. Rory's call; blocks sprint planning.
-5. **HV integration-shape specifics** ([[simon-hulbert]]) — [[open-questions#OQ-013]].
-6. **Sanctions-domain location and timing** — [[open-questions#OQ-032]] + [[open-questions#OQ-008]]. Out of Phase 1 but audit pressure this year.
-7. **Final-state Party contract spec for [[inrisk-engine]]** — [[open-questions#OQ-018]].
-8. **D&B scheduled-refresh cadence** — [[open-questions#OQ-011]].
-9. **DataOps change-management lead time** — [[open-questions#OQ-014]].
+1. **Proxy-event-with-InRisk-data design fork** — [[open-questions#OQ-041]] (new 2026-05-19). **Gates the proxy adapter.** InRisk endpoint (Joe's preference) vs KG pull (Joe + Alex wary of consistency). Pending sanctions session with [[simon-hulbert]].
+2. **Analytics Team's answer on the flattened schema** ([[paul-rogers]]) — [[open-questions#OQ-002]]. Single biggest Phase-1 branch point on the wire-format question.
+3. **Graph API consumer audit** ([[joe-worsfold]] · [[billy-calladine]]) — [[open-questions#OQ-004]]. Sizes decommissioning scope; resolves [[open-questions#OQ-001]] ([[eclipse]] retirement) in one stroke.
+4. **Concrete InRisk MDM-cutover date** — [[open-questions#OQ-035]]. The inner gate; sizes HV's buffer; sprint-planning input.
+5. **MDM delivery squad shape** — [[open-questions#OQ-017]]. Rory's call; blocks sprint planning.
+6. **HV integration-shape specifics** ([[simon-hulbert]]) — [[open-questions#OQ-013]].
+7. **Integration env JumpCloud SAML Cognito access** — [[open-questions#OQ-042]] (new 2026-05-19). Unblocking task for any integration-env smoke testing.
+8. **Sanctions-domain location and timing** — [[open-questions#OQ-032]] + [[open-questions#OQ-008]]. Out of Phase 1 but audit pressure this year.
+9. **PCT new-UI dataops parity confirmation** — [[open-questions#OQ-044]] (new 2026-05-19). Walkthrough / user-test needed before cutover.
+10. **Dynamo migration tooling Phase-1 scope** — [[open-questions#OQ-043]] (new 2026-05-19).
+11. **Final-state Party contract spec for [[inrisk-engine]]** — [[open-questions#OQ-018]].
+12. **D&B scheduled-refresh cadence** — [[open-questions#OQ-011]].
+13. **DataOps change-management lead time** — [[open-questions#OQ-014]].
+
+**Sentiment indicator (2026-05-19)**: [[rory-beattie]] _"we're a lot further along than I suspected we even were. So I'm not overly worried about this."_ [[joe-worsfold]] frames remaining risk as **inter-team collaboration** rather than build progress — _"not that it'll be bad, just that it takes time."_ Captured from [[sources/20260519-mdm-implementation-strategy]] as a baseline against which to re-assess in future ingests.
 
 ## Clarifications resolved since Pass A
 
@@ -112,4 +119,4 @@ All resolutions are logged with IDs in [[open-questions#Resolved]]. Highlights:
 - [[party-rearch-dependency-map]] · [[party-rearch-ownership-matrix]] · [[open-questions]]
 - [[contract-buckets]] · [[sanctions-processing]] — Session 1 scaffolding framework + new sanctions-domain concept page
 - [[strangle-the-graph-via-proxy-events]] · [[pct-and-mdm-go-live-together]] · [[inrisk-cuts-over-before-high-volume]] · [[no-historic-client-backfill-into-mdm]] · [[no-pct-audit-backfill]] · [[feature-tagging-moves-to-inrisk]] · [[bulk-migrations-owned-by-mdm-phase-1]] · [[d-and-b-caching-and-auto-parent]] · [[uuid-system-id-with-display-id]]
-- [[sources/20260422-meeting-transcript-session-1]] · [[sources/20260422-meeting-transcript-session-2]] · [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] · [[sources/20260514-inrisk-high-level-refinement]] · [[sources/20260519-party-integration-timelines]]
+- [[sources/20260422-meeting-transcript-session-1]] · [[sources/20260422-meeting-transcript-session-2]] · [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] · [[sources/20260514-inrisk-high-level-refinement]] · [[sources/20260519-party-integration-timelines]] · [[sources/20260519-mdm-implementation-strategy]]

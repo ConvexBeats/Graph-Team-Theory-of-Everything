@@ -7,8 +7,8 @@ updated: 2026-05-26
 tags: [application, in-scope, core]
 owner: graph-team
 state: current
-sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up, 20260514-inrisk-high-level-refinement, 20260519-party-integration-timelines]
-source_count: 5
+sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up, 20260514-inrisk-high-level-refinement, 20260519-party-integration-timelines, 20260519-mdm-implementation-strategy]
+source_count: 6
 status: draft
 projects: [party-rearch]
 ---
@@ -33,15 +33,32 @@ Provide version-controlled party records to every application that needs to disp
 - **Owner**: [[graph-team]]
 - **Production status**: in production
 - **Tech stack**: **Neo4j** (graph DB) with **Cypher** query; large-payload party events emitted to the [[data-universe]] (owned by [[analytics-team]]) which indexes into Snowflake
-- **Primary datastore (current state)**: the **Knowledge Graph** — a **Neo4j** instance sitting inside the Party Application infrastructure. It is not a separate application or downstream consumer; it is the graph database behind the current-state Party Application. The target-state re-architecture replaces it with DynamoDB + OpenSearch.
+- **Primary datastore (current state)**: a **Neo4j** instance (informally referred to as "Party Graph" / "ParseDB") that lives inside the Party Application's own infrastructure. **This is distinct from [[knowledge-graph]]** — KG is a separate sibling graph DB also owned by [[graph-team]] that holds InRisk + Party data as a read-replica for [[inrisk]]'s search. The target-state re-architecture replaces _this application's_ Neo4j with DynamoDB + OpenSearch; KG is out of scope under [[party-rearch]] (correction recorded 2026-05-26 — see [[open-questions#OQ-010-R]]).
 - **Integration shape**: downstream systems receive full party payloads and **snapshot-cache** locally
-- **Key consumers (known)**: [[inrisk]] (snapshot-cached payloads), [[party-curation-tool]] (read/write), [[data-universe]] (events, consumed by [[analytics-team]]), sanctions flow via [[boomi]] → [[ntt]] (see [[sanctions-processing]]), D&B enrichment pipeline. **New Phase-1 consumers**: [[high-volume]] (Convex's implementation of the [[artificial]] vendor platform) — API-only via [[boomi]]; and [[artificial]] itself (the underlying third-party platform that HV is built on) — also via [[boomi]] as gateway. Both onboard at the 1 Sep gate, after the InRisk-first cutover window ([[inrisk-cuts-over-before-high-volume]]).
+- **Key consumers (known)**: per [[joe-worsfold]] in [[sources/20260519-mdm-implementation-strategy]], **three known event consumers** today — [[data-universe]] (events, consumed by [[analytics-team]]; doesn't care about submission/requirement IDs), [[high-volume]] (Phase-1 onward via [[boomi]]), and [[boomi]] (for sanctions orchestration → [[inrisk]] → [[ntt]]; see [[sanctions-processing]]). Plus API consumers: [[party-curation-tool]] (read/write), [[inrisk]] (snapshot-cached payloads), [[knowledge-graph]] (read-replica feed for InRisk search), D&B enrichment pipeline. **New Phase-1 consumers**: [[high-volume]] (Convex's implementation of the [[artificial]] vendor platform) — API-only via [[boomi]]; and [[artificial]] itself (the underlying third-party platform that HV is built on) — also via [[boomi]] as gateway. Both onboard at the 1 Sep gate, after the InRisk-first cutover window ([[inrisk-cuts-over-before-high-volume]]).
 - **Key interfaces**: payload-shape party events to DU; some direct APIs for sanctions and related consumers; a URD-based broker retrieval path that InRisk uses (to be removed in target state)
-- **Event-emit behaviour (Session 1)**: every InRisk event causes the Knowledge Graph (Neo4j) to **rewrite the whole spine and emit one spine-rewrite event**, regardless of whether any field actually changed. Effectively a single event shape flows to the [[data-universe]] (plus a broker-specific variant on the common bus). This is both the current flakiness _and_ the reason the strangler adapter is a small job — it's a one-event mapper, not an N-event migration.
+- **Event-emit behaviour (Session 1)**: every InRisk event causes the Party Application's Neo4j to **rewrite the whole spine and emit one spine-rewrite event**, regardless of whether any field actually changed. Effectively a single event shape flows to the [[data-universe]] (plus a broker-specific variant on the common bus). This is both the current flakiness _and_ the reason the strangler adapter is a small job — it's a one-event mapper, not an N-event migration.
 - **Spine-rewrite cascade on sanctions** (2026-05-13 follow-up): the spine-rewrite-on-every-InRisk-event behaviour is the upstream of [[sanctions-processing]]'s false-positive problem — Boomi fires sanctions checks on every party-change event whether or not it's relevant, and InRisk feels the resulting noise. Not a Phase-1 fix; flagged as a future driver for sanctions-domain redesign ([[open-questions#OQ-032]]).
 - **Eclipse ingestion**: present in current-state docs but with **no live consumers** (data has not been refreshed for months; Eclipse IDs are already resolvable via the InRisk-client-ID path). Retired in the new world — see Change items.
 - **Party role support (today)**: limited — users can create *road code* parties in a complicated way; cannot create reinsured, cover holder, or claims parties without going to another team
 - **Search**: Cypher queries over Neo4j nodes — acknowledged as not ideal for fuzzy / misspelling-tolerant matching
+
+### MDM implementation state (snapshot 2026-05-19)
+
+From [[joe-worsfold]]'s end-to-end walkthrough in [[sources/20260519-mdm-implementation-strategy]]. Architecture detail on [[party-application-architecture]]; this is the identity-level summary.
+
+- **Codebase shape**: monorepo, domain-driven; old graph's separate party-backend / curation-UI / party-search packages are unified, with a domain area holding most of the core model.
+- **Backend core model**: **mostly done** — change classification, Dynamo streaming, REST API auto-generated from code. Remaining backend work is the proxy-event design for party events that doesn't require MDM to store InRisk data (Sprint-spike-gated; pairs with [[open-questions#OQ-041]]).
+- **REST API**: auto-generated from code; Swagger-style document endpoint (RBAC-locked today, hand-shareable). YAML version with [[artificial]] (per [[sources/20260519-party-integration-timelines]]); Scala version with [[simon-hulbert]].
+- **Curation UI**: fully functional in dev, cosmetic changes pending; awaits backfill into lower envs.
+- **Search widget**: built but card-based (Cursor's UX opinion) vs current InRisk widget's table+columns. Parity-rebuild owned by [[billy-calladine]] (raw React + close-to-raw CSS, reusing existing InRisk components where possible). InRisk-side dispatch-code change (the existing "which widget to call" logic) also Billy's remit, formalised 2026-05-19.
+- **DynamoDB**: stood up in **dev + integration**; integration env **broken** on JumpCloud SAML Cognito access — see [[open-questions#OQ-042]].
+- **Data model**: complete in dev; same shape across all envs (only backfill differs). Only additive changes expected from here.
+- **Backfill**: third/fourth iteration in progress; stable "alpha" expected by Fri 2026-05-22. Event-flow path writes direct to repo (bypasses API validation by design) to tolerate messy Graph data.
+- **Audit / versioning**: revision-based versioning on every change (built-in); access logs streamed API Gateway → S3 (Athena-searchable); Dynamo streams → events + searchable audit bucket; tracking by email. Point-in-time recovery via Dynamo; re-stream from audit also possible.
+- **Compute / monitoring**: lighter than current ECS; Datadog set up, alerts ticket pending.
+- **Dynamo migration tooling**: doesn't accept Postgres-style scripts; Phase-1-vs-fast-follow scope open — see [[open-questions#OQ-043]].
+- **Rory's framing (close-of-call)**: _"we're a lot further along than I suspected we even were"_; remaining risk frame is _"between-team collaboration … not that it'll be bad, just that it takes time"_.
 
 ## Target state
 
@@ -115,6 +132,11 @@ All Party-Application-facing open items are tracked in [[open-questions]]:
 - [[open-questions#OQ-032]] — sanctions-domain location (orchestration off Boomi). New 2026-05-13.
 - [[open-questions#OQ-035]] — concrete InRisk MDM-cutover date (≥ 2 weeks before 1 Sep).
 - [[open-questions#OQ-036]] — widget-response field alignment (Sergiu's question); widget-integration spike is the resolution path.
+- [[open-questions#OQ-010-R]] — Knowledge Graph identity (re-opened 2026-05-26 — KG is a sibling Graph-team-owned application, not the internal Neo4j of this application; see [[knowledge-graph]]).
+- [[open-questions#OQ-041]] — proxy-event-with-InRisk-data design fork (InRisk endpoint vs KG pull); **gates the proxy adapter**.
+- [[open-questions#OQ-042]] — integration env JumpCloud SAML Cognito access (unblocker).
+- [[open-questions#OQ-043]] — Dynamo migration tooling Phase-1 scope (self-service-in-Phase-1 vs fast-follow vs ad-hoc).
+- [[open-questions#OQ-044]] — PCT new-UI dataops parity confirmation.
 
 **Pending decision (not an OQ per user steer, flagged 2026-05-14)** — _InRisk-side backfill of MDM ID columns on existing client / broker / party-snapshot rows_. Story 2 of the InRisk Phase-1 epic adds `party_id` (UUID v7) + `version_id` (int) to three InRisk tables. For pre-cutover rows: backfill with known MDM party-IDs, or null + go-forward from cutover? Mirror of [[no-historic-client-backfill-into-mdm]] on the consumer side; sanctions is the principal impact surface. Owners: [[joe-worsfold]] · [[john-trahearn]]; to be decided ahead of Story 2 low-level (2026-05-19). Tracked also on [[inrisk]] and [[party-rearch-phase-1]].
 
@@ -150,3 +172,4 @@ All Party-Application-facing open items are tracked in [[open-questions]]:
 - [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] — cutover-window dual-write nuance; AWS estate confirmation; two-library widget call; sanctions / Boomi / NTT framing; party-tagging vs feature-tagging boundary
 - [[sources/20260514-inrisk-high-level-refinement]] — InRisk widget posture refined to drop-in-replacement / parity-not-enhancement; TOBA-status filter parity surfaced; InRisk-side backfill question raised at the Party side
 - [[sources/20260519-party-integration-timelines]] — [[artificial]] added as a second new Phase-1 Party consumer (alongside HV — which is itself Convex's implementation of Artificial); [[boomi]] gateway role confirmed for both; YAML spec already shared with Artificial; API-spec-subject-to-change caveat surfaced; strangler-pattern stability promise restated to a customer
+- [[sources/20260519-mdm-implementation-strategy]] — implementation-state snapshot (monorepo, backend-core mostly done, auto-generated REST API, curation UI dev-functional, widget gap-analysis pending, Dynamo dev+integration with integration-env access broken, full audit/versioning built); **Knowledge Graph correction** — [[knowledge-graph]] is a sibling Graph-team-owned application, not the internal Neo4j of this application; proxy-event design fork (InRisk endpoint vs KG pull) raised; widget rebuild (raw React + close-to-raw CSS) and InRisk-side dispatch-code change formalised to [[billy-calladine]]

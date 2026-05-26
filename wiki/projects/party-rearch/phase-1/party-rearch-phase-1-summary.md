@@ -6,8 +6,8 @@ updated: 2026-05-26
 tags: [analysis, summary, phase-1]
 project: party-rearch
 phase: [phase-1]
-sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up, 20260514-inrisk-high-level-refinement, 20260519-party-integration-timelines]
-source_count: 5
+sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up, 20260514-inrisk-high-level-refinement, 20260519-party-integration-timelines, 20260519-mdm-implementation-strategy]
+source_count: 6
 status: draft
 ---
 
@@ -33,8 +33,8 @@ Synthesised from the [[party-rearch]] project overview, the [[party-rearch-phase
 
 | Application | Change intensity | Shape of change |
 |---|---|---|
-| [[party-application]] | **high** — core subject | Neo4j Knowledge Graph retires as primary datastore; DynamoDB + OpenSearch stood up on existing 3-account / 4-env AWS estate; proxy-event strangler in place; bulk-migration CLI delivered by [[graph-team]] ([[bulk-migrations-owned-by-mdm-phase-1]]); **two widget component libraries** published — Chakra-3-with-design-system for [[party-curation-tool]] and design-system-agnostic for [[inrisk]] ([[inrisk-cuts-over-before-high-volume]]) |
-| [[party-curation-tool]] | **high** — co-ships | Next.js UI on the new MDM; single-flag coupled rollout with the search widget; Jira workflow retired live (no dual-running); no audit backfill; consumes the Chakra-3 + design-system widget |
+| [[party-application]] | **high** — core subject | This application's own Neo4j primary datastore retires (distinct from sibling [[knowledge-graph]] per the 2026-05-26 correction); DynamoDB + OpenSearch stood up on existing 3-account / 4-env AWS estate (dev working; integration env blocked on JumpCloud SAML Cognito — [[open-questions#OQ-042]]); monorepo + DDD with auto-generated REST API and revision-based versioning baked in; proxy-event strangler in place but **InRisk-data lookup design fork** ([[open-questions#OQ-041]]) gates the adapter; bulk-migration CLI delivered ([[bulk-migrations-owned-by-mdm-phase-1]]); **two widget component libraries** — Chakra-3-with-design-system for [[party-curation-tool]] and **raw React + close-to-raw CSS bespoke widget for [[inrisk]]** (one component, three parameterised variants in a shell; owned by [[billy-calladine]] — 2026-05-19 refinement to [[inrisk-cuts-over-before-high-volume]]) |
+| [[party-curation-tool]] | **high** — co-ships | Next.js UI on the new MDM (monorepo); **revisions + filters** in place of Jira's tabs; **mark-for-review / approve / request-changes** baked into the ticket UI; single-flag coupled rollout with the search widget; Jira workflow retired live (no dual-running); no audit backfill; consumes the Chakra-3 + design-system widget (PCT is standalone, so the modern stack is safe here). Fully functional in dev as of 2026-05-19; [[tomas-sivo]] authors the curation gap-analysis tickets; DataOps parity confirmation open ([[open-questions#OQ-044]]) |
 | [[inrisk]] | **high** _(raised from "medium" 2026-05-13; story-ordered + gated 2026-05-14)_ — Party MDM Integration epic | Concrete epic of 5 stories; **Stories 1 & 2 ready for low level (2026-05-19); Stories 3/4/5 gated on widget-integration spike**: (1) remove manual client-creation on new requirement → widget — foundational "demon" cleared; (2) data-model migration — `party_id` (UUID v7) + `version_id` (int) added to **party + broker + party_snapshot** tables (three tables, not two — third confirmed 2026-05-14); (3/4/5) client / broker / party-tagging widget integration, feature-flagged. **Party tagging in scope; feature tagging out** (old backend stays alive past cutover). SDK-style widget integration via Joe's design-system-agnostic library, on **parity-not-enhancement** posture (drop-in replacement now, enhancement later). InRisk's cutover lands ≥ 2 weeks before HV. |
 | [[inrisk-engine]] | **none** — out of scope | Explicitly scoped out of Phase 1: targets the **final-state** Party contract, not the interim. Phase-1 work should not design for it. |
 | [[high-volume]] | **integration only** | Consumes MDM via the new versioned-reference API at the 1-Sep gate, **after** the InRisk-first cutover window. API-only via [[boomi]]; no widget. **HV is Convex's implementation of the [[artificial]] vendor platform** (clarified 2026-05-19) — the consumer is effectively HV + Artificial, both via Boomi. YAML API spec already shared with Artificial; Convex × Artificial kick-off 2026-05-20. Integration shape still being specified ([[open-questions#OQ-013]]) |
@@ -79,9 +79,13 @@ Drawn from [[open-questions]] (filter `project: party-rearch`, `phase: phase-1`)
 - [[open-questions#OQ-014]] — DataOps change-management lead time.
 - [[open-questions#OQ-035]] **(new 2026-05-13)** — Concrete InRisk MDM-cutover date. Sizes HV's buffer.
 - [[open-questions#OQ-036]] **(new 2026-05-13)** — Widget-response field alignment between MDM and InRisk's needs.
+- [[open-questions#OQ-041]] **(new 2026-05-19)** — **Proxy-event-with-InRisk-data design fork** (InRisk endpoint vs KG pull). **Gates the proxy adapter.**
+- [[open-questions#OQ-042]] **(new 2026-05-19)** — Integration env JumpCloud SAML Cognito access.
+- [[open-questions#OQ-043]] **(new 2026-05-19)** — Dynamo migration tooling Phase-1 scope.
+- [[open-questions#OQ-044]] **(new 2026-05-19)** — PCT new-UI dataops parity confirmation.
 
 ## Confidence
-**High on structure**, because this digest is a re-assembly of already-filed, already-reviewed content from Sessions 1, 2, and the 2026-05-13 follow-up. **Medium-to-low on some specifics** — notably the **HV integration shape** (OQ-013), the **MDM squad shape** (OQ-017), and the **concrete InRisk cutover date** (OQ-035); these are still open questions and anything in this summary about them is provisional.
+**High on structure and on implementation-state**, with the latter rebased on the 2026-05-19 walkthrough. **Medium-to-low on some specifics** — notably the **HV integration shape** (OQ-013), the **MDM squad shape** (OQ-017), the **concrete InRisk cutover date** (OQ-035), and the **proxy-event design fork** (OQ-041); these are still open and anything in this summary about them is provisional. **Sentiment indicator (2026-05-19)**: [[rory-beattie]] in-call _"we're a lot further along than I suspected we even were"_; [[joe-worsfold]] frames remaining risk as **inter-team coordination** rather than build progress.
 
 ## Follow-ups
 - When [[open-questions#OQ-013]] is resolved, update this summary's [[high-volume]] row.
@@ -93,6 +97,9 @@ Drawn from [[open-questions]] (filter `project: party-rearch`, `phase: phase-1`)
 - When the **InRisk-side backfill** decision lands (backfill old client / broker / party-snapshot rows with MDM IDs vs null + go-forward) — note that decision on [[inrisk]], [[party-application]], and here. Sanctions impact is the main consideration.
 - After the **Convex × Artificial kick-off on 2026-05-20** lands (or is captured as a raw-folder source), revisit the [[high-volume]] row to fold in Artificial's confirmed integration shape, any new commitments around API stability, and any Phase-1 risks raised by Artificial's faster cadence vs Convex's. The 2026-05-19 prep session ([[sources/20260519-party-integration-timelines]]) is the pre-call framing; the 05-20 kick-off is where the actual contract conversation begins.
 - After the **Boomi connectivity setup** between [[srini]] and [[joe-worsfold]] completes — that's the immediate unblock for Artificial's hands-on testing of the dev-env MDM API.
+- When the **proxy-event-with-InRisk-data design fork** lands ([[open-questions#OQ-041]]) — update the [[party-application]] row, the [[strangle-the-graph-via-proxy-events]] open-risks section, and the dependency-map's cross-cutting rows. Option B (KG pull) would put [[knowledge-graph]] inside the proxy adapter's hot path.
+- When the **integration env access** is unblocked ([[open-questions#OQ-042]]) — note on the [[party-application]] row + dependency map; opens up integration-env smoke testing for Artificial.
+- When the **DataOps PCT parity walkthrough** ([[open-questions#OQ-044]]) lands — update the [[party-curation-tool]] row.
 
 ## Related
 - [[party-rearch-phase-1]] — canonical Phase-1 page (full scope table, done-state, predecessors/successors).
@@ -107,3 +114,4 @@ Drawn from [[open-questions]] (filter `project: party-rearch`, `phase: phase-1`)
 - [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] — InRisk-first cutover sequence; concrete Party MDM Integration epic (4–5 stories); two component-libraries call; party-tagging vs feature-tagging boundary; sanctions / NTT / Boomi flagged.
 - [[sources/20260514-inrisk-high-level-refinement]] — InRisk epic ordered + gated (Stories 1 & 2 ready; 3/4/5 spike-gated); data-model story expanded to three tables (+ party_snapshot); parity-not-enhancement widget posture; TOBA-status filter parity; InRisk-side backfill question raised.
 - [[sources/20260519-party-integration-timelines]] — HV reframed as Convex's implementation of the [[artificial]] vendor platform; [[boomi]] confirmed as gateway for HV/Artificial → Party; YAML spec already with Artificial; Convex × Artificial fortnightly cadence + 2026-05-20 kick-off; strangler-pattern stability + InRisk-first cutover restated to Artificial.
+- [[sources/20260519-mdm-implementation-strategy]] — MDM implementation walkthrough (monorepo + DDD; auto-generated REST API; revision-based versioning + full audit / access-log / recovery stack; widget = single component / three parameterised variants / raw React + close-to-raw CSS / owned by [[billy-calladine]]; integration env access blocked); proxy-event-with-InRisk-data design fork raised; **Knowledge Graph correction** ([[knowledge-graph]] is a sibling Graph-team-owned application, not the internal Neo4j of party-application); UI/UX descope reinforces parity-not-enhancement; close-of-call sentiment _"a lot further along than I suspected"_.

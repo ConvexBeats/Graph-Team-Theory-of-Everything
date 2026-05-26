@@ -3,10 +3,10 @@ type: concept
 title: Contract Buckets — Operational · Data Distribution · Enrichment
 aliases: [three-bucket-framework, contract-framework]
 created: 2026-04-22
-updated: 2026-04-22
+updated: 2026-05-26
 tags: [concept, framework, methodology]
-sources: [20260422-meeting-transcript-session-1]
-source_count: 1
+sources: [20260422-meeting-transcript-session-1, 20260519-mdm-implementation-strategy]
+source_count: 2
 status: draft
 ---
 
@@ -53,12 +53,15 @@ Who reads party events / queries the Party API:
 
 - **[[data-universe]]** (owned by [[analytics-team]]) — primary event consumer (spine-rewrite event + broker-variant)
 - **Party versioning in [[inrisk]] + Artificial** — local snapshot caches today; ID+version references in Phase 1
+- **[[knowledge-graph]]** — separate read-replica graph DB owned by [[graph-team]] that holds InRisk + Party data and powers [[inrisk]] search (correction 2026-05-26, see the contradiction note below)
 - **Launchpad** — downstream consumer (referenced in-session; not deep-dived)
 - **Party reporting** — internal reporting pipeline
 - **EVA** — referenced in-session as a party-reading consumer
 - **Broker dashboards** — consume the broker-variant on the common bus
 
-_Knowledge Graph was originally named as a consumer in this bucket in Session 1; subsequently clarified (lint pass) as the internal Neo4j datastore within [[party-application]] rather than a downstream consumer — it does not belong in this bucket._
+> ⚠ **Contradiction (recorded 2026-05-26)** — Knowledge Graph was originally named as a consumer in this bucket in Session 1. The 2026-04-22 lint pass reclassified it as _"the internal Neo4j datastore within [[party-application]]"_ and removed it from this bucket on that basis. Per user clarification 2026-05-26 (in the context of the [[sources/20260519-mdm-implementation-strategy]] ingest), the lint conclusion was incorrect — KG is a **separate graph database also owned by [[graph-team]]**, holding InRisk + Party data as a read-replica, and powering [[inrisk]]'s search functionality. See [[knowledge-graph]] for the new identity page and [[open-questions#OQ-010-R]] for the re-opened question with the corrected answer.
+>
+> **Bucket placement**: KG belongs in the **data distribution** bucket — it is a downstream consumer of Party data (alongside being a consumer of InRisk data), used by [[inrisk]] for search. It is not a re-architecture subject under [[party-rearch]]; whether the long-term ParseDB ⇄ Dynamo migration changes how Party data lands in KG is a Phase-2+ concern.
 
 ### Enrichment bucket
 External reference data flowing in:
@@ -94,3 +97,4 @@ _None recorded yet._ The framework is as-proposed; no counter-proposal has been 
 
 ## Sources
 - [[sources/20260422-meeting-transcript-session-1]] — introduction of the framework and full walk-through of every contract
+- [[sources/20260519-mdm-implementation-strategy]] — Knowledge Graph correction; KG re-added to the data-distribution bucket as a sibling Graph-team-owned application (not the internal Neo4j of party-application that the 2026-04-22 lint pass had concluded)

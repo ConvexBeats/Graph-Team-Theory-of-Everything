@@ -1,0 +1,1112 @@
+Joe Worsfold
+14:17:41
+Hey, mate.
+Rory Beattie
+14:17:44
+Okay.
+Joe Worsfold
+14:17:46
+How's it going? All right.
+Rory Beattie
+14:17:47
+I'm alright, how you doing?
+Joe Worsfold
+14:17:49
+Yeah, good. Managed to…
+Get some stuff into the sprint thanks to Alex's help so.
+Getting started is good.
+Rory Beattie
+14:18:00
+Yeah, yeah, yeah, yeah.
+Joe Worsfold
+14:18:02
+Get the momentum, get the momentum going and I'll feel better.
+Rory Beattie
+14:18:06
+Yeah, exactly.
+Exactly. I assume he'll join us in a second, will he, then?
+Joe Worsfold
+14:18:12
+Sorry.
+Rory Beattie
+14:18:13
+I assume Alex will join us in a second, will he?
+Joe Worsfold
+14:18:15
+Yeah, we just finished another call. He should be, assuming he's got this in his calendar.
+Rory Beattie
+14:18:22
+Yeah, no, that's cool. Let me just, I'll just shut that down for a sec.
+Joe Worsfold
+14:18:27
+No worries.
+Rory will just be back in a second.
+Alex Sillars
+14:18:40
+Thank you very much.
+Joe Worsfold
+14:18:43
+After waiting patiently for us.
+Rory Beattie
+14:18:46
+Hey, yo.
+Joe Worsfold
+14:18:46
+Okay.
+Okay.
+Alex Sillars
+14:18:48
+Hello.
+Rory Beattie
+14:18:50
+Um… well, I guess first things first, are you okay to have this? You seem to be having a pretty manic day, and if you'd prefer to just have 30 minutes to yourself, I can… there is a slot at 2 o'clock tomorrow, I think.
+Alex Sillars
+14:19:02
+I…
+I would say we need this sooner rather than later, so if everyone's happy, then…
+Rory Beattie
+14:19:08
+Yeah, I'm totally happy to, yeah, as long as you guys are okay and not totally exhausted. Um…
+Alex Sillars
+14:19:08
+Let's do it.
+Joe Worsfold
+14:19:14
+No, it could've been an artist, it.
+Rory Beattie
+14:19:16
+Yeah, cool, alright. So, um, basically just to what I wanted to get out of this, I think, um, you know, just based on your comments yesterday, Joe, um…
+We…
+don't really have an option to back out at this stage, um, which is, I think, a good thing.
+Joe Worsfold
+14:19:34
+Yep.
+Rory Beattie
+14:19:34
+uh, let's force ourselves down this route, and uh, pull that band-aid that's needed to be pulled for quite some time, um, and get this over the line. So, the next question is, how do we get it over the line? Um…
+Which is hopefully where I'm going to help and not hinder. But Alex has been very accommodating at the minute. I'm waiting for him to tell me where I'm doing something wrong, but he's been very, very, very accommodating so far. But I think to do that, we basically just need to take a look at what we've got.
+what we know the problem space is, and then we can see whether it all fits. And if it doesn't, we can come up with a shiny new strategy, and I'll come up with some ways of…
+Um, disappointing people, um.
+Aggressively, I don't know, what's the best word?
+Non-aggressively. Yeah, is that better? Yeah, cool. So, I guess, are you okay just to quickly, just so I can wrap my head around it, is…
+Joe Worsfold
+14:20:24
+Yes.
+Yes.
+Rory Beattie
+14:20:34
+Just…
+give an outline of what we do actually physically have in code right now. I think that's probably the best starting place for me, personally. Alex, is that… I appreciate you probably know a good bit of this already, but uh, yeah, yeah, you happy with that?
+Alex Sillars
+14:20:46
+No, sounds good.
+Rory Beattie
+14:20:49
+Cool.
+Joe Worsfold
+14:20:52
+Yeah, so, alright, a very brief overview. Right, so the code is like…
+Um, we have an entire, like, functional monorepo, so it's like the…
+If you look at, like, what we've got in graph today, it's, like, obviously, like, this sort of…
+broken up by lots of different parts of party backend, and then you've got, like, the curation UI, and then you've got the party search as a separate thing, like, maybe I'll do a very, very quick comparison, but I'.
+Rory Beattie
+14:21:19
+Mm-hmm. That's fine.
+Joe Worsfold
+14:21:19
+uh…
+So…
+Rory Beattie
+14:21:21
+Let's, uh, let's take as long as we need over this, right? We can have multiple sessions and things, but it's just, uh, it's about getting us to a place where we're all comfortable with what we've got, where we need to go, and then, uh, we can provide maximum help for you.
+Joe Worsfold
+14:21:26
+Okay.
+Rory Beattie
+14:21:34
+So you're not, uh, having to go this alone.
+Joe Worsfold
+14:21:35
+Awesome. Thank you. Yeah.
+Yeah, I think I appreciate it. So yeah, so everything in here that basically says like party backend, party curation, party in risk.
+Rory Beattie
+14:21:43
+Hmm. Okay.
+Joe Worsfold
+14:21:44
+party search. They're all, like, separate packages, I guess, in old graph, and then now in…
+new, they're all together in a monorepo, it's much easier to run everything, and the code for all of it's all there. So, the only, sort of, major difference is because I've done it, it's like domain-driven development, you've got, like, a domain area which actually has most of the core model. Most of the core model is all done, uh, including all of, like, the core functionality to, like, classify changes, stream stuff from the D.
+Rory Beattie
+14:22:09
+Yep.
+Joe Worsfold
+14:22:09
+Like, I've got all of the backend there as a… like, in a current state. So, like, where I'm actually, I guess, still working on…
+Stuff is more in the space of.
+like, saying I've got a final, I guess, beta that I'm happy with is my version one that covers off lots of the, like, requirements, which mostly at the moment for me, and what I've been talking to Ben about, and what affects, like, the sanctions part is, how does my model, where I've got the same sort of.
+shape where you've got roles and views. But, like, if I'm trying to remove interest data, how do I make sure I can proxy the party event? So that's one, like, major thread of what's still to be, kind of.
+um…
+I guess, pinned down to a version 1. Um, I'm not… I'm not far. I think the problem with that is ultimately just the thing that we've got a spike for in Sprint, which is, if I don't want to have interest data, and I want interest to be responsible for interest data, how do I get interest data to proxy the existing event?
+Rory Beattie
+14:22:52
+Yep.
+Joe Worsfold
+14:23:05
+for today because we'll eventually remove that but for now we need it so that's like a an open question uh and then for the uis which so we've got a like fully functioning curation ui which is is already deployed i say fully function the dev one i just need to do a few changes and it'll be fine.
+I need to backfill into those low environments, like, the data has to be moved over to do some of it, um, but it is functional. Um, but with both the curation UI and the actual, um, party search.
+Like widget, the key thing again is the gap analysis between the current PCT UI and the current in-risk or the current party search widget so that I know what the gaps are because I think I've covered the vast majority, but the key will be like getting parity, make sure I hit all the functionality.
+for those two things, and that will also then define if there's anything I need to add to my, like, API, but I think, for the most part, the back end's…
+pretty like um pretty sorted and just based on the way I built this thing is like the API spec gets auto-generated so it's very easy to sort of share with.
+doing me an artificial, so I've kind of, like, got all of my stuff in order for, like.
+the collaboration. So the key now is to take that.
+and build upon it, and, like, finesse it, basically. Like, I think my, obviously, biggest gap for doing a POC is I had no…
+I didn't do any user-centered design, right, so I've not done any UX. That's fine if we're going for just, like, parity initially on the UIs, but that would be, like, something for the future. So, I think if I take all.
+Rory Beattie
+14:24:38
+I think that's exactly it. That's something that we can make a call on right now and say, look, things like UI, UX for feature parity components.
+Joe Worsfold
+14:24:39
+Okay.
+Rory Beattie
+14:24:49
+just… don't worry about that sort of thing at all, right? Let's… let's get a working thing, right? Because that's… that is the critical path, this whole…
+Problem. Um…
+Joe Worsfold
+14:24:59
+Yep. So…
+Rory Beattie
+14:25:00
+Again, Alex, step in if I say something that you don't agree with, but you didn't recall in Horace, so I'll assume for now.
+Alex Sillars
+14:25:06
+No, completely agree. UI, UX, I've never cared about, never will.
+So…
+I guess I have some pointed questions, Joe, if that's okay.
+Joe Worsfold
+14:25:18
+Of course.
+Alex Sillars
+14:25:19
+and I'm going to run through the things that I think would make a constituent party service that we currently have work. So we have an ability to perform a party search. Yes.
+Joe Worsfold
+14:25:31
+Yes.
+Alex Sillars
+14:25:31
+Does that exist as a widget that would integrate within RISC currently?
+Joe Worsfold
+14:25:36
+It does exist as a widget. There's an open question as to whether or not they can integrate it as its current state of Chakra 3 and its Design Studio, or if we're going to have to make a non-Design Studio version of the thing. But, like, Chris and John were willing to try to see if they could.
+Alex Sillars
+14:25:47
+Oh.
+Rory Beattie
+14:25:47
+Yeah, that question is.
+They have tried, I think. So I think the answer to that question is probably not.
+Joe Worsfold
+14:25:55
+Ah, shame, but okay.
+Rory Beattie
+14:25:56
+Seems so, Chris has run a, um, yeah, which we kind of suspected, but yeah, I think from what Chris was saying on a call I was on just an hour or two ago.
+It sounds like it's not going to be a goer without basically them rebuilding everything in chakras.
+Joe Worsfold
+14:26:11
+Yeah, gotcha. Yeah, this was, I did say it would take some effort, but yeah.
+Alex Sillars
+14:26:11
+So we…
+Rory Beattie
+14:26:14
+Good.
+Alex Sillars
+14:26:15
+So we would need to build party search widget in Chakra too.
+Rory Beattie
+14:26:20
+Uh, no correction. We would need to build, uh, the search widget with generic components, not using or design system.
+Alex Sillars
+14:26:29
+Okay.
+Rory Beattie
+14:26:32
+I think was what was agreed.
+Joe Worsfold
+14:26:34
+Yeah, so I'm… it should… again, for the most part, this shouldn't be a huge problem, just on the basis that…
+the original one was just built in, like, a couple of days off the back end of the API. The API bit was more important. Um, but…
+Rory Beattie
+14:26:46
+Yeah, I'm kind of hoping this is, like, one of the things that we can actually lean on Cursor for, um, which I think Cursor's becoming less prevalent in what's left to do, right? But I think that's one area where hopefully we could just say, Billy, can you just point Cursor to say.
+Joe Worsfold
+14:26:51
+Yeah.
+Rory Beattie
+14:27:00
+rebuild this exact thing, but don't use… have any reliance on that design library at all.
+Joe Worsfold
+14:27:06
+Yeah, it would just be a fit for us, just deciding, do we, um…
+Do we maintain both?
+To be honest, I don't know. We might just maintain one until the other one, because artificial aren't going to use them anyway.
+Rory Beattie
+14:27:13
+uh…
+Yeah.
+So, as well as that, like, we can say…
+Joe Worsfold
+14:27:22
+Bye.
+Rory Beattie
+14:27:29
+다들.
+Joe Worsfold
+14:27:36
+Yep.
+Rory Beattie
+14:27:40
+그니까.
+Joe Worsfold
+14:27:52
+Yeah, exactly. So yeah, I mean, I can just remove the old code. It will still be in version control for in the future if we do want to do Design Studio in v3. The only other thing is I have to do the opposite thing where my UI for the curation.
+is V3 in design systems. So I've got to do the opposite, where I've got to take the… if I want to use it in the same… because I was going to use it so that they can do, like…
+I have the ability to use it in here, but we could just take it out, because it's not part of…
+It's part of PCT today for searching on changes, but yeah, it's fine. Like, I think it's easier for me to do that than it is for InRisk, so not particularly worried.
+Rory Beattie
+14:28:32
+Yeah. So curation is standalone. Right? So curation doesn't have any package dependency clashes.
+i.e. design system, whatever else, so we can use Chakra 3 safely for party curation tool, we just can't use it at all for the widget, yeah.
+Joe Worsfold
+14:28:40
+No. Yeah, I can hear you.
+Yeah, I can work with that, I think.
+Rory Beattie
+14:28:48
+Cool. Makes sense.
+Yep.
+Alex Sillars
+14:28:53
+RRT search widget functionality then? So we have a gap where you've built something, but it doesn't necessarily match up feature parity with the current in-risk search in terms of columns displayed, behaviour when we see certain types of information for in-risk, so there's some work to do.
+There. Is that fair to say?
+Joe Worsfold
+14:29:09
+Yeah, that's fair to say. I've talked to Billy about it, but it's like the moment, like what I built was again, a cursor opinion thing of like, this is what I think the UX should be like. So like this is like cards, right? So it's rendering a card that has information. But currently what we actually do in party search is render a table with lots of.
+Rory Beattie
+14:29:18
+Hmm.
+Joe Worsfold
+14:29:27
+um, columns for different bits of the data, which, again, we can fairly easily do as well. Um, and then just how the, sort of.
+Flow of like use or use and edit the concerns thing again i could just do parity um if I want for now so like that's fine.
+And then similarly, the same with the gap analysis, I think.
+Um… just gotta do the auth…
+uh… the auth through as well. It's got to be part of that, like… should be fine. Again, we'll just copy what exists today, but…
+Oh.
+There was parts of me, obviously, improving it as I go, but I think there's just no point in terms of scoping-wise for how long we've got.
+Of.
+Alex Sillars
+14:30:06
+Okay, and party search API. So we currently have a GraphQL return response. We're moving now to a…
+I was going to say OpenAI. It's not OpenAI. OpenSearch.
+Rory Beattie
+14:30:21
+Mm-hmm.
+Joe Worsfold
+14:30:22
+Yeah, just a standard REST API, because I can… I'm trying to… one of their goals was always trying to reduce the total number of.
+Alex Sillars
+14:30:24
+All right.
+Joe Worsfold
+14:30:28
+services, and that's another total number of things people have to understand. Um…
+Muy práctica.
+Alex Sillars
+14:30:49
+Okay, cool. At what state's the API in? Do you have the spec for that?
+And has it built?
+Joe Worsfold
+14:30:58
+Es complicado.
+have a document endpoint, a bit like the Swagger docs, that we could all access. Can't do that right now, because, again, I need something from them to make it. At the moment, it's private by all the RBACs, which means I have to RBAC the docs endpoint, which is also a bit silly, but… I can share anything, though, at the moment. I did it the other day for Simon.
+Alex Sillars
+14:31:20
+Yep.
+Joe Worsfold
+14:31:34
+I gave him the Scala version, but I can do the Scala or the Swagger version, whatever you guys prefer. Um, yeah, in future, that will be published into the same place that we currently do, like, with the Swagger docs, but…
+Alex Sillars
+14:31:36
+Yeah, so, yeah.
+Joe Worsfold
+14:31:47
+I'm still waiting here.
+Alex Sillars
+14:31:48
+Oh, and the current design for the… I keep cutting you off, and I'm really sorry. In my head, I've got bullet points I need to hit, so please forgive me.
+Joe Worsfold
+14:31:52
+No, no.
+Alex Sillars
+14:31:57
+That will be integrated through Boomi, through third party. So what…
+Do we need from Boomi and…
+We obviously won't have any of that just yet, but that also needs to be built and considered, right?
+Joe Worsfold
+14:32:11
+Yeah, we could probably get them started, I guess. Uh, I don't know how they'd do it, if I'm honest. Like, I hope they have some just automation that can read an OpenAPI spec and just creates the… the wrapper, but God knows. Um, but yeah.
+Rory Beattie
+14:32:23
+Yeah, I think just leave that to those guys though, Joe, right? So like, again, it's another thing that you don't need to worry about, like give your output.
+Joe Worsfold
+14:32:31
+Yeah.
+Rory Beattie
+14:32:31
+It's their problem from then on in, right?
+Joe Worsfold
+14:32:34
+Exactly. Uh, so yeah, that will be… I guess the sooner we get them started on some stuff, the better. But I can give them the…
+Rory Beattie
+14:32:35
+Mmm.
+Joe Worsfold
+14:32:42
+I mean, they've got read-only access to our repos, right, so they should be able to go and have a look at my infrastructure and see exactly how I've done the, um…
+API, the roots, and, like, what my, uh, host, uh, is, essentially, like, the name that they'll need to call out to, but yeah, can, uh…
+We can do that whenever we want, I guess.
+Alex Sillars
+14:33:05
+Okay, so we just think about party search in the widget. So, party search exists. We have that OpenSearch which retrieves data. Party search widget needs rebuilding with generic components, and we need to close the functional gap between the existing search widget and the new one.
+Joe Worsfold
+14:33:17
+Yep.
+Alex Sillars
+14:33:22
+The spec for the OpenAPI is complete, but we need infrastructure resolve, access controls, and then Boomi to build the pass-through wrapper for that.
+Joe Worsfold
+14:33:31
+Yeah, exactly. And then there's a little bit to do still on, once we've done that gap analysis, I've got some backend stuff I have to do where the Dynamo is the actual source of truth. It has all of the data that the model won't change. Well, not as much as it has recently, but I then project those changes into OpenSearch.
+that obviously makes it easy to search via the index. It's a super-fast search with fuzzy matching, but that means I also need to make sure that my index in OpenSearch has all the data that Piped Search needs to show to the in-risk people.
+Right, when they're running the widget, so that's… I guess it's part of the gap analysis, but just to flag, like, um…
+That's, again, probably TMI, but yeah, I know that has to be done sooner.
+Okay.
+Alex Sillars
+14:34:11
+Awesome. Okay.
+Are you guys happy if I move on to PartyDB? Sorry, Rory, this is your session and I'm doing what I do.
+Rory Beattie
+14:34:18
+No, no, no, this is exactly what it's about, right? It's shared. I'm just trying to think if there's anything else on the API side of the world that we need to…
+So just to be totally clear on that, Joe, what we're saying is we've given High Volume the spec, so they theoretically could call it, but to do that, they need the Boomi integration to be sorted out. So one thing that is on us is just to line up Boomi to do that work. As soon as they do that, they can test it out.
+Now, one question on that is, what data can they actually call? How much have we got in there, if any?
+Joe Worsfold
+14:34:52
+At the moment, like, very, very little. I'm about to completely wipe it again in dev and re-backfill. So, like, at the moment, there's only the dev environment. There will be shortly integration. I need to basically keep stepping through as I make the new ones. But yeah, there won't be lots of data until I run the backfill with Ben, but obviously I haven't run a full backfill because we're still honing down.
+Rory Beattie
+14:34:57
+Yeah.
+Oh, yeah.
+Joe Worsfold
+14:35:11
+that last bit of the data model around that proxying for party events, and there's an element of that being related to sanctions, although I think we can nail it down now.
+Rory Beattie
+14:35:13
+Yeah.
+Cool. All right, let's cross that bridge when we come to it, right? Because there's a sanctions bit, and we're talking about that tomorrow.
+Joe Worsfold
+14:35:21
+With a one point.
+Yeah, we are. Just quickly whilst I'm writing this so I can track it. What is in risk? Is it V2 or is it something else?
+Rory Beattie
+14:35:27
+Yeah, cool.
+Chakra wise.
+Joe Worsfold
+14:35:36
+Yeah.
+Rory Beattie
+14:35:36
+It's not on Chakra.
+Joe Worsfold
+14:35:38
+Oh, it's no tracker at all. Okay. I would be…
+Rory Beattie
+14:35:40
+Yep.
+Yeah, so, just to be totally clear on it, that's a bit of a lie. They have some Chakra V2 components, but it's, like.
+a drop-down list here, and a button there. It's like…
+They're primarily on Tailwind and a few other bits and pieces.
+Joe Worsfold
+14:35:59
+Yeah, I…
+Rory Beattie
+14:36:00
+So it's, uh… the closer you can get to raw CSS when you build it.
+the better.
+Joe Worsfold
+14:36:05
+Yeah, I'll try and keep it to just raw react and yeah.
+Rory Beattie
+14:36:09
+Yeah, style, yeah.
+Joe Worsfold
+14:36:11
+That's fine. I mean, obviously, we know what works today, because the current one works today, so I'll just do something off of the back.
+Rory Beattie
+14:36:16
+Yeah, anything along those lines, like, even if you reuse those components, like…
+Joe Worsfold
+14:36:21
+Yeah, I will… I will just reuse them if I can rewire in the…
+Rory Beattie
+14:36:24
+Yeah.
+Joe Worsfold
+14:36:25
+the OpenSearch results, which I can try and get it to fit a bit closer.
+Rory Beattie
+14:36:30
+And when we say widget, we're talking about there are actually 3 widgets, right?
+Joe Worsfold
+14:36:34
+Uh, yeah, the widget, sort of, for me, is, like, it encompasses all of the different versions of that same party search widget, so, like, parties, brokers.
+Rory Beattie
+14:36:42
+And how's that… is that… is it structured as such, right? Is it like…
+Like, what does that look like in the codebase?
+Joe Worsfold
+14:36:50
+Yeah, essentially it's like from a component thing, the component can still render whatever we want in terms of like a party. Again, this is the thing, like we need to do the change because again, there's card based at the moment, but it would be like render a card that's party focused based on.
+Rory Beattie
+14:36:55
+Yep.
+Joe Worsfold
+14:37:06
+like, the parameter of the component saying, like, you know, we're searching for parties, and then it will be different for roles, but then it's obviously hitting a different search endpoint to get different results back from OpenSearch to then render those cards, depending on what kind of render you want to do, like a party, a role, or…
+Or otherwise. Um, but again, that's the…
+that's a bit of the way. If we're just going to take the…
+current ones, then it's just a case of rewiring it with OpenSearch and the API.
+Rory Beattie
+14:37:33
+So, hang on a sec. So, sorry if I'm being a bit of an idiot here. I also gotta, I'm being super distracted by the dog, which is asking to be let out and let in every three seconds in case you wonder why it woke me down like a pissing yo-yo.
+Joe Worsfold
+14:37:41
+No.
+Yeah.
+Rory Beattie
+14:37:50
+So, is there kind of, like, a shell component, which is kind of the container, which is the drawer that manifests in the in-risk world, and then within that, you can kind of manifest either one variant, another variant, or the third variant of the widget components within that one.
+Shell.
+Joe Worsfold
+14:38:10
+Yeah.
+Rory Beattie
+14:38:10
+Is that kind of it?
+Joe Worsfold
+14:38:11
+That is how I've built it. Yeah.
+Rory Beattie
+14:38:13
+Yeah. And is that, um, I assume they pass some prop or something that basically differentiates which one it is that they want to manifest in there, is that correct?
+Joe Worsfold
+14:38:25
+Yeah, yeah, just like parameterized components.
+Rory Beattie
+14:38:27
+So they, like, pass broker as an argument or whatever, and it returns the broker version of it.
+Joe Worsfold
+14:38:33
+Yeah, that's the idea. I'm trying to keep it super simple and…
+Rory Beattie
+14:38:36
+Yeah.
+Joe Worsfold
+14:38:37
+But yeah.
+Rory Beattie
+14:38:37
+Cool. And is that how it works currently, do you know?
+Joe Worsfold
+14:38:42
+I think to a degree, yes, but I think, um…
+it'll depend on how generic those components are in the inrich side. I won't lie. I haven't had a look at the inrich code for a long time.
+Rory Beattie
+14:38:52
+No, that's a-okay, and that's kind of their problem, right? Like…
+Joe Worsfold
+14:38:56
+Yeah, it's kind of… I mean, it's useful to…
+Rory Beattie
+14:38:57
+We've got enough on the flight over on this side of the park, so.
+Joe Worsfold
+14:38:59
+It's useful to know what they've got in terms of if I'm going for parity, then, again, for scoping-wise, it's easier to just give them something that works very similarly. The bigger thing will be, like, the new world, I was building it with a slightly different, like, state management, which I might have to just, again, like, just have a component that.
+Rory Beattie
+14:39:07
+Yes.
+Joe Worsfold
+14:39:15
+works for in-risk, which is fine, again. I feel like it won't be a huge problem to build something out like that from…
+from Cursor with the context of both, but we shall see.
+Rory Beattie
+14:39:28
+Yeah, okay.
+Oh, cool, cool, cool. All right, cool. I said I didn't mind you interrupting, and immediately seemed to mind, Alex, so let's go back to… you were about to, I think…
+Move on to a different topic.
+Alex Sillars
+14:39:40
+Um, okay.
+Yeah, I was. No, all good.
+Let's pick up with Billy as part of that paragraph.
+TPOC because I'm interested in the in-risk part of it, because currently I think in-risk have something in their code that determines which of our widgets they call. Yes, they pass parameters to us, but they specifically request it, so we'd need to change that.
+on Inrasad.
+Rory Beattie
+14:40:05
+How do you feel about making that Billy's responsibility, Joe? So you just kind of forget about it?
+Joe Worsfold
+14:40:12
+Yeah, good. To be honest, even though it's not been formalized, there's a part of me that's like… I'm sitting on the… this epic, which is around, like, the data model proxying and the legacy migration, and to be fair, Ben's been helping with that one, and then I think Billy's perfectly placed to…
+Rory Beattie
+14:40:21
+Yep.
+Joe Worsfold
+14:40:27
+to help with this one, for party search and integration within RISC.
+Rory Beattie
+14:40:31
+Let's formalize that, Alex. Let's, like, make it very clear to Billy that he's responsible for that, and we need him to kind of just own it and run with it.
+Joe Worsfold
+14:40:43
+Yeah, and then similarly, just need to do something for that, for the curation gap announce, which I think, obviously, that we can… we can lean on, uh, Tom Ash, I guess, if it's a case of trying to get the tickets together, and then the rest of the squad can pick up the tickets in sprints.
+Alex Sillars
+14:40:43
+Yep.
+Joe Worsfold
+14:40:56
+Okay.
+Rory Beattie
+14:40:56
+Yeah.
+Yeah…
+Alex Sillars
+14:40:59
+Yes.
+Rory Beattie
+14:41:00
+Let's have a think about that one in a second, but yeah.
+Alex Sillars
+14:41:03
+Yeah, yeah, we'll come on to that.
+Rory Beattie
+14:41:03
+Largely agree.
+Alex Sillars
+14:41:06
+Okay, cool. So then let's move on to the PartyDB itself. So, we don't have any specific tickets for this, but it is about that event proxying, etc. So…
+Joe Worsfold
+14:41:17
+Yep.
+Alex Sillars
+14:41:18
+We have the DynamoDB stood up, it's available in dev and integration.
+Joe Worsfold
+14:41:23
+Uh, it's partially available intuition, it's doing the JumpCloud SAML Cognito access, so no one can actually do anything with it.
+Alex Sillars
+14:41:31
+Okay.
+Is the data model complete within that?
+Joe Worsfold
+14:41:36
+Oh yeah, and so the model is the same, it will be the same across all, in the sense of, like, the shape of it, it would just be we haven't backfilled anything into integration from the integration.
+Alex Sillars
+14:41:44
+Yeah, yeah, yeah. Sorry. Yeah, I don't mean in terms of the different environments. I mean, we have the data model in dev or a version. Yeah.
+Joe Worsfold
+14:41:50
+Yeah.
+Exactly. Yeah.
+Alex Sillars
+14:41:54
+Awesome. And that's subject to change based upon?
+What we might find, but it'll be some additional fields here or there, nothing.
+Joe Worsfold
+14:42:01
+Yeah. Okay.
+Alex Sillars
+14:42:01
+fundamentally broken.
+Joe Worsfold
+14:42:03
+That's it. It goes to that spike that we obviously pulled in, but basically, um, to proxy those party events, we need the spine underneath the client IDs.
+But we're trying to avoid storing that, because it's already, you know.
+Isn't in risk.
+But yeah, but we can do it. We can even do it in the short term. But yeah, a lot of the time me and Ben spent more recently is just, like.
+this this just kind of beast of when you're back filling from the graph. There's a lot of different ids flying around. And then in my model, it's more opinionated about making it clear what's like an external reference to another system that we're recording for like eclipse or.
+for, like, a broker UID that's come from InRisk, or the client ID that came from InRisk, versus what's an ID that we've generated and we're sort of responsible for. But I think, Alex, the best thing to do is, once.
+me and Ben have finished the last, like, the current run-through in Backfield, we just sit up with you and just go.
+Here's how it all works.
+And yeah.
+see if there's anything missing. I think, ultimately, we… in the future is simpler when we don't have to proxy the party events, assuming that we're responsible for sending party events and not being responsible for sending in-risk events.
+to do sanction checking, but that is just not in scope, is it, Sir Mike?
+Rory Beattie
+14:43:28
+So, just so I'm clear on that one, sorry, because I'm really new to this. What we're saying is InRisk send over the party that they've used to capture, but they also send over, for example, a submission reference that that party is associated with, and you store that somewhere within.
+PartyDB World used.
+Joe Worsfold
+14:43:46
+Yeah, and the party graph currently is, like, we store everything below sort of going from client to submission, but the submission also says what the requirement ID is for that submission.
+Rory Beattie
+14:43:55
+Yeah, of course. So, and then…
+And then that's used by sanctions, that's why it's in there.
+Joe Worsfold
+14:44:02
+Yeah, this is… so this is… I started to build this, because we're obviously gonna have a meeting about it, but basically, like…
+these party events, there are responsibilities to send these party events, and at the moment, I'm obviously aware of at least three important consumers, the DU, HUM, and BUMI. Now, I don't think the DU care about the submission and requirement information, because they already have it from InRisk. But the thing that's obviously a bit silly now is that, like.
+Rory Beattie
+14:44:17
+Mm.
+Joe Worsfold
+14:44:26
+En Santander.
+Rory Beattie
+14:44:31
+Yep.
+Hmm.
+Joe Worsfold
+14:44:52
+M.
+Rory Beattie
+14:44:54
+Do they, as part of that job, do they get enriched at all by party?
+Joe Worsfold
+14:44:58
+Yes, by adding party information, I guess, right? I think the problem is that you've got this triangle where Boomi rely on us to tell them when either a party or an in-risk thing has changed, but they don't have any granular information about this mission, so they then end up calling in-risk.
+Rory Beattie
+14:45:01
+Oh, okay. Yeah.
+Mm.
+Joe Worsfold
+14:45:14
+to get information about the submission, the auxiliaries are the ones that triggered it from us, in some cases already. And so you've got this weird triangle of data going backwards and forwards, and they build, like, their own composite, I assume.
+party and submission data to know when to, like, send or not send. So it's gotten a bit convoluted, obviously. We're… we're in risk events, but, um…
+Rory Beattie
+14:45:28
+So, yeah, so…
+Got you.
+Joe Worsfold
+14:45:33
+But then that's not the only thing that triggers a party event. So obviously, SNS triggers… any interest change will trigger us to generate that party event, but so will our own changes to party trigger that party event. So that's where you then get the problem of…
+I can't fully rely on what's in risk send us for either event, because sometimes I'll trigger the event, which means I then have to know how to structure that party event, which at the moment includes the submission references. So, like, to be able to proxy the party event.
+without storing interest data means that, essentially, I have to change this slightly to be more like a…
+when I'm sending this event, I go and get…
+the nest for Minrisk, at least for now, and then send it. Until, obviously, ideally, we want to live in a world where.
+the system that's changed something sends their event to some kind of sanctioned domain that can do the composite, but that's not going to happen. So, like, we're just working out the best workaround for this to still exist in its current form.
+Rory Beattie
+14:46:23
+Yeah.
+So we're saying that when you said that's not going to happen, that's not going to happen for phase one, I think is what we're saying, right?
+Joe Worsfold
+14:46:32
+Which, again…
+Yeah. Yeah, like, I built… I will have built, essentially, in…
+MDM, all the events are specific, and I can send an event that literally just says.
+uh, sanctions check trigger, right? Because, like, we only send the sanctions check on specific fields changing. Like, in the future, you do that, and enrich do that, and then, yeah, if entity need a composite of both, then that's the job of some domain. It can be Boomi's, or probably someone else, but…
+Rory Beattie
+14:46:51
+Hmm.
+Joe Worsfold
+14:47:02
+um…
+Rory Beattie
+14:47:02
+So, for a latter phase, then, we absolutely need to pull this out of the party, right? And do this…
+Alex Sillars
+14:47:07
+Yep.
+Joe Worsfold
+14:47:07
+Yeah, yeah, 100% makes no sense for us to be, like, a middleman between in-risk and sanctions for this sort of stuff. It's become…
+Rory Beattie
+14:47:13
+No, and it's not even just for in-risk, right? This could be for anything. It doesn't have to just be in-risk records either, I assume, right? So, it's…
+Joe Worsfold
+14:47:14
+I think it's…
+Yeah, the focus, I think, for us is…
+Rory Beattie
+14:47:23
+You know, when this becomes a high volume world, what the hell happens then? Anyway, we'll cross this bridge tomorrow, I guess, but…
+Joe Worsfold
+14:47:29
+Yeah, there's gonna be… yeah, but I think it has to be unpicked. High Volume World, at least, could be… like, I haven't even talked to them about what sanctions would be like, but at least in that case, whoever's… if it's just us sending party data, they can use.
+Rory Beattie
+14:47:32
+Hmm.
+Yep.
+Joe Worsfold
+14:47:42
+are an event, although, again, like, if Boomi expect the shape to be like this, then God knows, but, um…
+Rory Beattie
+14:47:49
+Well, they, they'll need to change. That's simplest. Yeah.
+Joe Worsfold
+14:47:52
+Yeah, I get it. This is going to make it better.
+Alex Sillars
+14:47:52
+Yeah. But I think the assumption.
+the assumption we have is that to get Boomi buy-in, DU buy-in, to make the change in reasonable time, is unrealistic. So we have to come up with this proxy solution.
+Rory Beattie
+14:48:01
+Hmm.
+Joe Worsfold
+14:48:04
+I apologize for this. Yeah.
+Rory Beattie
+14:48:05
+Yeah, exactly. Okay.
+Joe Worsfold
+14:48:06
+But it's fine. Ultimately, it's easy to do, as long as… I know we already changed stuff on InRisk, but if InRisk could just say to me, here's an API endpoint that, if I call it and say… I know… I will install the client ID, so I can go, oh, I know this part is a client.
+this is the ID, and if they have an endpoint that says, given a client ID, give… get all of the requirements and submissions, then I can still proxy that event, no problem, and that's a short-term sort of fix for that problem, um, so that I… in-risk is still responsible for storing in-risk data. I don't have to, I just have a sort of a…
+Rory Beattie
+14:48:30
+Hmm.
+Oh, yeah.
+Joe Worsfold
+14:48:39
+a mapper, which has always historically been the client ID for… for that, anyway. We'll have to do something else for… for broker. I don't know if we sanctioned to check the… the broker role information, but… um…
+Rory Beattie
+14:48:43
+Yeah, okay.
+Joe Worsfold
+14:48:49
+But yeah, that's…
+That's… that's the… that's the goal. So, like, I think that's where me and.
+Rory Beattie
+14:48:55
+Cool.
+Joe Worsfold
+14:48:55
+And spending lots of effort on doing that. And I would say, like, the model work, like, it does work. It's more… I think it should be clearer, but ultimately it would just be the…
+does the access patterns still then give everyone everything they need? Because also, I don't think anyone else other than Boomi do it, but obviously we have an endpoint that's like, call us to find out which submissions or requirements are on a party.
+although maybe that's whom, but this is my point, right? It's the thing of, like, if I take functionality away.
+Rory Beattie
+14:49:25
+Yep.
+Joe Worsfold
+14:49:26
+But that's another part of it.
+Rory Beattie
+14:49:29
+Well, that's the interesting thing. Could we utilize whom to actually do that? Anyway, one for tomorrow.
+Joe Worsfold
+14:49:34
+Yeah, so it was on the spike as well, like, rather than try to get inRisk to create an endpoint to do it, why don't we just pull it out of Knowledge Graph, because Knowledge Graph has all of the inRisk information, but it will be eventually consistent, might cause us more problems.
+Rory Beattie
+14:49:36
+Yeah.
+Yeah, but the problem is that you guys look after the knowledge graph, and as such…
+The work doesn't move anywhere.
+Joe Worsfold
+14:49:55
+Oh, no, we'll go anyway. But I mean, it might get done fast, but I'm more worried about the data quality because I don't want to basically be taking what is already a slightly convoluted process and adding another graph in with more data that's going back and forth.
+Rory Beattie
+14:49:56
+Yeah, yeah.
+So…
+Alex Sillars
+14:50:08
+Yeah, the question of does whom party and knowledge graph all have consistent data is one that scares me.
+Rory Beattie
+14:50:08
+Okay.
+Yep.
+Joe Worsfold
+14:50:15
+Yeah, I think Hoom only has consistent in as far as our party events have been sent, which they do fail sometimes. But as far as I know, KG is, like, isolated to… like, even the party information in KG is…
+Rory Beattie
+14:50:16
+Cool.
+Joe Worsfold
+14:50:27
+the party data from the in-risk side, so it's kind of like KG is actually just a graph representation of in-risk, which then kind of could be, but again, I just don't trust the… the eventual consistency problem of being accurate enough. Although I will also admit, I did say to Ben.
+Obviously, we're both perfectionists, and we're trying to think about what's the perfect way to do this, but frankly, the current party events aren't perfect either, so if I don't make the proxy perfect, as long as we know what the problem is, then maybe it's fine, but I don't know, it's…
+Choices, but, um…
+I think we're going about it the right way, it's just, um…
+Rory Beattie
+14:51:04
+Cool. So I guess the conclusion of this, though, is we can't make a decision on this until we have that conversation tomorrow, right? We've got some options, but…
+how we pull out sanctions information for NTT is a bit of an unknown for Phase 1, until we have this conversation with Simon and the gang tomorrow.
+Joe Worsfold
+14:51:21
+Yeah, exactly. I think…
+Rory Beattie
+14:51:23
+Cool.
+Joe Worsfold
+14:51:24
+The conversation is useful going into the future, especially in terms of, like, if someone says to me, I have to keep, uh, interest data in party, that would be, like, I need to know now, because that would be one of those ones where doing that backfill properly is important, but I think we can avoid it, and probably should.
+Rory Beattie
+14:51:39
+Yes. Yeah.
+Joe Worsfold
+14:51:40
+But let's… let's see. I do think that proxying the party events is the right call for phase one, um, and yeah, there'll be some other…
+Rory Beattie
+14:51:47
+Yep.
+Joe Worsfold
+14:51:47
+stuff to IR from the model, but it's fine.
+Rory Beattie
+14:51:50
+And then we'll tidy it up later in a phase two.
+Joe Worsfold
+14:51:51
+Yeah, 100%. It'll be easier to tidy up later. Um…
+Yeah.
+Rory Beattie
+14:51:56
+Okay.
+Alex Sillars
+14:51:56
+Okay, cool.
+Rory Beattie
+14:51:57
+That makes sense. What's what's next on the list?
+Alex Sillars
+14:52:00
+So the data model is complete, or there or thereabouts, in terms of test data available in that.
+DevDB, you said there's limited to none, certainly doesn't cover everything. So if we wanted to kick the tires of that in any meaningful way, we couldn't just yet.
+Joe Worsfold
+14:52:18
+Yeah, not yet. So basically, I've been killing myself the last few days to just get to the point where we can rerun the backfill so that you can have hundreds or thousands of real like dev data and integration ideally, because that would be more stable.
+Um, just give me a bit of time, I'll let you know as soon as it's ready, like, I think it would be ready by the end of this week.
+Alex Sillars
+14:52:39
+That was going to be my next question. So, have we done… has Ben done, or…
+Probably likely the analysis on what that means in terms of.
+Joe Worsfold
+14:52:54
+Yeah, so we've done it multiple times now, actually, whilst we've changed the model, this is just like the third or fourth time where it will now be what I would consider sort of like the alpha and then going forwards, I'll only do like modification extensions, not like re-wiping the data and doing it again, if that makes sense.
+should be more stable. And then the big problem was I had to change a bunch of things about, like, how we store IDs, which then just breaks a lot of stuff when you're on the tool, but that will stop being the thing as soon as I've finished.
+Fixing it.
+At the moment, no, because, like, so the API is really, really strict about the…
+about the validation and the schema, but the event flows have access direct to, like, Dynamo. They go straight to the repo rather than via the API, and it's kind of by design.
+Because I'd rather take in the data as is in GraphWorld, which isn't always…
+perfect, and then, like, fix it as we go. But that's just what I've thought. I'm happy to… to change that. Like, it's a choice of whether we take it all in as is, and…
+Alex Sillars
+14:53:57
+Du.
+Joe Worsfold
+14:54:01
+except that there'll be fixes, but the fixes should be easier in future, hopefully, or I hard-gate it, and then it might just mean that the backfill is sort of, like, multi-step, and… I don't know. We won't know until we've run it in the lower environ.
+Alex Sillars
+14:54:10
+Ciao.
+Joe Worsfold
+14:54:13
+where the skeletons will be and the data quality.
+Alex Sillars
+14:54:25
+Changes to Data.
+Joe Worsfold
+14:54:27
+Yeah, so for audit purposes, I guess there's a whole section I've got in here for how audit works now, which probably needs to change a little bit or be updated, but like every single change in MDM world for the actual party is recorded as a revision. There's no sort of way around it. So you've got.
+not just the sort of, like, classic created at, updated at stuff, but you've obviously got, like, a change history and a full changelog for the actual data. That's part of just the versioning system. Then for, like, access, um…
+access logs are all being streamed from API Gateway into an S3 bucket, so I've got full access logs that can be searched via Athena in S3, and then equally, every single DynamoDB change gets streamed, because that's how Dynamo works in terms of changes. I sit on top of that and classify those changes into events, but I also take those streams and chuck those also into.
+an audit bucket that's searchable and shows what's changed every day. Like, basically, the audit will be, like, very thorough.
+But I think, obviously, for DataOps people, they care mostly about just, like.
+what party data is changing every day. And that's what the revision and version system kind of like showcases.
+Rory Beattie
+14:55:33
+Does that exist, Joe?
+Joe Worsfold
+14:55:33
+at…
+What are you looking at here?
+Rory Beattie
+14:55:38
+No, no, no, the, the, that, um, version control thing.
+That you've just described.
+Joe Worsfold
+14:55:44
+Yeah? Sorry, I missed it.
+Rory Beattie
+14:55:45
+Does it… does it actually exist? As in, have you built it?
+Joe Worsfold
+14:55:48
+Oh, yeah, yeah, it's all it's all fully functioning like.
+Rory Beattie
+14:55:50
+Oh, right, okay, because I was going to say, is that another area that we could offload to somebody else, right? I didn't know whether you were talking about it in a future tense, but… or a current present tense.
+Joe Worsfold
+14:55:54
+No, it's all, it's all…
+Yeah, no, it's all done in the sense that like it had to be part of the actual original build because they do like a mutable version shot so they had to be when you're like creating stuff to to do it that way but.
+Rory Beattie
+14:56:05
+Uh, okay, yeah, of course.
+Yeah, we can. Yeah, no, that's good.
+Alex Sillars
+14:56:12
+Nice, okay.
+Joe Worsfold
+14:56:13
+Vielen.
+Alex Sillars
+14:56:15
+Die Menschen.
+Die.
+Ist.
+Joe Worsfold
+14:56:41
+Ist.
+Ist.
+in the, uh, in the data. Like, we're tracking it by email, essentially, like, same as I think we do today, in terms of who did what. Um…
+on the changes.
+Alex Sillars
+14:57:25
+und.
+Recovery.
+Joe Worsfold
+14:57:49
+Yeah, so Dynamo does point-in-time recovery. So depending on how we structure it, we could literally get like per second rebuilds of the whole dynamo. So that's all fine. It'll be a bit like how Postgres does like snapshots, but probably slightly faster because the document stores are.
+it's just easier, lower… lighter weights than… than a Postgres server. So that'd be fine. Similarly, like, the… the actual deployments and the actual…
+services themselves are way more lightweight, because I'm not using ECS, um, should give us a lot more flexibility and more control. Uh, monitoring's already all set up with Datadog, um, so that'll help. We just need to build out some actual, like, alerts, which… that's a ticket I've gotten.
+Er.
+Some Europe.
+Insurance.
+Rådlangenglish.
+Alex Sillars
+14:59:13
+Ist.
+Joe Worsfold
+14:59:27
+Thank you.
+No, I don't think so. I think the recovery thing is like point-in-time recovery. And then because I'm streaming all of my database updates into an audit file, I can just rerun those. Fine. There might be instructions to do that, actually, to restream. Or if I want, I could also audit log all of my events and I could do like.
+Alex Sillars
+14:59:31
+Vielen.
+Joe Worsfold
+14:59:48
+refresh at a point and rerun the events and make that easy, but to be honest, we can't do that today, I don't think, so I've sort of left it as is. One thing I think we do need to do, uh, that's not on any of the backlog yet is, um, Dynamo doesn't work like Postgres, you can't do migrations like Postgres or Neo4j, where you write, like, a big.
+Alex Sillars
+14:59:53
+Okay.
+Die.
+Joe Worsfold
+15:00:07
+Cypher or big SQL script, so that'll have to be done differently. I want to build that in a way that's actually a bit more, like, self-service in the future, but for now, we can make it just for us, um, and then eventually share it with…
+But that is a feature that we might need to have it at least as a fast follow, or if we think we're going to be doing a lot, then have it there straight away.
+Alex Sillars
+15:00:41
+und.
+Good Steerth.
+Joe Worsfold
+15:00:58
+Yeah, so most of the… that's done, except for it's just not passing through correctly at the moment as well. You got the read-only thing, uh, the other day, but that's just a bug fix. The… I think the big thing that, obviously, you mentioned is the… so, like, PCT today is obviously, like…
+you know, table with tabs for different things, and then when you open the ticket, it's obviously, I mean, you know this, uh, it just looks like this, and obviously there's Jira behind it. Uh, in the new world, like, I've at least done it for the revisions part, fairly similar, but obviously…
+different in that instead of having, like, tabs, you can have, like, filters. And then the actual tickets themselves, um…
+look different, right? Um, so it's gonna be a case of, like, do they prefer it or not? That's the UX thing, but it'll have the ability to…
+mark for review, approve, or request changes. Um, I think the thing you mentioned the other day is obviously one, but ultimately you're just back on the… the… the parity thing of…
+Can they do everything they need in the new UX basic plan? That'll be it.
+Alex Sillars
+15:02:01
+Ist.
+Joe Worsfold
+15:02:02
+Perfect.
+That's it. That's it.
+Alex Sillars
+15:02:08
+Ähm.
+Ist.
+Ist.
+Rory Beattie
+15:02:18
+Mm-hmm. Mm-hmm.
+Alex Sillars
+15:02:18
+Haben.
+Ist.
+Jopé.
+Soy.
+Por la parte de vista.
+to do the work on MDM, rather than…
+Yeah, worrying too much about needing you, Ben or Billy.
+Joe Worsfold
+15:03:17
+Yep.
+Alex Sillars
+15:03:19
+Okay, that's my spiel. Rory, I've completely stolen your meeting. What else are we missing?
+Rory Beattie
+15:03:24
+No, this is really easy.
+um…
+Do we need to be at a different thing, by the way, as well?
+Joe Worsfold
+15:03:32
+Yeah, sorry, I've just realized that there's another call I put in for this conversation about getting the in-risk data so I can proxy the party event. But…
+Rory Beattie
+15:03:39
+Yeah.
+Alex Sillars
+15:03:41
+Cool, I'm…
+Rory Beattie
+15:03:41
+Bye.
+Should Alex have been on that? Anyway.
+I'm on it, so I can relay anything back to you, Alex, if needs be, give you some time to at least process that. I think we've covered a lot of ground there, right? But, um…
+Joe Worsfold
+15:03:51
+Yeah, I would say.
+Rory Beattie
+15:03:58
+I'll set something up for the next couple of days, and we can kind of pick up this conversation, and then we can just make sure that there are no other gaps that we're thinking of, and then we'll pull all of this together, Joe, and just make sure.
+Alex Sillars
+15:04:02
+Yep.
+Rory Beattie
+15:04:11
+um, we've got the immediate focuses, and then kind of the next steps, and whatever else. I think there probably are some obvious immediate focuses that you're already working on, but uh, there's probably the next set.
+Alex Sillars
+15:04:12
+It's…
+Rory Beattie
+15:04:21
+That we can lay out neatly in front of you, just to…
+Guide the way and distribute it accordingly.
+Cool.
+Joe Worsfold
+15:04:30
+Yeah. Sounds good. Thanks. Thanks. Yeah.
+Rory Beattie
+15:04:30
+Thank you so much.
+No, honestly, thank you. It's really good to see. We're a lot further along than I suspected we even were. So I'm not overly worried about this.
+Joe Worsfold
+15:04:41
+Yeah, we're in the… we're in the, like, the…
+dotting I's, crossing T's, make sure there's no unknown unknowns, and then it's the thing I was always.
+between team, like, collaboration is the thing that I worry about, I guess, and just… not that it'll be bad, just that it takes time.
+Rory Beattie
+15:04:56
+No, exactly. And look, we'll sort that out. You just worry on getting the thing built.
+Joe Worsfold
+15:05:01
+Yeah, cool. I'll see you in the other one.
+Rory Beattie
+15:05:01
+Yes.
+

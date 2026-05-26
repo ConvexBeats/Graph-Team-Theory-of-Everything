@@ -567,3 +567,75 @@ First exercise of the §5.5 departure convention. User-declared (no source page)
 
 - touched (new, 5): [[sources/20260519-party-integration-timelines]], [[artificial]] (platform), [[boomi]] (platform), [[srini]] (person), [[luca]] (person).
 - touched (edited, 15): [[high-volume]], [[high-volume-architecture]], [[high-volume-team]], [[simon-hulbert]], [[party-application]], [[party-application-architecture]], [[strangle-the-graph-via-proxy-events]], [[inrisk-cuts-over-before-high-volume]], [[sanctions-processing]], [[party-rearch]], [[party-rearch-phase-1]], [[party-rearch-phase-1-summary]], [[party-rearch-dependency-map]], [[party-rearch-ownership-matrix]], [[open-questions]], [[index]], [[log]] (this entry).
+
+## [2026-05-26] ingest | 2026-05-19 MDM Implementation Strategy (afternoon call — Rory's role + concrete current-state of MDM build) — `party-rearch`
+
+**Source**: `` `raw/20260519 - MDM Implementation Strategy` ``. Afternoon call between [[rory-beattie]], [[alex-sillars]], [[joe-worsfold]] (transcribed via tl;dv, ~67 mins). Two interleaved threads: (a) Rory's posture as programme manager paying closer attention to help the project complete, (b) [[joe-worsfold]] giving an end-to-end walkthrough of where the MDM build actually is today (backend, API, UI, audit, events, ops). Source page filed at [[sources/20260519-mdm-implementation-strategy]].
+
+**Major correction (load-bearing)** — the **Knowledge Graph** is _not_ internal to [[party-application]] as the 2026-04-22 lint pass concluded (which prematurely resolved OQ-010 on the basis of an over-eager inference). User clarification 2026-05-26: _"KG is Knowledge Graph - One of the Graph Databases that the Graph team own. It contains InRisk and Party data as a read-replica. It powers the InRisk search functionality."_ This means **two separate Graph-team-owned graph databases coexist**: [[party-application]]'s internal Neo4j (operational store, being strangled by the new Dynamo+OpenSearch MDM) and the [[knowledge-graph]] (read-replica of InRisk + Party data, powering InRisk search). The fix:
+
+- New application page [[knowledge-graph]] promoted to first-class status; lives at `wiki/applications/knowledge-graph/knowledge-graph.md` with a `⚠ Contradiction` callout explaining the 2026-04-22 mis-classification.
+- [[open-questions]] **OQ-010 re-opened as OQ-010-R** with the corrected definition (owner: [[graph-team]]; data: InRisk + Party read-replica; consumer: [[inrisk]] search; future: candidate Option B in the proxy-event-with-InRisk-data design fork); original OQ-010 resolved row annotated as superseded.
+- Downstream pages corrected to differentiate KG from `[[party-application]]`'s internal Neo4j: [[party-application]] (identity), [[party-application-architecture]], [[contract-buckets]], [[party-rearch-dependency-map]], [[graph-team]]. Each carries a `⚠ Contradiction` callout where the prior incorrect phrasing was used.
+
+**MDM implementation snapshot (Joe's walkthrough)** — folded into [[party-application-architecture]] (promoted stub → draft) and [[party-curation-tool-architecture]] (promoted stub → draft). Key claims:
+
+- **Backend**: monorepo + domain-driven design; Scala + ZIO-Catz; Dynamo primary store; OpenSearch for search; auto-generated REST API (Scala spec → Swagger → TS clients); replaces the GraphQL search of the old system. Roles-vs-views ([[roles-vs-views-litmus-test]]) materialised as Dynamo schema.
+- **Backfill**: iterative process to seed Dynamo from Neo4j; **bypasses API validation by design** (data is what it is — surfaced as a known constraint, not a defect).
+- **Audit + recovery**: revision-versioning per party change (history-table style, native to the data layer); access logs through API Gateway → S3; DynamoDB streams emit both events + audit trail; DynamoDB native point-in-time recovery.
+- **AWS / environments**: existing 3-account / 4-env estate (already confirmed 2026-05-13) hosting all this; integration environment is **blocked** on JumpCloud SAML Cognito access — captured as **OQ-042**.
+- **Dynamo migrations**: there's no Postgres-style scripted migration tooling for Dynamo; a self-service tool will be needed for future schema evolutions — captured as **OQ-043** with Phase-1 scope deferred.
+- **PCT new UI shape**: replaces the table-with-tabs (Jira-backed) with a **revisions + filters table**; bakes **mark-for-review / approve / request-changes** workflow into the ticket UI itself. Parity-with-DataOps not yet confirmed — captured as **OQ-044**.
+
+**Widget refinement (sharpened the [[inrisk-cuts-over-before-high-volume]] decision)** — folded into [[inrisk-cuts-over-before-high-volume]], [[inrisk-architecture]], [[billy-calladine]]:
+
+- **Tailwind correction**: [[inrisk]] is primarily Tailwind, _not_ Chakra (corrects the framing on prior pages that implied a Chakra-vs-design-system split throughout). The design-system widget is _additionally_ a problem because InRisk is Tailwind, but the new widget will not use either: it'll be **raw React + close-to-raw CSS**.
+- **Widget structure**: _one_ React component with **three parameterised variants** (parties / brokers / others) sitting inside a shell container — not three separate components.
+- **InRisk-side dispatch code change required**: the InRisk app needs a routing/dispatch tweak to surface the right widget variant. Both the widget rebuild and the InRisk-side dispatch are formalised under [[billy-calladine]]'s ownership.
+- (Possibly assisted by [[cursor]] — Joe was open to using AI tooling for the rebuild.)
+
+**Proxy-event refinement (sharpened the [[strangle-the-graph-via-proxy-events]] decision)** — folded into [[strangle-the-graph-via-proxy-events]] and [[party-application-architecture]]:
+
+- **Three known consumers** enumerated: (1) [[data-universe]] (today's primary consumer), (2) [[high-volume]] via [[boomi]] via [[artificial]] (added 2026-05-19-am), (3) [[boomi]]/sanctions orchestration (sits on Boomi today, "wrong place" by consensus).
+- **InRisk-data design fork** (gates the proxy adapter): MDM should _not_ store InRisk data (Joe), but the existing event payloads carry InRisk data. Two options for getting it back in: **Option A** — call an InRisk endpoint at event-emit time ([[joe-worsfold]]'s preference); **Option B** — pull from [[knowledge-graph]] ([[joe-worsfold]] + [[alex-sillars]] wary of KG consistency). **OQ-041** captures the fork; pending sanctions-session pairing with [[simon-hulbert]].
+
+**Rory's posture (softened per user steer)** — folded into [[rory-beattie]]:
+
+- Framing: _"still programme manager but paying a little closer attention to help move the project to completion"_ — not a deep technical lead role. Soft refresh of summary + key facts + claims.
+- Active work this week: live descope calls (audit + history-import + transaction-history + broker-form-history all moved to Phase 2+), formalising ownership (Billy on widget + dispatch, Tomas on PCT gap-analysis), shielding engineers from process noise.
+
+**Lighter people refinements**:
+
+- [[joe-worsfold]] — new claims on the MDM walkthrough, the proxy-event fork stance, and the KG correction.
+- [[alex-sillars]] — new claims on the external strangler-stability promise (continues 2026-05-19-am thread), UI/UX descope alignment, surfacing the InRisk-side dispatch-code need, KG-consistency wariness.
+- [[tomas-sivo]] — formalised as author of PCT curation gap-analysis tickets.
+- [[ben-joseph]] — paired with [[joe-worsfold]] on backfill + proxy-event work; no role change.
+- [[billy-calladine]] — formalised on widget rebuild + InRisk-side dispatch; new open actions captured on his page.
+
+**Open-questions register**:
+
+- **OQ-010 re-opened as OQ-010-R** (Knowledge Graph identity + future — corrected per user clarification).
+- **4 new OQs filed**: OQ-041 (proxy-event-with-InRisk-data design fork), OQ-042 (integration env JumpCloud SAML Cognito access), OQ-043 (Dynamo migration tooling Phase-1 scope), OQ-044 (PCT new-UI DataOps parity confirmation).
+- Open count: 36 + 5 = **41 open**; resolved count stays at **18** (OQ-010 resolved row annotated as superseded by OQ-010-R, not removed).
+
+**Standing analyses refreshed**:
+
+- [[party-rearch-dependency-map]] — KG correction in the Data-distribution-bucket row; 3 known proxy-event consumers enumerated; **5 new cross-cutting rows** (proxy-event InRisk-data lookup design, integration-env JumpCloud SAML Cognito access, Dynamo migration tooling, PCT new-UI DataOps parity, InRisk-side widget dispatch code). Widget description sharpened (raw React, three variants, Billy formalised).
+- [[party-rearch-ownership-matrix]] — Widget / SDK / Chakra workstream renamed and reframed around raw-React + Billy's formalised ownership. **5 new workstreams added**: proxy-event-with-InRisk-data design, MDM integration-env unblock, Dynamo migration tooling, PCT new-UI DataOps parity, PCT curation gap-analysis ticket authoring. **8 new open actions** (#38–#45). Total open actions: 35 + 8 = **43**.
+- [[party-rearch-phase-1]] — Scope-Applications table refreshed for [[party-application]] and [[party-curation-tool]] with the implementation snapshot; new OQ references added; implementation-progress sentiment captured.
+- [[party-rearch-phase-1-summary]] — same updates; Confidence section rebaselined with the sentiment indicator; new Follow-ups for proxy-event design fork, integration-env access, DataOps parity.
+- [[party-rearch]] — KG added to known applications in scope (with the correction note); What-I'd-want-to-know-next reordered to put OQ-041 at the top; sentiment indicator added as a baseline against which to re-assess on future ingests.
+
+**Index regenerated**: counts updated (6 sources · 7 applications · 4 architectures-as-draft); KG row added under Applications; [[party-application]] / [[party-curation-tool]] / [[inrisk]] / [[graph-team]] rows enriched; [[joe-worsfold]] / [[alex-sillars]] / [[billy-calladine]] / [[tomas-sivo]] / [[ben-joseph]] / [[rory-beattie]] rows enriched; [[strangle-the-graph-via-proxy-events]] / [[inrisk-cuts-over-before-high-volume]] decision rows enriched; new source row; OQ count updated 36 → 41; status line + last-updated line refreshed.
+
+**Things flagged but not done** (deliberate):
+
+- **No new ADRs** — the source is implementation-state + role-posture + refinements; nothing rises to a fresh decision worth its own ADR. The proxy-event-with-InRisk-data fork (OQ-041) is the strongest ADR candidate; deferred until the design call lands.
+- **[[knowledge-graph]] kept as a thin sibling page** — not expanded into an architecture page, on the basis that KG isn't in the [[party-rearch]] scope except as Option B on the proxy-event fork. If Option B is chosen, expand then.
+- **No back-edits to historical sources** — the older sources retain whatever they said about "the Graph" / "KG" verbatim; the correction lives on the wiki pages that synthesise across them, with `⚠ Contradiction` callouts.
+
+**Pages with breaking-change risk**: none — additive or refinement only; the KG correction is an _addition_ (new sibling app) + an _annotation_ on prior pages, not a rewrite of the wiki-link graph. `[[party-application]]` and `[[party-application-architecture]]` remain the right links for the operational party store; `[[knowledge-graph]]` is the new sibling.
+
+- touched (new, 2): [[sources/20260519-mdm-implementation-strategy]], [[knowledge-graph]] (application).
+- touched (edited, 19): [[party-application]], [[party-application-architecture]], [[party-curation-tool-architecture]], [[inrisk-cuts-over-before-high-volume]], [[inrisk-architecture]], [[billy-calladine]], [[strangle-the-graph-via-proxy-events]], [[rory-beattie]], [[joe-worsfold]], [[alex-sillars]], [[tomas-sivo]], [[ben-joseph]], [[contract-buckets]], [[graph-team]], [[party-rearch]], [[party-rearch-phase-1]], [[party-rearch-phase-1-summary]], [[party-rearch-dependency-map]], [[party-rearch-ownership-matrix]], [[open-questions]], [[index]], [[log]] (this entry).
+

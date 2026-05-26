@@ -3,12 +3,12 @@ type: entity
 title: Ben Joseph
 aliases: [speaker-9]
 created: 2026-04-22
-updated: 2026-04-22
+updated: 2026-05-26
 tags: [person, engineer]
 team: graph-team
-sources: [20260422-meeting-transcript-session-2]
-source_count: 1
-status: stub
+sources: [20260422-meeting-transcript-session-2, 20260519-mdm-implementation-strategy]
+source_count: 2
+status: draft
 ---
 
 # Ben Joseph
@@ -30,6 +30,7 @@ Engineer / Developer on the [[graph-team]]. Has deep working knowledge of the cu
 - Articulated the adapter acceptance criterion: _"if I can take an event currently emitted from Party Graph, map it into MDM, and map the MDM record back to the exact same event, we can go in"_ — [[sources/20260422-meeting-transcript-session-2]].
 - Described the current event nesting (requirement + submission under client ID) and the renewal behaviour where client-ID cascades move historical submissions onto the latest client — [[sources/20260422-meeting-transcript-session-2]].
 - Scoped the backfill strategy for parent parties (two-pass approach: backfill records, then second batch to resolve parent links via legacy party IDs) — [[sources/20260422-meeting-transcript-session-2]].
+- **Pairing with [[joe-worsfold]] on the data-model-proxying + legacy-migration epic.** Joe in [[sources/20260519-mdm-implementation-strategy]]: _"I'm sitting on the epic which is around the data-model proxying and the legacy migration, and Ben's been helping with that one."_ As of 2026-05-19, three iterations of backfill have run; stable alpha targeted for end of week 2026-05-22; subsequent changes will be additive only (no further re-wiping).
 
 ## Current actions (open)
 _None directly assigned in this session; Ben is primarily in an execution role for the tickets [[alex-sillars]] is creating._
@@ -43,4 +44,5 @@ _None directly assigned in this session; Ben is primarily in an execution role f
 - [[strangle-the-graph-via-proxy-events]]
 
 ## Sources
-- [[sources/20260422-meeting-transcript-session-2]]
+- [[sources/20260422-meeting-transcript-session-2]] — bidirectional-mappability criterion; backfill strategy
+- [[sources/20260519-mdm-implementation-strategy]] — pairing with Joe on the data-model-proxying + legacy-migration epic
