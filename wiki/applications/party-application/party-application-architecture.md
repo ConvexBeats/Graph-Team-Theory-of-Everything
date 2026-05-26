@@ -6,8 +6,8 @@ updated: 2026-05-26
 tags: [architecture, current-state]
 application: party-application
 state: current
-sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up, 20260514-inrisk-high-level-refinement]
-source_count: 4
+sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up, 20260514-inrisk-high-level-refinement, 20260519-party-integration-timelines]
+source_count: 5
 status: stub
 ---
 
@@ -47,6 +47,8 @@ _Populate from raw ingest. Known so far:_
 #### Produced
 - Party-change events → consumed by [[data-universe]] — payload-bearing; shape to be characterised; feeds downstream analytics
 - Party-change events → consumed by [[inrisk]] — payload-bearing; drives IR2-side synchronisation
+- Party-change events → routed via [[boomi]] → [[ntt]] for sanctions screening — current call-chain on [[sanctions-processing]]
+- _(Phase 1 onward)_ Party-change events → routed via [[boomi]] → [[artificial]] (mirrored party-state for the HV-underpinning vendor platform) — see [[high-volume-architecture]]. Phase-1 priority is the **read path** from Artificial; the event-push back is a later piece.
 
 #### Consumed
 - _unknown — pending ingest_
@@ -66,7 +68,9 @@ _From transcripts:_
 - **Payload events, not reference events** — downstream consumers snapshot-cache party payloads rather than resolving by ID + version. This is the constraint the [[party-rearch]] project exists to remove. See [[contract-buckets]] "data distribution" bucket.
 - **Graph API surface** — current consumers of the Knowledge-Graph API are incompletely mapped; a spike is open to audit endpoint-by-consumer ([[open-questions#OQ-004]]).
 - **[[eclipse]] ingestion** — third-party data flows from [[eclipse]] into the Party Application are under scope review ([[open-questions#OQ-001]]).
-- **Spine-rewrite-on-every-event drives sanctions noise** — every InRisk event causes Graph to rewrite the whole spine and emit one event; Boomi consumes those events to drive [[sanctions-processing]] checks, which produces noise on irrelevant changes. Not a Phase-1 fix; [[open-questions#OQ-032]].
+- **Spine-rewrite-on-every-event drives sanctions noise** — every InRisk event causes Graph to rewrite the whole spine and emit one event; [[boomi]] consumes those events to drive [[sanctions-processing]] checks, which produces noise on irrelevant changes. Not a Phase-1 fix; [[open-questions#OQ-032]].
+- **API spec is subject to change until 1 Sep go-live** ([[alex-sillars]], [[sources/20260519-party-integration-timelines]]: _"won't change massively, but there may be some additions or deletions from it"_). Now that the YAML spec is in [[artificial]]'s hands ahead of the 2026-05-20 kick-off, every new consumer needs to be onboarded with this caveat explicit. Mirrors the InRisk-side iteration expected from the widget-integration spike.
+- **Curation feature extension, Neo4j → DynamoDB data migration, and DU/sanctions event-emission completeness are still in flight** ([[alex-sillars]], [[sources/20260519-party-integration-timelines]]). The front-of-house MDM API is the most mature surface today; backend completeness is the remaining critical-path work for Phase 1.
 
 ## Relationships to other architecture pages
 - [[party-curation-tool-architecture]] — PCT is the primary curation frontend for parties; tightly coupled data model
@@ -94,3 +98,4 @@ _None yet — this page has not yet been through a phase-completion fold-in._
 - [[sources/20260422-meeting-transcript-session-2]] — mentions of Neo4j-as-primary, payload events, downstream consumer list
 - [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] — AWS estate (existing 3-account / 4-env world; not AWS 2.0); Lambdas confirmed; two component libraries; cutover-window dual-write
 - [[sources/20260514-inrisk-high-level-refinement]] — second-library widget posture confirmed as parity-not-enhancement; TOBA-status filter parity requirement
+- [[sources/20260519-party-integration-timelines]] — [[artificial]] confirmed as a second new Phase-1 outbound consumer (via [[boomi]] gateway); API-spec instability surfaced as an operational constraint; backend-completeness call-out (curation, Neo4j → Dynamo migration, DU/sanctions event emission)

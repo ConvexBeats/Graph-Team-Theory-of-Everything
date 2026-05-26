@@ -499,3 +499,71 @@ First exercise of the §5.5 departure convention. User-declared (no source page)
 
 - touched (new, 0).
 - touched (edited, 15): `AGENTS.md` (separate `schema` entry above), [[andrew-turner]], [[daria-romanovskaia]], [[prebind-team]], [[party-rearch-ownership-matrix]], [[party-rearch-dependency-map]], [[party-rearch-phase-1]], [[inrisk]], [[inrisk-cuts-over-before-high-volume]], [[sources/20260514-inrisk-high-level-refinement]], [[sources/20260422-meeting-transcript-session-1]], [[amardeep-badhan]], [[jason-owen]], [[katarina-voskarova]], [[rastislav-sepelak]], [[open-questions]] (OQ-030 row annotated with the redirect note), [[index]], [[log]] (this entry).
+
+## [2026-05-26] ingest | 20260519 Party integration timelines (Convex × Artificial onboarding prep call)
+
+- **Source**: `raw/20260519 - Party integration timelines.md` — 27-minute three-way prep call held the day before a Convex × [[artificial]] kick-off (2026-05-20). First substantive surfacing in the wiki of **[[artificial]] as a third-party vendor platform underpinning [[high-volume]]**, and the **[[boomi]]** integration broker that gateways the relationship.
+- **Attendees**: [[rory-beattie]] · [[simon-hulbert]] (Architect on HV/Artificial integration project) · [[alex-sillars]] (PO, [[graph-team]]) + **Convex – Orega – 6B Boardroom** speaker (HV-side PM coordinator, unidentified — see [[open-questions#OQ-037]]). Named-but-not-present: [[joe-worsfold]] (referenced as YAML-spec author), [[srini]] (Boomi Integration Architect, new entity), [[luca]] (HV-side scheduler, new entity), **Sam** (FDA for integrations — advances [[open-questions#OQ-024]]).
+- **Source page created**: [[sources/20260519-party-integration-timelines]] — themed key-claims (Artificial as consumer · Boomi as gateway · MDM build-status from Alex · strangler / sequencing restated to a customer · coordination shape); 6 actions; applications + entities + concepts mentioned; 4 new open-questions.
+
+**No new ADRs.** This source is **concretisation + coordination + reframing**, not a fresh architectural decision. Operational notes (Boomi-gateway pattern, API-spec instability caveat, fortnightly cadence + Slack channel) captured on the relevant pages.
+
+**Two new platform entities** (per user steers):
+
+- [[artificial]] — **full platform entity** (`wiki/entities/platforms/artificial.md`). Convex's mid-implementation third-party platform underpinning [[high-volume]]; new MDM consumer for Phase 1 via [[boomi]]. Records the two-stage integration (read path priority + change-event push later), the Convex × Artificial coordination shape, the strangler-pattern stability promise as restated to Artificial, and the InRisk-first sequencing as restated to Artificial.
+- [[boomi]] — **promoted from prose to a first-class platform entity** (`wiki/entities/platforms/boomi.md`). Convex's vendor integration broker. Hosts two distinct integration patterns: sanctions orchestration today (wrong-place, see [[sanctions-processing]] + [[open-questions#OQ-032]]) and the Artificial → Party MDM gateway from Phase-1 cutover. Convex-side owning team is TBD.
+
+**Two new person entity stubs** (per user steer "all three"):
+
+- [[srini]] — Boomi Integration Architect on the HV/Artificial integration project. Pairs with [[joe-worsfold]] on the Party-side setup. Counterpart to Sam (FDA for integrations) and [[simon-hulbert]] (Architect) in what looks like a shared integration / FDA function. Surname TBD ([[open-questions#OQ-040]]).
+- [[luca]] — HV-side coordinator named as the scheduler for the fortnightly Convex × Artificial catch-ups. Possibly the same person as the in-room Boardroom-PM ([[open-questions#OQ-037]]). Surname + formal role TBD ([[open-questions#OQ-038]]).
+- **Convex – Orega – 6B Boardroom speaker** — NOT stubbed per user steer (insufficient signal); tracked at [[open-questions#OQ-037]].
+
+**Deep reframing of [[high-volume]]** (per user steer "deep reframe"):
+
+- [[high-volume]] (identity page) rewritten so the lead framing is _"HV is Convex's implementation of the [[artificial]] vendor platform for high-throughput insurance-deal flow"_ — replacing the prior _"greenfield in-house high-throughput consumer"_ framing. New sections: "Vendor platform underpinning HV" (Artificial + Boomi as named platforms); coordination shape (fortnightly cadence, Slack channel, contacts roster); two-stage Party integration. Expanded Pending list with the new identification OQs.
+- [[high-volume-architecture]] reframed alongside — clarifies HV-as-product is largely the Artificial vendor platform's tech stack (out of scope for this wiki), while the Convex-side integration surface is what actually lives here. Boomi flagged as the unblocking dependency. API-spec instability + Artificial's faster-than-Convex cadence captured as known constraints. Awaits [[simon-hulbert]]'s diagrams to populate properly.
+
+**Lighter refinements**:
+
+- [[party-application]] + [[party-application-architecture]] — [[artificial]] added as a second new Phase-1 downstream consumer alongside [[high-volume]] (both via [[boomi]]). New **API-spec instability caveat** captured in Pending / Known-constraints sections (operational, not an OQ). Backend-completeness call-out added (curation extension, Neo4j→Dynamo migration, DU/sanctions event-emission completeness — restated from Alex's snapshot in the source).
+- [[strangle-the-graph-via-proxy-events]] — new **Refinement (2026-05-19)** section: the strangler-pattern stability promise was restated **to a third-party consumer** for the first time (verbatim quote preserved); records the "joined-up InRisk + Party data" carve-out Alex made; flags the corollary that the promise has now been stated externally and is harder to soften.
+- [[inrisk-cuts-over-before-high-volume]] — new **Reinforcement (2026-05-19)** clause: sequencing restated to [[artificial]] / Simon-side directly. No change to the ADR; recorded because this is the first communication of the sequence to a vendor counterparty.
+- [[sanctions-processing]] — all `Boomi` mentions linkified to `[[boomi]]`; **note added** explaining that Boomi now has a first-class platform page and that the sanctions orchestration described here is one of two distinct patterns hosted on Boomi (the other being Artificial gateway).
+- [[simon-hulbert]] — broader role framing (Architect on the HV/Artificial integration project, not just "HV-team-internal"). 5 new claims from this source.
+- [[high-volume-team]] — members table extended (Srini, Luca added); Sam now annotated as FDA for integrations; new claims + new workstreams (Boomi connectivity, Convex × Artificial cadence, architecture diagrams) added.
+
+**Project-level updates**:
+
+- [[party-rearch]] — Pillar #6 ("HV is API-only via Boomi") extended to clarify HV ≡ Convex's implementation of Artificial; **Known applications in scope** section gains a new "External / vendor platforms consuming Party in Phase 1" sub-list ([[artificial]] + [[ntt]] both via [[boomi]]). Tension #2 reframed around Artificial-side integration design. Source count 4 → 5.
+- [[party-rearch-phase-1]] — [[high-volume]] row in Scope-Applications table updated to capture the Artificial reframing, the YAML spec / kick-off context, and Boomi connectivity as the immediate unblock. **Pending Phase-1 decisions** section extended with the API-spec instability communication protocol (operational, not an OQ).
+- [[party-rearch-phase-1-summary]] — same row updated; new "External / vendor platforms in scope" sub-section added; Follow-ups extended with the Artificial kick-off + Boomi connectivity completion as new revisit triggers.
+
+**Standing analyses refreshed**:
+
+- [[party-rearch-dependency-map]] — Phase-1 diagram extended: HV arrow re-labelled to clarify HV ≡ Convex-side delivery of [[artificial]]; **new Artificial arrow** added for the read path + change-event push back (both via [[boomi]] gateway). [[boomi]] given consistent wiki-link treatment across all diagrams. Key Phase-1 changes list updated. **5 new cross-cutting rows**: Artificial integration shape; Boomi connectivity for Artificial (the immediate unblock); Convex × Artificial fortnightly cadence + Slack channel; HV-side architecture diagrams; InRisk-cutover sequencing now-restated-to-Artificial. End-state arrow updated.
+- [[party-rearch-ownership-matrix]] — **HV Party integration** workstream reframed; **two new workstreams added** (Artificial vendor onboarding; Boomi connectivity for Artificial). **6 new actions** (#32–#37) covering 2026-05-20 kick-off, Boomi setup, fortnightly cadence, Slack channel, architecture diagrams, MDM front-of-house build-out. Total open actions: 29 + 6 = **35**. Ownership-gaps section refreshed: Sam advanced; Luca + Srini surname + Boardroom-PM added; Amardeep marked resolved (per the 2026-05-26 follow-up entry).
+
+**Open-questions register**:
+
+- **OQ-024 advanced** — Sam confirmed as _"FDA for integrations"_; surname + line manager still TBD; pairs with new OQ-039.
+- **4 new OQs**:
+  - **OQ-037** (people identification) — Convex – Orega – 6B Boardroom speaker identity; possibly [[luca]].
+  - **OQ-038** (people identification) — [[luca]]'s surname + formal role.
+  - **OQ-039** (scope/architecture) — what does "FDA" stand for? Likely Functional / Field Delivery Architect.
+  - **OQ-040** (people identification) — [[srini]]'s surname.
+- Open count: 32 + 4 = **36 open**; resolved count unchanged at **18**.
+
+**Index regenerated**: counts updated (5 sources · 40 entities — 9 teams + 4 platforms + 27 people · 36 open OQs); two new platform entries ([[artificial]], [[boomi]]); two new People entries ([[srini]], [[luca]]); [[simon-hulbert]] row enriched (src 1 → 2); new source row; status line updated. [[high-volume]] application row reframed; [[party-application]] row gains the Artificial-as-consumer note.
+
+**Things flagged but not done per user steers**:
+
+- **Boardroom-PM** — not stubbed as an entity; tracked at [[open-questions#OQ-037]] only. May be [[luca]].
+- **Artificial PM cohort** — referenced obliquely in the source (_"the project manager guys that I work with"_); no names captured; no stubs. Will surface at the 2026-05-20 kick-off.
+- **No new ADRs** — the source is concretisation + coordination; the candidate _"Boomi is the integration gateway between Party and third-party vendors"_ ADR is captured as the canonical role on the new [[boomi]] platform page rather than a separate ADR (it's a recording of operational reality, not a fresh decision).
+- **Older sources retain "Boomi" as inline prose** — only newly-touched sections were linkified to [[boomi]]; this respects the append-only spirit of source pages while making the new platform page discoverable from the current-state and Phase-1 dependency-map diagrams.
+
+**Pages with breaking-change risk**: none — additive or refinement only; no wiki-link path rewrites required.
+
+- touched (new, 5): [[sources/20260519-party-integration-timelines]], [[artificial]] (platform), [[boomi]] (platform), [[srini]] (person), [[luca]] (person).
+- touched (edited, 15): [[high-volume]], [[high-volume-architecture]], [[high-volume-team]], [[simon-hulbert]], [[party-application]], [[party-application-architecture]], [[strangle-the-graph-via-proxy-events]], [[inrisk-cuts-over-before-high-volume]], [[sanctions-processing]], [[party-rearch]], [[party-rearch-phase-1]], [[party-rearch-phase-1-summary]], [[party-rearch-dependency-map]], [[party-rearch-ownership-matrix]], [[open-questions]], [[index]], [[log]] (this entry).

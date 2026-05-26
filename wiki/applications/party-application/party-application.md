@@ -7,8 +7,8 @@ updated: 2026-05-26
 tags: [application, in-scope, core]
 owner: graph-team
 state: current
-sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up, 20260514-inrisk-high-level-refinement]
-source_count: 4
+sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up, 20260514-inrisk-high-level-refinement, 20260519-party-integration-timelines]
+source_count: 5
 status: draft
 projects: [party-rearch]
 ---
@@ -35,7 +35,7 @@ Provide version-controlled party records to every application that needs to disp
 - **Tech stack**: **Neo4j** (graph DB) with **Cypher** query; large-payload party events emitted to the [[data-universe]] (owned by [[analytics-team]]) which indexes into Snowflake
 - **Primary datastore (current state)**: the **Knowledge Graph** — a **Neo4j** instance sitting inside the Party Application infrastructure. It is not a separate application or downstream consumer; it is the graph database behind the current-state Party Application. The target-state re-architecture replaces it with DynamoDB + OpenSearch.
 - **Integration shape**: downstream systems receive full party payloads and **snapshot-cache** locally
-- **Key consumers (known)**: [[inrisk]] (snapshot-cached payloads), [[party-curation-tool]] (read/write), [[data-universe]] (events, consumed by [[analytics-team]]), sanctions flow via Boomi → NTT, D&B enrichment pipeline
+- **Key consumers (known)**: [[inrisk]] (snapshot-cached payloads), [[party-curation-tool]] (read/write), [[data-universe]] (events, consumed by [[analytics-team]]), sanctions flow via [[boomi]] → [[ntt]] (see [[sanctions-processing]]), D&B enrichment pipeline. **New Phase-1 consumers**: [[high-volume]] (Convex's implementation of the [[artificial]] vendor platform) — API-only via [[boomi]]; and [[artificial]] itself (the underlying third-party platform that HV is built on) — also via [[boomi]] as gateway. Both onboard at the 1 Sep gate, after the InRisk-first cutover window ([[inrisk-cuts-over-before-high-volume]]).
 - **Key interfaces**: payload-shape party events to DU; some direct APIs for sanctions and related consumers; a URD-based broker retrieval path that InRisk uses (to be removed in target state)
 - **Event-emit behaviour (Session 1)**: every InRisk event causes the Knowledge Graph (Neo4j) to **rewrite the whole spine and emit one spine-rewrite event**, regardless of whether any field actually changed. Effectively a single event shape flows to the [[data-universe]] (plus a broker-specific variant on the common bus). This is both the current flakiness _and_ the reason the strangler adapter is a small job — it's a one-event mapper, not an N-event migration.
 - **Spine-rewrite cascade on sanctions** (2026-05-13 follow-up): the spine-rewrite-on-every-InRisk-event behaviour is the upstream of [[sanctions-processing]]'s false-positive problem — Boomi fires sanctions checks on every party-change event whether or not it's relevant, and InRisk feels the resulting noise. Not a Phase-1 fix; flagged as a future driver for sanctions-domain redesign ([[open-questions#OQ-032]]).
@@ -118,6 +118,8 @@ All Party-Application-facing open items are tracked in [[open-questions]]:
 
 **Pending decision (not an OQ per user steer, flagged 2026-05-14)** — _InRisk-side backfill of MDM ID columns on existing client / broker / party-snapshot rows_. Story 2 of the InRisk Phase-1 epic adds `party_id` (UUID v7) + `version_id` (int) to three InRisk tables. For pre-cutover rows: backfill with known MDM party-IDs, or null + go-forward from cutover? Mirror of [[no-historic-client-backfill-into-mdm]] on the consumer side; sanctions is the principal impact surface. Owners: [[joe-worsfold]] · [[john-trahearn]]; to be decided ahead of Story 2 low-level (2026-05-19). Tracked also on [[inrisk]] and [[party-rearch-phase-1]].
 
+**API-spec instability caveat (operational, not an OQ, 2026-05-19)** — the new MDM API spec is **subject to change until 1 Sep go-live**, but per [[alex-sillars]] _"won't change massively, but there may be some additions or deletions from it."_ Now that [[artificial]] is consuming the spec for kick-off (received [[joe-worsfold]]'s YAML pre-2026-05-19; first kick-off call 2026-05-20), this caveat needs to be communicated to every new consumer explicitly. Captured here so it shows up on Party-side coordination touchpoints. See [[sources/20260519-party-integration-timelines]] claims #2 + #11.
+
 ## Related decisions
 - [[strangle-the-graph-via-proxy-events]] (refined 2026-05-13 with cutover-window dual-write nuance)
 - [[inrisk-cuts-over-before-high-volume]] (new 2026-05-13 — cutover sequencing + two-library widget call)
@@ -147,3 +149,4 @@ All Party-Application-facing open items are tracked in [[open-questions]]:
 - [[sources/20260422-meeting-transcript-session-2]] — afternoon; consolidation and promotion of ADRs
 - [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] — cutover-window dual-write nuance; AWS estate confirmation; two-library widget call; sanctions / Boomi / NTT framing; party-tagging vs feature-tagging boundary
 - [[sources/20260514-inrisk-high-level-refinement]] — InRisk widget posture refined to drop-in-replacement / parity-not-enhancement; TOBA-status filter parity surfaced; InRisk-side backfill question raised at the Party side
+- [[sources/20260519-party-integration-timelines]] — [[artificial]] added as a second new Phase-1 Party consumer (alongside HV — which is itself Convex's implementation of Artificial); [[boomi]] gateway role confirmed for both; YAML spec already shared with Artificial; API-spec-subject-to-change caveat surfaced; strangler-pattern stability promise restated to a customer

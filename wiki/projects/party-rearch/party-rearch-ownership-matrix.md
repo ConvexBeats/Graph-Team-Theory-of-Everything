@@ -5,8 +5,8 @@ created: 2026-04-22
 updated: 2026-05-26
 tags: [analysis, standing, ownership, actions]
 project: party-rearch
-sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up, 20260514-inrisk-high-level-refinement]
-source_count: 4
+sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up, 20260514-inrisk-high-level-refinement, 20260519-party-integration-timelines]
+source_count: 5
 status: draft
 ---
 
@@ -27,7 +27,9 @@ A standing analysis of workstreams, owners, and open actions for the Party Appli
 | **S&P ingestion (Phase 1)** | [[analytics-team]] → [[graph-team]] | — | Stays manual; no change in Phase 1 |
 | **Widget / SDK / Chakra strategy** | [[graph-team]] ([[joe-worsfold]]) | [[prebind-team]] (consumer) | **Resolved 2026-05-13** ([[inrisk-cuts-over-before-high-volume]]): two component libraries — Chakra-3 + design-system for PCT, design-system-agnostic for InRisk; HV API-only. Closes [[open-questions#OQ-005]]. Joe's open action: publish the second library |
 | **Sanctions-domain ownership / off-Boomi migration** | _unassigned_ | [[rory-beattie]] · [[suzanna-whitefield]] to escalate to [[andrea-read]] | Surfaced 2026-05-13. Out of Phase 1; audit pressure this year. See [[sanctions-processing]] · [[ntt]] · [[open-questions#OQ-032]] |
-| **HV Party integration (via Boomi)** | [[high-volume-team]] ([[simon-hulbert]]) | [[graph-team]] (API contract), [[tech-tooling]] ([[rory-beattie]]) | API-only, no widget; forcing function for 1 Sep |
+| **HV Party integration (via [[boomi]])** | [[high-volume-team]] ([[simon-hulbert]]) | [[graph-team]] (API contract), [[tech-tooling]] ([[rory-beattie]]) | API-only, no widget; forcing function for 1 Sep. **Reframed 2026-05-19**: HV ≡ Convex's implementation of [[artificial]] — so this workstream covers the HV-side delivery and the Artificial-side onboarding together |
+| **[[artificial]] vendor onboarding (Party-consumer)** | [[high-volume-team]] ([[simon-hulbert]]) + Artificial-side PMs (unnamed) | [[graph-team]] ([[joe-worsfold]] for API spec + Boomi pairing), [[tech-tooling]] ([[rory-beattie]]) | New 2026-05-19. Two-stage: (a) read path priority — kick-off 2026-05-20, YAML spec already shared; (b) change-event push back later. Fortnightly Convex × Artificial cadence + dedicated Slack channel + Boomi connectivity setup are the operational workstreams that live underneath this |
+| **[[boomi]] connectivity for Artificial** | [[high-volume-team]] ([[srini]]) | [[graph-team]] ([[joe-worsfold]]) | New 2026-05-19. **Unblocking dependency** for Artificial-side dev work; until credentials + security tokens are issued, the dev-env DynamoDB sits idle from Artificial's perspective. Same broker pattern as [[sanctions-processing]] today |
 | **InRisk Engine (final-state targeting)** | [[devx-team]] ([[antonie-labuschagne]]) | [[graph-team]] (final-state contract provider) | Not interim; out of Phase 1 |
 | **Anti-patterns / data-fixes workshop** | [[joe-worsfold]] | [[prebind-team]] | Addresses client-ID cascade implications |
 | **Go-live checklist + test engagement** | [[alex-sillars]] | QA / testers (TBD) | Start now, not late |
@@ -43,7 +45,7 @@ A standing analysis of workstreams, owners, and open actions for the Party Appli
 
 ## Open actions
 
-Total open: **29** (12 from Session 2 + 9 from Session 1 − 1 resolved in Pass B + 8 new from 2026-05-13 follow-up − 1 resolved by 2026-05-13 follow-up + 3 new from 2026-05-14 InRisk HL − 1 resolved by 2026-05-14 — see action #22).
+Total open: **35** (12 from Session 2 + 9 from Session 1 − 1 resolved in Pass B + 8 new from 2026-05-13 follow-up − 1 resolved by 2026-05-13 follow-up + 3 new from 2026-05-14 InRisk HL − 1 resolved by 2026-05-14 — see action #22 — + 6 new from 2026-05-19 Party integration timelines).
 
 _This section tracks actions ("things to do"). Open **questions** ("things to find out") live in [[open-questions]] and are referenced from individual action rows where relevant._
 
@@ -80,20 +82,27 @@ _This section tracks actions ("things to do"). Open **questions** ("things to fi
 | 29 | Run **widget-integration spike** (pair Joe + Billy + Alex + [[daria-romanovskaia]] — slot inherited from [[andrew-turner]] on his 2026-05-29 departure) to bottom out SDK posture, OpenSearch/Dynamo response shape, integration mechanic before Stories 3/4/5 go to low level. Confirmation of spike scheduling at the ad-hoc HL on 2026-05-15 | [[joe-worsfold]] · [[billy-calladine]] · [[alex-sillars]] · [[daria-romanovskaia]] | [[inrisk]] · [[party-application]] | open — 2026-05-14 (spike pairing redirected 2026-05-26 per departure of [[andrew-turner]]); gates Stories 3/4/5; [[open-questions#OQ-036]] is the principal output |
 | 30 | Decide **InRisk-side backfill** policy for new ID columns on existing client / broker / party-snapshot rows (backfill with known MDM party-IDs vs null + go-forward); sanctions is the principal impact surface. Decision needed before Story 2 low-level on 2026-05-19 | [[joe-worsfold]] · [[john-trahearn]] | [[inrisk]] · [[party-application]] | open — 2026-05-14; not formalised as an OQ |
 | 31 | Confirm bespoke InRisk widget on the design-system-agnostic library preserves all current widget filter parameters at parity — particularly **TOBA status** (Lloyd's-vs-retail broker workflow) | [[joe-worsfold]] | [[party-application]] · [[inrisk]] | open — 2026-05-14; surfaced by [[jason-owen]]; feeds [[inrisk-cuts-over-before-high-volume]] parity-not-enhancement refinement |
+| 32 | Run the Convex × [[artificial]] kick-off call 2026-05-20; walk through API spec + sequencing (InRisk-first per [[inrisk-cuts-over-before-high-volume]]) + dependency on Boomi connectivity | [[rory-beattie]] · [[alex-sillars]] · [[simon-hulbert]] + Boardroom-PM | [[artificial]] · [[party-application]] · [[high-volume]] | open — 2026-05-19 |
+| 33 | Stand up [[boomi]] connectivity between [[artificial]] and [[party-application]]: pair [[srini]] (HV-side Boomi Integration Architect) with [[joe-worsfold]] (Party-side); issue Artificial-side credentials + security tokens | [[srini]] · [[joe-worsfold]] | [[boomi]] · [[party-application]] · [[artificial]] | open — 2026-05-19; **unblocks Artificial-side dev work** — dev-env DynamoDB is already stood up with fake data per the YAML spec |
+| 34 | Set up fortnightly Convex × Artificial integration catch-up ([[alex-sillars]] + [[rory-beattie]] + [[simon-hulbert]] + [[srini]] + Artificial reps); cadence may tighten as 1 Sep approaches | [[luca]] (or Boardroom-PM) | [[artificial]] · [[party-application]] · [[high-volume]] | open — 2026-05-19 |
+| 35 | Set up shared Slack channel for Artificial integration coordination with per-application prefix convention | Boardroom-PM | [[artificial]] · [[high-volume]] · [[party-application]] | open — 2026-05-19 |
+| 36 | [[simon-hulbert]] to send [[rory-beattie]] the top-level HV/Artificial integration architecture diagram + the sequence diagrams that detail individual Party touchpoints | [[simon-hulbert]] | [[high-volume]] · [[artificial]] · [[party-application]] | open — 2026-05-19; **raw-folder candidate** when received |
+| 37 | Build out the remaining MDM front-of-house pieces in dev: extend curation features (party + party-snapshot data-model coupling); migrate Neo4j ParseDB → DynamoDB; emit DU + sanctions events including submission-ID fan-out for fields not stored in Party | [[graph-team]] ([[alex-sillars]] · [[joe-worsfold]]) | [[party-application]] | open — restated 2026-05-19; tracked also on [[party-rearch-phase-1]] |
 
 ## Ownership gaps
 
 All identity gaps are tracked centrally in [[open-questions]]. Summary of currently-unidentified people touching this matrix:
 - _(resolved — PreBind PO is [[daria-romanovskaia]]; [[andrew-turner]] departs 2026-05-29 — [[daria-romanovskaia]] becomes sole PO; the dual-PO state was transitional)_
 - _(resolved — "Andrew Tennant" is [[andrew-turner]]; transcription drift. Forward-looking references redirect to [[daria-romanovskaia]] per [[AGENTS|§5.5]].)_
+- _(resolved 2026-05-26 — Amardeep Badhan promoted to entity → [[amardeep-badhan]], Scrum Master on [[prebind-team]])_
 - "Enriched team" identity — [[open-questions#OQ-012]]
 - QA / test lead — no open-question ID yet (low-urgency; revisit when go-live checklist begins)
 - Michael Hay — [[open-questions#OQ-027]]
-- Session 2 first-name-only: Sam ([[open-questions#OQ-024]]), Bob ([[open-questions#OQ-025]]), Josie ([[open-questions#OQ-026]])
+- Session 2 first-name-only: **Sam** (advanced 2026-05-19: confirmed _"FDA for integrations"_ on the Artificial project — full name + line manager still TBD) — [[open-questions#OQ-024]]; FDA acronym TBD at [[open-questions#OQ-039]]. Bob ([[open-questions#OQ-025]]), Josie ([[open-questions#OQ-026]])
 - Session 1 first-name-only: Kartik ([[open-questions#OQ-028]]), Jenny/Ginny ([[open-questions#OQ-029]])
 - Session 2 speakers: Speakers 7 and 15 ([[open-questions#OQ-023]])
 - 2026-05-13 follow-up first-name-only: Anna ([[open-questions#OQ-033]]), Marty ([[open-questions#OQ-034]])
-- 2026-05-14 walk-on: **Amardeep Badhan** — facilitator-style line only; insufficient signal for an OQ; revisit if surfaces again
+- 2026-05-19 first-name-only: **Convex – Orega – 6B Boardroom speaker** ([[open-questions#OQ-037]] — HV-side PM, possibly [[luca]] or a colleague); [[luca]] surname + formal role ([[open-questions#OQ-038]]); [[srini]] surname ([[open-questions#OQ-040]])
 
 ## Resolved
 
@@ -116,3 +125,4 @@ _Historical resolutions; current resolutions now live in [[open-questions#Resolv
 - 2026-05-18 — [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] — InRisk workstream re-scoped from "3 interim changes" framing to concrete "Party MDM Integration epic" with 4–5 stories; added a new **Sanctions-domain ownership / off-Boomi migration** workstream (out of Phase 1, escalation owner Rory + Suzy → Andrea); marked the **Widget / SDK / Chakra strategy** workstream resolved and the Chakra-V2-vs-V3 action (#11) resolved by [[inrisk-cuts-over-before-high-volume]]; added 8 new actions (#21–28) covering Thursday/Tuesday cadence, widget-mechanic brush-up, Billy to validate, Joe's second library, Suzy's static-list investigation, sanctions escalation, Anna warming, widget-response field alignment.
 - 2026-05-26 — [[sources/20260514-inrisk-high-level-refinement]] — InRisk workstream description updated to reflect 5-story ordering (Stories 1 & 2 ready; 3/4/5 gated) + drop-in-replacement / parity-not-enhancement posture + 3-table data-model. **Resolved** action #22 (current widget mechanic now confirmed query-parameter-driven). **Partial** actions #21 + #23 (Thursday HL done; Tuesday low-level scope reduced to Stories 1 & 2). **Added 3 new actions** (#29 widget-integration spike pairing; #30 InRisk-side backfill policy; #31 TOBA-filter parity confirmation). Ownership-gaps refreshed: Andrew Tennant resolved → [[andrew-turner]]; added Anna / Marty / Amardeep notes.
 - 2026-05-26 — user-declared handover (no source page) — [[andrew-turner]] departing 2026-05-29; [[daria-romanovskaia]] takes over as sole PreBind PO (handover effective 2026-05-26). InRisk workstream Primary-owner cell and action #29 spike pairing redirected from [[andrew-turner]] → [[daria-romanovskaia]]; ownership-gaps refreshed; departure convention captured in [[AGENTS|§5.5]].
+- 2026-05-26 — [[sources/20260519-party-integration-timelines]] — **HV Party integration** workstream reframed (HV ≡ Convex's implementation of [[artificial]]); **two new workstreams added**: Artificial vendor onboarding (Party-consumer) and Boomi connectivity for Artificial. **Six new actions** added (#32–#37) covering 2026-05-20 kick-off, Boomi setup ([[srini]] ↔ [[joe-worsfold]]), fortnightly cadence, Slack channel, architecture diagrams, and the remaining MDM front-of-house build-out. Ownership-gaps section refreshed: Sam advanced (now confirmed FDA for integrations); new identification gaps for [[luca]], [[srini]] surname, and Boardroom-PM. Open-action count: 29 + 6 = **35**.

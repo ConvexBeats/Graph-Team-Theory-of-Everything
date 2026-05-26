@@ -2,12 +2,12 @@
 type: decision
 title: Strangle the Graph via proxy events
 created: 2026-04-22
-updated: 2026-05-18
+updated: 2026-05-26
 tags: [decision, migration, events]
 application: [party-application]
 owner: graph-team
-sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up]
-source_count: 3
+sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up, 20260519-party-integration-timelines]
+source_count: 4
 status: accepted
 project: party-rearch
 phase: [phase-1]
@@ -36,6 +36,14 @@ The decision was formally adopted in [[sources/20260422-meeting-transcript-sessi
 - **However, for the cutover window, MDM dual-writes to the old graph** so that a revert is possible without losing data created during the window. Joe: _"essentially, even when MDM takes over, be writing to the old graph, so that if you switch back, that you'd be able to find stuff that was only just created in MDM."_
 - This is **not a contradiction** of the "no dual-running" framing — MDM remains the single source of truth in the live path; the old graph receives a write-through for revertability only, not for serving reads. Once the cutover is stable, the dual-write stops and the old graph proceeds to decommission as originally planned.
 - **Non-prod environments** are easier: dual-write naturally allows toggling back and forth, so non-prod doesn't need the same care that prod does. Useful for InRisk-side integration testing under the InRisk-first cutover sequence per [[inrisk-cuts-over-before-high-volume]].
+
+### Refinement (2026-05-19) — stability promise restated to a customer, with the "joined-up InRisk + Party data" carve-out
+[[sources/20260519-party-integration-timelines]] is the first time the strangler-pattern stability promise has been **stated to a third-party consumer** ([[artificial]], via [[simon-hulbert]]) rather than as an internal architectural intent. The verbatim framing from [[alex-sillars]] is worth preserving as an external contract statement: _"Everything that's going to come out of Party after we go live on the 1st of September is exactly what it comes out today. We're going to do that in a different way. We're going to obtain that information through a different source. It might not be Party, it might be joined-up InRisk and Party data, but it will still hit sanctions, DU, in exactly the same way."_
+
+Two corollaries from this framing:
+
+- The strangler-pattern stability is **shape-of-events**, not **source-of-fields**. For some fields, the post-cutover source may be Party directly; for others, it may be InRisk-joined-data assembled on the Party side (e.g. submission-IDs that Party doesn't store but DU / sanctions consume today — Alex specifically called this out as a build-out item). The downstream consumer cannot tell the difference; this is by design.
+- The promise has now been stated to **multiple external counterparties** ([[artificial]] explicitly, with [[ntt]] / [[boomi]] implicitly downstream of sanctions). Reverting or softening it costs reputation, not just an architectural rework. Strengthens the constraint that the proxy adapter must hold its contract.
 
 ## Options considered
 
@@ -89,3 +97,4 @@ Implementation trio from [[alex-sillars]]:
 - [[sources/20260422-meeting-transcript-session-1]] — **origin** (morning of 2026-04-22); idea first proposed in the DU-events segment
 - [[sources/20260422-meeting-transcript-session-2]] — consolidation / formal adoption (afternoon of 2026-04-22); bidirectional-mappability criterion named
 - [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] — cutover-window dual-write nuance for revertability; non-prod toggle-back-and-forth pattern
+- [[sources/20260519-party-integration-timelines]] — first external statement of the stability promise (to [[artificial]]); "joined-up InRisk + Party data" framing as one of the implementation modes inside the strangler

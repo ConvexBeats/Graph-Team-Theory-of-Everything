@@ -1,8 +1,8 @@
 # Index
 
-_Last updated: 2026-05-26 (2026-05-14 InRisk High Level Refinement ingested; PreBind-PO handover [[andrew-turner]] → [[daria-romanovskaia]] applied; AGENTS §5.5 departure convention added)_
-_Pages: 1 portfolio-overview · 2 projects · 3 phases · 4 project-scoped analyses · 4 application-architectures (current-state) · 1 global register · 4 sources · 6 applications · 36 entities (9 teams + 2 platforms + 25 people) · 4 concepts · 9 decisions_
-_Status: wiki now organised around **projects**. [[party-rearch]] is the primary in-flight project (Sessions 1/2 + 2026-05-13 follow-up + 2026-05-14 InRisk HL refinement). [[secrets-management]] stubbed as the second project — ASG-mandated secrets-management standardisation post Shai-Hulud 2.0. `[[overview]]` is the portfolio view. Architecture detail lives on dedicated `*-architecture` pages alongside identity pages; see "Application architecture" below._
+_Last updated: 2026-05-26 (2026-05-19 Party integration timelines ingested; [[artificial]] + [[boomi]] promoted to first-class platform pages; HV reframed as Convex's implementation of Artificial; [[srini]] + [[luca]] stubbed)_
+_Pages: 1 portfolio-overview · 2 projects · 3 phases · 4 project-scoped analyses · 4 application-architectures (current-state) · 1 global register · 5 sources · 6 applications · 40 entities (9 teams + 4 platforms + 27 people) · 4 concepts · 9 decisions_
+_Status: wiki now organised around **projects**. [[party-rearch]] is the primary in-flight project (Sessions 1/2 + 2026-05-13 follow-up + 2026-05-14 InRisk HL refinement + 2026-05-19 Party integration timelines). [[secrets-management]] stubbed as the second project — ASG-mandated secrets-management standardisation post Shai-Hulud 2.0. `[[overview]]` is the portfolio view. Architecture detail lives on dedicated `*-architecture` pages alongside identity pages; see "Application architecture" below._
 
 > The LLM reads this first on every query. Entries = link + one-line summary + optional metadata (`src: N` = number of sources, `owner: …`, date, etc.).
 
@@ -12,14 +12,14 @@ _Status: wiki now organised around **projects**. [[party-rearch]] is the primary
 ## Projects
 
 ### party-rearch — Party Application re-architecture (in-flight)
-- [[party-rearch]] — project thesis: payload-snapshot → versioned-reference; outer gate 1-Sep HV; **inner gate** mid-August InRisk cutover (added 2026-05-13) (src: 4)
+- [[party-rearch]] — project thesis: payload-snapshot → versioned-reference; outer gate 1-Sep HV; **inner gate** mid-August InRisk cutover (added 2026-05-13); HV ≡ Convex's implementation of [[artificial]] (clarified 2026-05-19) (src: 5)
 - **Phases**:
-  - [[party-rearch-phase-1]] — MDM + PCT co-ship + InRisk-first cutover to mid-August, HV at 1 Sep; single-flag coupled rollout; no audit / no historic-client backfill; InRisk epic ordered+gated 2026-05-14 (in-flight) (src: 4)
+  - [[party-rearch-phase-1]] — MDM + PCT co-ship + InRisk-first cutover to mid-August, HV at 1 Sep; single-flag coupled rollout; no audit / no historic-client backfill; InRisk epic ordered+gated 2026-05-14; [[artificial]] (HV-side) as second new Phase-1 consumer via [[boomi]] gateway (added 2026-05-19) (in-flight) (src: 5)
   - [[party-rearch-phase-2]] — post-cutover end-state: direct Dynamo→DU stream, feature-tagging hand-over, end-state sanctions, sanctions-domain rework, InRisk-Engine final contract (planned stub)
 - **Project-scoped analyses**:
-  - [[party-rearch-dependency-map]] — inter-application dependencies; current vs Phase-1 target vs end-state; contract-buckets scaffolding; sanctions/Boomi/NTT current-state added 2026-05-13; widget-integration spike + TOBA-filter + backfill rows added 2026-05-14 (src: 4)
-  - [[party-rearch-ownership-matrix]] — workstreams × owners; **29 open actions** (src: 4)
-  - [[party-rearch-phase-1-summary]] — focused Phase-1 digest: what it is, applications affected, decisions, delivery shape, top-leverage open questions (filed from a query, 2026-04-22; updated 2026-05-26) (src: 4)
+  - [[party-rearch-dependency-map]] — inter-application dependencies; current vs Phase-1 target vs end-state; contract-buckets scaffolding; sanctions/Boomi/NTT current-state added 2026-05-13; widget-integration spike + TOBA-filter + backfill rows added 2026-05-14; Artificial arrow + Boomi-platform-link + 5 new Artificial-onboarding cross-cutting rows added 2026-05-19 (src: 5)
+  - [[party-rearch-ownership-matrix]] — workstreams × owners; **35 open actions** (src: 5)
+  - [[party-rearch-phase-1-summary]] — focused Phase-1 digest: what it is, applications affected, decisions, delivery shape, top-leverage open questions (filed from a query, 2026-04-22; updated 2026-05-26 with the Artificial reframing) (src: 5)
 
 ### secrets-management — Standardise Secrets Management (planned, stub)
 - [[secrets-management]] — ASG-mandated transition following Shai-Hulud 2.0 (INC-140574): eliminate long-lived CI/CD credentials; AWS Secrets Manager unified schema; automated rotation (stub, src: 0)
@@ -27,21 +27,21 @@ _Status: wiki now organised around **projects**. [[party-rearch]] is the primary
   - [[secrets-management-phase-1]] — scope, timeline, and decisions TBD at first ingest (planned stub)
 
 ## Applications _(cross-project)_
-- [[party-application]] — core Party store + routing; re-architecture subject; Neo4j Knowledge Graph → Dynamo+OpenSearch; AWS estate confirmed existing 3-account/4-env; InRisk-widget parity posture confirmed 2026-05-14 (owner: [[graph-team]], projects: [party-rearch], src: 4)
+- [[party-application]] — core Party store + routing; re-architecture subject; Neo4j Knowledge Graph → Dynamo+OpenSearch; AWS estate confirmed existing 3-account/4-env; InRisk-widget parity posture confirmed 2026-05-14; [[artificial]] added as second new Phase-1 consumer via [[boomi]] gateway 2026-05-19 (owner: [[graph-team]], projects: [party-rearch], src: 5)
 - [[party-curation-tool]] — PCT; Next.js UI for party curation; co-ships with MDM; consumes Chakra-3 + design-system widget (owner: [[graph-team]], user: [[dataops-team]], projects: [party-rearch], src: 2)
 - [[inrisk]] — IR2; Policy Admin System; **Party MDM Integration epic, 5 stories ordered + gated 2026-05-14** (Stories 1 & 2 ready for low level; 3/4/5 spike-gated); cutover ≥ 2 weeks before HV (owner: [[prebind-team]], projects: [party-rearch], src: 4)
 - [[inrisk-engine]] — InRisk Core; API-first rewrite targeting **final-state** Party contract; out of Phase-1 interim scope (owner: [[devx-team]], projects: [party-rearch], src: 2)
-- [[high-volume]] — HV; API-via-Boomi consumer; production 1 Sep (forcing-function for Phase 1); turns on after InRisk-first cutover window (owner: [[high-volume-team]], projects: [party-rearch], src: 1)
+- [[high-volume]] — HV; **Convex's implementation of the [[artificial]] vendor platform** (reframed 2026-05-19); API-via-[[boomi]] consumer; production 1 Sep (forcing-function for Phase 1); turns on after InRisk-first cutover window (owner: [[high-volume-team]], projects: [party-rearch], src: 2)
 - [[eclipse]] — external data feed consumed by [[inrisk]]; stub; scope call on ongoing ingestion tracked at [[open-questions#OQ-001]] (projects: [party-rearch], src: 1)
 
 ## Application architecture _(current-state; cross-project)_
 
 _Living reference pages; folded-into on phase completion per AGENTS.md §5.4. Phase-target architectures live under `wiki/projects/<project>/<phase-id>-<app>-architecture.md`._
 
-- [[party-application-architecture]] — stub; Neo4j Knowledge Graph primary datastore; payload-event contract to downstream consumers; AWS estate (existing 3-account/4-env) confirmed; two component-library widget split with parity-not-enhancement posture on the InRisk library (baseline for [[party-rearch]] targets) (src: 4)
+- [[party-application-architecture]] — stub; Neo4j Knowledge Graph primary datastore; payload-event contract to downstream consumers; AWS estate (existing 3-account/4-env) confirmed; two component-library widget split with parity-not-enhancement posture on the InRisk library; [[artificial]] added as outbound event-consumer via [[boomi]] from Phase-1 cutover; API-spec instability caveat added 2026-05-19 (baseline for [[party-rearch]] targets) (src: 5)
 - [[party-curation-tool-architecture]] — stub; Next.js on Jira workflow; D&B integration; Chakra-3 + design-system widget (src: 2)
 - [[inrisk-architecture]] — stub; integration-surface focus (payload-consumer today); **party + broker + party_snapshot tables** to gain `party_id` (UUID v7) + `version_id` (int) columns; SDK-style widget integration on design-system-agnostic library; current widget filters by **TOBA status** (parity requirement); sanctions touchpoint via Boomi → [[ntt]] (src: 4)
-- [[high-volume-architecture]] — lean stub; greenfield build; no production state yet; consumes MDM at 1 Sep after InRisk-first cutover window (src: 1)
+- [[high-volume-architecture]] — lean stub; HV-as-product is largely [[artificial]] vendor platform (reframed 2026-05-19); Convex-side integration surface is the [[boomi]] gateway to Party + small InRisk touchpoint; consumes MDM at 1 Sep after InRisk-first cutover window (src: 2)
 
 ## Entities _(cross-project)_
 
@@ -54,11 +54,13 @@ _Living reference pages; folded-into on phase completion per AGENTS.md §5.4. Ph
 - [[analytics-team]] — owns [[data-universe]] (Snowflake-backed analytics platform); schema-impact contact for flattening decision (aka "Data Universe Team") (src: 2)
 - [[architecture-team]] — cross-portfolio architectural review; home of [[scott-gruber]] (broker SME) and [[suzanna-whitefield]] (src: 2)
 - [[data-quality-team]] — business sponsors / owners of [[dataops-team]]; headed by [[hugh-lobban]] (src: 1)
-- [[high-volume-team]] — owns [[high-volume]]; main Party-integration contact is [[simon-hulbert]] (src: 1)
+- [[high-volume-team]] — owns [[high-volume]] (Convex's implementation of [[artificial]]); known members [[simon-hulbert]] (Architect), [[srini]] (Boomi Integration Architect), [[luca]] (coordinator); Sam = "FDA for integrations" (src: 2)
 
 ### Platforms
 - [[data-universe]] — analytics data platform (Snowflake at its core); owned by [[analytics-team]]; primary downstream consumer of [[party-application]] events (src: 1)
 - [[ntt]] — vendor sanctions-check application accessed via API; owning team inside Convex TBD ([[open-questions#OQ-032]]); sits at the edge of the [[sanctions-processing]] flow (src: 1)
+- [[artificial]] — third-party vendor platform underpinning [[high-volume]] (Convex is mid-implementation); reads new Party MDM API via [[boomi]] from Phase-1 cutover; first substantive ingest 2026-05-19; kick-off 2026-05-20 (owner Convex-side: [[high-volume-team]] · [[simon-hulbert]], projects: [party-rearch], src: 1)
+- [[boomi]] — vendor integration broker; promoted to first-class platform 2026-05-26 (was loose prose); hosts two distinct patterns — sanctions orchestration today (wrong-place, [[open-questions#OQ-032]]) + Artificial → Party MDM gateway from Phase-1 cutover; Convex-side owning team TBD (src: 2)
 
 ### People
 - [[alex-sillars]] — PO, [[graph-team]] (src: 2)
@@ -85,7 +87,9 @@ _Living reference pages; folded-into on phase completion per AGENTS.md §5.4. Ph
 - [[paul-rogers]] — Data & Process Analyst, [[analytics-team]]; flattening-decision counterpart (src: 1)
 - [[steve-perry]] — Programme Manager, [[data-universe]] (src: 1)
 - [[chris-woodward]] — Architect, [[data-universe]] (src: 1)
-- [[simon-hulbert]] — Architect, [[high-volume-team]]; main Party-integration contact (src: 1)
+- [[simon-hulbert]] — Architect on the HV/[[artificial]] integration project, [[high-volume-team]]; main Party-integration contact; role widened 2026-05-19 from HV-internal to Artificial-onboarding architect (src: 2)
+- [[srini]] — Boomi Integration Architect on the HV/[[artificial]] integration project, [[high-volume-team]]; surname TBD ([[open-questions#OQ-040]]) (new 2026-05-26) (src: 1)
+- [[luca]] — coordinator / scheduler on the HV/[[artificial]] integration project, [[high-volume-team]]; surname + formal role TBD ([[open-questions#OQ-038]]); possibly same as Boardroom-PM ([[open-questions#OQ-037]]) (new 2026-05-26) (src: 1)
 
 ## Concepts _(cross-project)_
 - [[contract-buckets]] — three-bucket (operational · data distribution · enrichment) scaffolding introduced by [[alex-sillars]] in Session 1 (src: 1)
@@ -112,9 +116,10 @@ _All current ADRs belong to `party-rearch`._
 - [[sources/20260422-meeting-transcript-session-2]] — party-rearch · 2nd architecture-design session (afternoon); strangle pattern, PCT co-delivery, InRisk interim-state changes, D&B + UUID decisions (2026-04-22)
 - [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] — party-rearch · 3rd architecture-design session (follow-up); concrete InRisk Phase-1 epic (4–5 stories); party-tagging vs feature-tagging boundary; InRisk-first cutover sequencing and two-component-libraries call (resolves OQ-005); sanctions/Boomi/NTT surfaced; AWS estate confirmed (2026-05-13)
 - [[sources/20260514-inrisk-high-level-refinement]] — party-rearch · 4th architecture-design session (InRisk-side HL); epic ordered + gated (Stories 1 & 2 ready for low level; 3/4/5 gated on spike); 3rd data-model table added (party_snapshot); UUID-v7 + integer types confirmed; drop-in-replacement / parity-not-enhancement widget posture; TOBA-status filter as a parity requirement; InRisk-side backfill question raised; new PreBind members (Andrew Turner PO, Jason Owen BA, Kati Voskarova BA, Rasto Sepelak BA); resolves OQ-030 (Andrew Tennant = Andrew Turner) (2026-05-14)
+- [[sources/20260519-party-integration-timelines]] — party-rearch · Convex × [[artificial]] kick-off prep call; HV reframed as Convex's implementation of Artificial vendor platform; [[boomi]] confirmed as gateway between Artificial and Party MDM; YAML API spec already shared with Artificial; new HV-side people surfaced ([[srini]] Boomi Integration Architect, [[luca]] coordinator, Sam confirmed as "FDA for integrations" — advances OQ-024); fortnightly Convex × Artificial cadence + Slack channel established; InRisk-first sequencing + strangler-pattern stability restated to a customer; no new ADRs (2026-05-19)
 
 ## Global standing register
-- [[open-questions]] — open-questions register across all projects; OQ-NNN IDs are global; filter by `Project` column (**32 open**, 18 resolved; all currently scoped `party-rearch`) (src: 4)
+- [[open-questions]] — open-questions register across all projects; OQ-NNN IDs are global; filter by `Project` column (**36 open**, 18 resolved; all currently scoped `party-rearch`) (src: 5)
 
 ## Portfolio-level analyses
 - _None yet — `wiki/analyses/` reserved for cross-project synthesis._

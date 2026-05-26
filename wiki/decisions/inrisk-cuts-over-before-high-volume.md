@@ -6,8 +6,8 @@ updated: 2026-05-26
 tags: [decision, cutover, sequencing, widget, design-system]
 application: [inrisk, party-application, high-volume, party-curation-tool]
 owner: tech-tooling
-sources: [20260513-inrisk-integration-with-party-mdm-follow-up, 20260514-inrisk-high-level-refinement]
-source_count: 2
+sources: [20260513-inrisk-integration-with-party-mdm-follow-up, 20260514-inrisk-high-level-refinement, 20260519-party-integration-timelines]
+source_count: 3
 status: accepted
 project: party-rearch
 phase: [phase-1]
@@ -64,6 +64,8 @@ These two threads — the cutover sequencing and the styling-stack call — are 
 
 **B: Option 3 — two component libraries.** [[joe-worsfold]] publishes a **second, design-system-agnostic component library** for [[inrisk]] to consume; the Chakra-3-with-design-system widget remains in place for [[party-curation-tool]] / [[dataops-team]]. Joe to manage the two libraries in parallel — explicitly accepted as the easier of the available trade-offs.
 
+**Reinforcement (2026-05-19) — sequencing restated to an external counterparty.** The InRisk-first-then-HV sequencing was restated by [[rory-beattie]] and [[simon-hulbert]] to [[artificial]] (via [[simon-hulbert]] on the HV/Artificial side and the Boardroom-PM on the project-management side) on the 2026-05-19 prep call ahead of the 2026-05-20 Convex × Artificial kick-off. Rory: _"InRisk … goes first … we don't want to go from one user to a million users, all using a different version of the same thing and not be able to have a rollback strategy … our intention is to move those at least a couple of weeks ahead of when we think we'll be able to land with you guys."_ Simon: _"the party stuff, but then we want to get InRisk over first … and they'll deliver, and then once they've delivered, we will roll out shortly after that."_ No change to the ADR's direction — recorded as reinforcement because this is the first time the sequencing has been communicated to a third-party vendor consumer, and HV here functions as the Convex-side delivery of Artificial. See [[sources/20260519-party-integration-timelines]] claim #13 + [[artificial]].
+
 **B (refined 2026-05-14): parity-not-enhancement principle.** The InRisk-side widget on the second library is committed to **drop-in replacement** of today's behaviour — same auth / RBAC / session flow, same look-and-feel, same filter parameters (including **TOBA status** for brokers — [[jason-owen]] surfaced this in-call). UX enhancements are explicitly deferred to a separate change, post-cutover. Joe rolled back his original "modern and different" vision in front of the wider InRisk audience: _"my original scope was don't affect in-risk too much, so I just went crazy and was like, no, I want it to be really modern and different, but, yeah, we can roll it back a bit until that."_ [[john-trahearn]]: _"For as much as possible, it's going to be a drop-in replacement for now, and then should we need to change things in the future, that'll be something that comes separately."_ This sharpens part B of the ADR from a styling-stack choice into a full posture on the InRisk widget surface.
 
 This ADR therefore covers: (a) the cutover sequencing across Phase 1's three production consumers (InRisk, then HV; PCT co-ships with MDM under [[pct-and-mdm-go-live-together]]); (b) the styling-stack call (two component libraries); and (c) (refined 2026-05-14) the parity-not-enhancement posture for the InRisk widget itself, capping its Phase-1 surface area to what's needed for drop-in replacement.
@@ -114,3 +116,4 @@ This ADR therefore covers: (a) the cutover sequencing across Phase 1's three pro
 ## Sources
 - [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] — the meeting where both halves of this decision were made.
 - [[sources/20260514-inrisk-high-level-refinement]] — wider-audience reinforcement; parity-not-enhancement principle for the InRisk widget; TOBA-status filter as a parity requirement; widget-integration spike scoped (Joe + Billy + Alex + [[andrew-turner]] — PreBind-PO slot now [[daria-romanovskaia]] following 2026-05-29 handover) as the gate on Stories 3/4/5.
+- [[sources/20260519-party-integration-timelines]] — sequencing restated to [[artificial]] ahead of the 2026-05-20 Convex × Artificial kick-off; HV (as Convex's implementation of Artificial) explicitly waits for InRisk-first.

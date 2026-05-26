@@ -8,8 +8,8 @@ tags: [project]
 slug: party-rearch
 status: in-flight
 applications: [party-application, party-curation-tool, inrisk, inrisk-engine, high-volume, eclipse]
-sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up, 20260514-inrisk-high-level-refinement]
-source_count: 4
+sources: [20260422-meeting-transcript-session-1, 20260422-meeting-transcript-session-2, 20260513-inrisk-integration-with-party-mdm-follow-up, 20260514-inrisk-high-level-refinement, 20260519-party-integration-timelines]
+source_count: 5
 ---
 
 # Party Application Re-Architecture
@@ -41,7 +41,7 @@ The re-architecture is explicitly *interim-first*: it ships a Phase 1 that makes
 3. **InRisk cuts over before HV** — [[inrisk-cuts-over-before-high-volume]] (new 2026-05-13). InRisk's MDM-integration is a deliverable in its own right that lands **≥ 2 weeks before** [[high-volume]]'s 1-Sep go-live; HV switches on only after real production traffic has exercised the new contract. Phase 1's critical path now narrows around an **inner gate** at mid-August.
 4. **InRisk does the minimum for Phase 1** — concrete Party MDM Integration epic of 5 stories ([[inrisk]]); **ordered and gated 2026-05-14**: Stories 1 (manual-client-creation cleanup) & 2 (data-model addition on party + broker + party_snapshot tables) ready for low level; Stories 3/4/5 (client + broker + party-tagging widget integration) gated on a widget-integration spike. Backwards-compatible data-model addition; no rewrite. **Drop-in-replacement / parity-not-enhancement** on the new widget itself (refinement to [[inrisk-cuts-over-before-high-volume]] from 2026-05-14). That rewrite path is [[inrisk-engine]]'s job, on a different clock. Crucially, InRisk _wants_ the change — the Tech Leads have flagged the interim path as simplifying their own model, which is the precondition that makes the whole strategy work.
 5. **Party tagging in, feature tagging out** — Phase-1 boundary clarified 2026-05-13. Party tags (obligor, loss-leader, role-like) are _party_ data and get a Phase-1 story; feature tagging is submission attributes that only piggy-backed on Party's UX/DB pattern, **out of Phase 1**, old backend stays alive past cutover. Refined [[feature-tagging-moves-to-inrisk]] holds the eventual handover direction.
-6. **HV is API-only via Boomi** — no widget dependency; not a blocker on widget decisions.
+6. **HV is API-only via [[boomi]]** — no widget dependency; not a blocker on widget decisions. **HV is Convex's implementation of the [[artificial]] vendor platform** (clarified 2026-05-19) — so the new Phase-1 Party consumers are effectively two: [[high-volume]] (the Convex-side delivery) and [[artificial]] (the underlying third-party platform), both consuming the MDM API via [[boomi]] as gateway. Phase-1 cutover sequencing (InRisk-first per [[inrisk-cuts-over-before-high-volume]]) has been restated to Artificial directly.
 7. **Line in the sand on historical migration** — [[no-historic-client-backfill-into-mdm]] on the MDM side; [[no-pct-audit-backfill]] on the PCT side. MDM starts version history at cutover; pre-cutover InRisk client-ID-scoped history stays in InRisk / [[data-universe]]. Jira stays read-only; Snowflake is the cross-period audit/SLA store.
 8. **End-state items stay on the roadmap, off the critical path** — they're tracked in [[party-rearch-dependency-map]]'s end-state section and are the subject of Phase 2+ ADRs ([[feature-tagging-moves-to-inrisk]]) and open questions, but they don't gate Phase 1. The **sanctions-domain rework** ([[sanctions-processing]]) is the newest member of this set, with audit pressure on the timeline.
 9. **Phase-1 ownership calls ring-fence the critical path** — [[bulk-migrations-owned-by-mdm-phase-1]] and [[feature-tagging-moves-to-inrisk]] both explicitly _defer_ scope ([[dataops-team]] self-serve UX; InRisk taking feature-tagging) in favour of a clean Phase 1 shipment.
@@ -49,7 +49,7 @@ The re-architecture is explicitly *interim-first*: it ships a Phase 1 that makes
 ## Tensions
 
 1. **Client ID is a bad abstraction, but unavoidable for Phase 1.** The renewal-cascade behaviour means historical submissions get re-parented to the latest client ID, which breaks DU-side historical fidelity. The right fix — key on `(party-id, version)` with submission as the carrier — is an end-state change. In the interim: tolerate, and tolerate carefully. Proxy events have to reproduce the current nesting, which may require InRisk to expose a reconstruction API if the DU doesn't tolerate a flatter shape. **Pending DU check.**
-2. **HV integration shape is not yet specified.** [[high-volume-team]] (main contact [[simon-hulbert]]) is the owning team and 1 September is the fixed go-live; what's still loose is the expected Party-write volume, whether HV creates parties programmatically, and what auto-curation expectations apply. These inputs size the MDM intercept + backfill and the D&B auto-parent behaviour.
+2. **HV integration shape is not yet specified — and HV is actually [[artificial]].** [[high-volume-team]] (main contact [[simon-hulbert]]) is the owning team and 1 September is the fixed go-live; what's still loose is the expected Party-write volume, whether HV creates parties programmatically, and what auto-curation expectations apply. These inputs size the MDM intercept + backfill and the D&B auto-parent behaviour. **2026-05-19 added the structural clarification** that HV is Convex's implementation of the [[artificial]] vendor platform — so what's missing isn't just "the HV team's design" but specifically how Artificial expects to consume Party. Convex × Artificial fortnightly cadence agreed; first substantive kick-off 2026-05-20. [[simon-hulbert]] to send integration diagrams.
 3. **The InRisk-cutover deadline is mid-August, not 1 September.** [[inrisk-cuts-over-before-high-volume]] adds an **inner gate** ahead of HV's hard 1-Sep gate, with a buffer ≥ 2 weeks. Sprint-planning has to honour the inner gate; calendar slack is tighter than the headline date suggests. Concrete date open at [[open-questions#OQ-035]].
 4. **"Party on requirement vs submission" is a [[prebind-team]] architectural choice, not ours.** It sits on their Requirement → Submission data-flow spine. Flagged here so it doesn't re-surface as a Party-side decision.
 5. **InRisk Engine's readiness depends on our end-state being real.** [[devx-team]]'s timeline is coupled to the quality and stability of the final-state Party contract we define through Phase 1.
@@ -63,7 +63,11 @@ The re-architecture is explicitly *interim-first*: it ships a Phase 1 that makes
 - [[party-curation-tool]] — co-ships
 - [[inrisk]] — interim-state consumer, 3 required changes
 - [[inrisk-engine]] — end-state target only; out of interim scope
-- [[high-volume]] — forcing function; API-only consumer
+- [[high-volume]] — forcing function; API-only consumer (Convex's implementation of the [[artificial]] vendor platform — clarified 2026-05-19)
+
+**External / vendor platforms consuming Party in Phase 1** (via [[boomi]] as gateway):
+- [[artificial]] — third-party vendor platform underpinning [[high-volume]]; reads MDM API + receives event-pushes back (Phase 1)
+- [[ntt]] — vendor sanctions-check application; pattern unchanged in Phase 1 (see [[sanctions-processing]])
 
 ## Known teams in scope
 
@@ -108,4 +112,4 @@ All resolutions are logged with IDs in [[open-questions#Resolved]]. Highlights:
 - [[party-rearch-dependency-map]] · [[party-rearch-ownership-matrix]] · [[open-questions]]
 - [[contract-buckets]] · [[sanctions-processing]] — Session 1 scaffolding framework + new sanctions-domain concept page
 - [[strangle-the-graph-via-proxy-events]] · [[pct-and-mdm-go-live-together]] · [[inrisk-cuts-over-before-high-volume]] · [[no-historic-client-backfill-into-mdm]] · [[no-pct-audit-backfill]] · [[feature-tagging-moves-to-inrisk]] · [[bulk-migrations-owned-by-mdm-phase-1]] · [[d-and-b-caching-and-auto-parent]] · [[uuid-system-id-with-display-id]]
-- [[sources/20260422-meeting-transcript-session-1]] · [[sources/20260422-meeting-transcript-session-2]] · [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] · [[sources/20260514-inrisk-high-level-refinement]]
+- [[sources/20260422-meeting-transcript-session-1]] · [[sources/20260422-meeting-transcript-session-2]] · [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] · [[sources/20260514-inrisk-high-level-refinement]] · [[sources/20260519-party-integration-timelines]]
