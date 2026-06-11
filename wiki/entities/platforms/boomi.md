@@ -3,7 +3,7 @@ type: entity
 title: Boomi
 aliases: []
 created: 2026-05-26
-updated: 2026-05-26
+updated: 2026-05-27
 tags: [platform, integration, gateway]
 owner: _unknown_
 sources: [20260513-inrisk-integration-with-party-mdm-follow-up, 20260519-party-integration-timelines]
@@ -34,6 +34,7 @@ The orchestration that decides _when_ to fire a sanctions check, _what context_ 
 - For each event, Boomi calls the [[inrisk]] API **one submission at a time** (InRisk has no batch endpoint) to reconstruct submission + party context.
 - Boomi maintains its own **cache + idempotency layer** on top of that reconstruction.
 - Boomi then calls [[ntt]] for the actual sanctions check; the result is fed back into the deal lifecycle.
+- **Write-back into Party**: [[alex-sillars]] describes the leg as _"the result is retrieved back or not sanctioned, and then we update our party with that"_ ([[sources/20260422-meeting-transcript-session-2]]) — Boomi writes the NTT decision onto the Party record and then separately fires an event to [[inrisk]] tagged with the affected submission IDs. The **specific API endpoint / event shape** Boomi uses for this Party-side write, and **which identifier** it uses as the lookup key (legacy Graph party ID vs UUID system ID vs other), are **not documented in any source we hold** — see [[open-questions#OQ-045]]. Bears on Phase-1 cutover transparency under [[strangle-the-graph-via-proxy-events]] + [[uuid-system-id-with-display-id]].
 
 **Problems flagged 2026-05-13** ([[sources/20260513-inrisk-integration-with-party-mdm-follow-up]]):
 - Fires on every party event, including irrelevant ones — cascading false positives ([[kris-mokrzycki]]).
@@ -77,7 +78,8 @@ Per [[sources/20260519-party-integration-timelines]] (2026-05-19), Boomi will be
 
 ## Open questions
 - **Boomi's owning team inside Convex** — not surfaced in any source so far. Distinct from but related to [[open-questions#OQ-032]] (sanctions-domain location).
-- See also [[open-questions#OQ-032]] (sanctions-domain location — Boomi-side orchestration's eventual home), [[open-questions#OQ-008]] (end-state sanctions flow), [[open-questions#OQ-040]] ([[srini]]'s surname).
+- [[open-questions#OQ-045]] (new 2026-05-27) — **Boomi ↔ Party write-back contract + identifier usage**: what API/event does Boomi use to write the NTT result back into Party today, and which ID is the lookup key? Phase-1 cutover transparency depends on this.
+- See also [[open-questions#OQ-032]] (sanctions-domain location — Boomi-side orchestration's eventual home), [[open-questions#OQ-008]] (end-state sanctions flow), [[open-questions#OQ-041]] (proxy-event-with-InRisk-data design fork — Boomi's **inbound** proxy-event shape, paired with OQ-045's **outbound** write-back), [[open-questions#OQ-040]] ([[srini]]'s surname).
 
 ## Related
 - [[sanctions-processing]] — the domain page; explains the sanctions orchestration that Boomi hosts today

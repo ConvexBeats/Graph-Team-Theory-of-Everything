@@ -3,7 +3,7 @@ type: project
 title: Party Application Re-Architecture (party-rearch)
 aliases: [party-rearc, party-mdm-rearch, party-application-rearch]
 created: 2026-04-22
-updated: 2026-05-26
+updated: 2026-05-27
 tags: [project]
 slug: party-rearch
 status: in-flight
@@ -93,12 +93,13 @@ The register of _all_ unresolved questions lives in [[open-questions]]. The high
 5. **MDM delivery squad shape** — [[open-questions#OQ-017]]. Rory's call; blocks sprint planning.
 6. **HV integration-shape specifics** ([[simon-hulbert]]) — [[open-questions#OQ-013]].
 7. **Integration env JumpCloud SAML Cognito access** — [[open-questions#OQ-042]] (new 2026-05-19). Unblocking task for any integration-env smoke testing.
-8. **Sanctions-domain location and timing** — [[open-questions#OQ-032]] + [[open-questions#OQ-008]]. Out of Phase 1 but audit pressure this year.
-9. **PCT new-UI dataops parity confirmation** — [[open-questions#OQ-044]] (new 2026-05-19). Walkthrough / user-test needed before cutover.
-10. **Dynamo migration tooling Phase-1 scope** — [[open-questions#OQ-043]] (new 2026-05-19).
-11. **Final-state Party contract spec for [[inrisk-engine]]** — [[open-questions#OQ-018]].
-12. **D&B scheduled-refresh cadence** — [[open-questions#OQ-011]].
-13. **DataOps change-management lead time** — [[open-questions#OQ-014]].
+8. **Boomi ↔ Party write-back contract + identifier usage** — [[open-questions#OQ-045]] (new 2026-05-27). What API/event does Boomi use to write [[ntt]] sanctions results back into Party today, and which ID is the lookup key? Phase-1 cutover transparency under [[strangle-the-graph-via-proxy-events]] + [[uuid-system-id-with-display-id]] depends on this.
+9. **Sanctions-domain location and timing** — [[open-questions#OQ-032]] + [[open-questions#OQ-008]]. Out of Phase 1 but audit pressure this year.
+10. **PCT new-UI dataops parity confirmation** — [[open-questions#OQ-044]] (new 2026-05-19). Walkthrough / user-test needed before cutover.
+11. **Dynamo migration tooling Phase-1 scope** — [[open-questions#OQ-043]] (new 2026-05-19).
+12. **Final-state Party contract spec for [[inrisk-engine]]** — [[open-questions#OQ-018]].
+13. **D&B scheduled-refresh cadence** — [[open-questions#OQ-011]].
+14. **DataOps change-management lead time** — [[open-questions#OQ-014]].
 
 **Sentiment indicator (2026-05-19)**: [[rory-beattie]] _"we're a lot further along than I suspected we even were. So I'm not overly worried about this."_ [[joe-worsfold]] frames remaining risk as **inter-team collaboration** rather than build progress — _"not that it'll be bad, just that it takes time."_ Captured from [[sources/20260519-mdm-implementation-strategy]] as a baseline against which to re-assess in future ingests.
 

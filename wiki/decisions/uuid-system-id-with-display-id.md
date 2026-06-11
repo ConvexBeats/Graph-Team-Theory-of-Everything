@@ -2,7 +2,7 @@
 type: decision
 title: UUID system ID with Graph-ID-backed display ID
 created: 2026-04-22
-updated: 2026-04-22
+updated: 2026-05-27
 tags: [decision, ids, identity]
 application: [party-application, party-curation-tool]
 owner: graph-team
@@ -63,6 +63,7 @@ Both IDs are indexed; lookups accept either. New parties created post-migration 
 
 - **Open risks**
   - External systems that currently cache "the party ID" need explicit guidance on which field to cache going forward. Default assumption: cache the UUID for routing, show the display ID to users. InRisk's three interim changes already bake in "store the party ID" — confirm they're storing the UUID, not the display ID.
+  - **[[boomi]] is in this cache-the-ID set and has not been formally guided.** Boomi writes [[ntt]] sanctions results back into Party today (_"we update our party with that"_, [[alex-sillars]], [[sources/20260422-meeting-transcript-session-2]]) — the lookup key is presumably the legacy Graph party ID it sees on the inbound event, but this is not confirmed in any source we hold. The legacy Graph ID survives on every MDM party as `display_id`, so Phase-1 cutover should hold transparently **if** Boomi continues to use that ID. Tracked at [[open-questions#OQ-045]].
   - Proxy events to [[analytics-team]] (DU) must continue to carry the identifier shape the DU currently indexes — verify.
 
 ## Supersedes / superseded by

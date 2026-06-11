@@ -639,3 +639,37 @@ First exercise of the §5.5 departure convention. User-declared (no source page)
 - touched (new, 2): [[sources/20260519-mdm-implementation-strategy]], [[knowledge-graph]] (application).
 - touched (edited, 19): [[party-application]], [[party-application-architecture]], [[party-curation-tool-architecture]], [[inrisk-cuts-over-before-high-volume]], [[inrisk-architecture]], [[billy-calladine]], [[strangle-the-graph-via-proxy-events]], [[rory-beattie]], [[joe-worsfold]], [[alex-sillars]], [[tomas-sivo]], [[ben-joseph]], [[contract-buckets]], [[graph-team]], [[party-rearch]], [[party-rearch-phase-1]], [[party-rearch-phase-1-summary]], [[party-rearch-dependency-map]], [[party-rearch-ownership-matrix]], [[open-questions]], [[index]], [[log]] (this entry).
 
+## [2026-05-27] query | How does Boomi write sanctions results back into Party, and does this need legacy party ID or new structure?
+
+**Question**: how does the [[boomi]] API write sanctions results back into [[party-application]] today, and does Phase 1 need the legacy party ID or the new structure?
+
+**Answer (synthesised across the wiki)**:
+
+- **High level**: per [[alex-sillars]] in [[sources/20260422-meeting-transcript-session-2]], _"the result is retrieved back or not sanctioned, and then we update our party with that. What they'll then do is make a call to us to say what submissions are associated to that party. We're thinking of firing an event back to in-risk with that submission ID saying status not sanctioned"_. So Boomi writes the [[ntt]] decision onto the Party record and separately fires an event to [[inrisk]] tagged with the affected submissions. [[joe-worsfold]] later (2026-05-19) characterises the whole chain as _"this weird triangle of data going backwards and forwards"_ ([[sources/20260519-mdm-implementation-strategy]]).
+- **Phase 1 identifier story**: per [[strangle-the-graph-via-proxy-events]] MDM emits proxy events in the same shape as today's Graph events, and per [[uuid-system-id-with-display-id]] every MDM party carries both a UUID v7 system ID **and** the legacy Graph party ID as `display_id` (both indexed; lookups accept either). So **Boomi should not need a structure change in Phase 1**: if it uses the legacy Graph party ID today (the most likely case), that ID still resolves on every MDM party.
+- **Phase 2+ direction**: simpler chain (NTT → Party → InRisk) with orchestration pulled out of Boomi into a dedicated sanctions service — [[open-questions#OQ-032]] (location) + [[open-questions#OQ-008]] (flow).
+
+**Wiki gap exposed**: the **specific API endpoint / event shape** Boomi uses to write back into Party, and **which identifier** it uses as the lookup key, are not enumerated in any source we hold. The high-level claim _"we update our party with that"_ is the most precise wording on record. Symmetric to [[open-questions#OQ-041]] (which covers Boomi's _inbound_ proxy-event shape — this is the _outbound_ write into Party). Phase-1 cutover transparency depends on knowing this.
+
+**Action taken (user-approved option (b))**: filed **OQ-045** in the Scope / architecture calls table.
+
+- **OQ-045** | party-rearch | _Boomi ↔ Party write-back contract + identifier usage_. What API/event does Boomi use to write the NTT sanctions result back into Party today, and which identifier does Boomi use as the lookup key (legacy Graph party ID, the upcoming UUID v7 system ID, or other)? Phase-1 cutover transparency depends on it: [[strangle-the-graph-via-proxy-events]] only keeps Boomi working if the proxy events preserve whatever shape and ID Boomi already consumes, and [[uuid-system-id-with-display-id]] only keeps Boomi's write-back working if the ID Boomi uses still resolves on the new party. Pairs with OQ-041 (inbound) — together they enclose Boomi's full interaction surface with Party. Owner: [[joe-worsfold]] (Party-side counterpart) · [[srini]] (Boomi Integration Architect, sanctions side); escalation [[rory-beattie]].
+
+**Cross-references propagated** (per §5.1b — pages summarise, register holds canonical wording):
+
+- [[sanctions-processing]] — Mechanics gains a "write-back leg" paragraph; Open questions section adds OQ-045.
+- [[boomi]] — Sanctions-orchestration sub-section gains a write-back bullet; Open questions section adds OQ-045 and links to OQ-041 as the inbound counterpart.
+- [[party-application-architecture]] — `Outbound API / writes` no longer says "unknown — pending ingest" alone; the Boomi sanctions write-back is named as a known-but-undocumented inbound write with the OQ-045 ref. `Known constraints / rough edges` extended with a symmetric bullet to the OQ-041 one (inbound) for the outbound undocumented contract.
+- [[uuid-system-id-with-display-id]] — `Open risks` extended with a Boomi-specific line. The decision's existing cache-the-UUID guidance is restated against Boomi explicitly, with the OQ-045 ref carrying the question.
+- [[party-rearch-dependency-map]] — current-state notable-quirks list gains a "Boomi → Party write-back contract is undocumented" bullet; cross-cutting dependencies table gains a new row (Boomi ↔ Party write-back contract + identifier usage; Phase 1; OQ-045). Source-history line added for 2026-05-27.
+- [[party-rearch]] — `What I'd want to know next` list re-ranked to include OQ-045 at position 8 (between integration-env access and sanctions-domain location); subsequent items renumbered 9–14.
+- [[index]] — OQ count line updated (41 → 42); status line annotated with the OQ-045 surfacing.
+- [[open-questions]] — OQ-045 row added; source-history line for 2026-05-27 added.
+
+**Analysis not filed**: user took option (b) only — the synthesised answer above lives in this log entry rather than as a standalone `wiki/projects/party-rearch/<...>.md` analysis page. Re-file if the gap recurs or a future query needs the synthesis to compound.
+
+**Pages with breaking-change risk**: none — additive / annotation only; no wiki-link graph rewrites.
+
+- touched (new, 0).
+- touched (edited, 8): [[open-questions]], [[sanctions-processing]], [[boomi]], [[party-application-architecture]], [[uuid-system-id-with-display-id]], [[party-rearch-dependency-map]], [[party-rearch]], [[index]], [[log]] (this entry).
+

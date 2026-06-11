@@ -2,7 +2,7 @@
 type: concept
 title: Sanctions Processing
 created: 2026-05-18
-updated: 2026-05-26
+updated: 2026-05-27
 tags: [concept, compliance, sanctions, cross-cutting]
 sources: [20260513-inrisk-integration-with-party-mdm-follow-up, 20260519-party-integration-timelines]
 source_count: 2
@@ -36,6 +36,8 @@ The **decision** ("is this party sanctioned?") is owned by the [[ntt]] applicati
                                                                                   ▼
                                                                           sanctions decision  ──►  back into [[party-application]] / [[inrisk]] deal flow
 ```
+
+The **write-back leg** ([[boomi]] → [[party-application]]): closest claim we have is [[alex-sillars]] in [[sources/20260422-meeting-transcript-session-2]] — _"the result is retrieved back or not sanctioned, and then we update our party with that. What they'll then do is make a call to us to say what submissions are associated to that party. We're thinking of firing an event back to in-risk with that submission ID saying status not sanctioned"_. The **precise API endpoint / event shape** Boomi uses to write back into Party, and **which identifier** it uses (legacy Graph party ID vs UUID system ID vs other) are **not enumerated in any source we hold** — see [[open-questions#OQ-045]]. This matters for Phase-1 cutover transparency under [[strangle-the-graph-via-proxy-events]] + [[uuid-system-id-with-display-id]].
 
 The **pain points** flagged in [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]]:
 
@@ -93,6 +95,7 @@ This direction is tracked at [[open-questions#OQ-032]] (where sanctions logic sh
 - [[open-questions#OQ-032]] — sanctions-domain location: where should the orchestration logic that today lives in Boomi actually live? (new)
 - [[open-questions#OQ-008]] — end-state sanctions flow: who owns it and when does it land? (carried; sharpened by 2026-05-13)
 - [[open-questions#OQ-034]] — identification of **Marty** (sanctions / InRisk-adjacent figure referenced in the source). (new)
+- [[open-questions#OQ-045]] — **Boomi ↔ Party write-back contract + identifier usage**: what API/event does Boomi use to write the NTT result back into Party today, and which ID does it use as the lookup key? Phase-1 cutover transparency depends on this. (new 2026-05-27)
 
 ## Sources
 - [[sources/20260513-inrisk-integration-with-party-mdm-follow-up]] — the meeting that surfaced the wrong-place framing, the audit-visibility angle, the [[boomi]] orchestration detail (cache, idempotency, one-at-a-time InRisk calls), and the escalation-to-[[andrea-read]] action.

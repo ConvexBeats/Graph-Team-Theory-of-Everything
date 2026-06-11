@@ -2,7 +2,7 @@
 type: application-architecture
 title: Party Application — Current-state Architecture
 created: 2026-04-22
-updated: 2026-05-26
+updated: 2026-05-27
 tags: [architecture, current-state]
 application: party-application
 state: current
@@ -53,7 +53,8 @@ Snapshot of implementation state from [[sources/20260519-mdm-implementation-stra
 - _unknown — pending Graph-API consumer audit spike ([[open-questions#OQ-004]])_
 
 ### Outbound API / writes
-- _unknown — pending ingest_
+- _Mostly unknown — pending ingest._
+- **Inbound write from [[boomi]] (sanctions result)**: per [[alex-sillars]] in [[sources/20260422-meeting-transcript-session-2]], when the sanctions check returns, Boomi _"updates our party with that"_ — i.e. writes the [[ntt]] sanctions decision onto the Party record. The **specific endpoint / event shape** Boomi uses for this write, and **which ID** it uses as the lookup key (legacy Graph party ID via the upcoming `display_id`, the UUID system ID, or other), are **not documented in any source we hold**. Tracked at [[open-questions#OQ-045]]. Phase-1 cutover transparency under [[strangle-the-graph-via-proxy-events]] + [[uuid-system-id-with-display-id]] depends on knowing this — the proxy can only keep Boomi working if MDM still accepts whatever Boomi sends.
 
 ### Event streams
 
@@ -117,6 +118,7 @@ _From transcripts:_
 - **Backfill bypasses API validation by design** — the event-flow path writes directly to the Dynamo repo, bypassing the API's strict validation + schema enforcement, to tolerate messy Graph-world data and fix iteratively. Explicit design choice (not an oversight); could be hard-gated multi-step later if a future requirement demands it.
 - **Search widget — three variants in one parameterised component** — the widget shell hosts three card-rendering variants (parties / brokers / other), each hitting a different OpenSearch endpoint. Today's InRisk widget is a table+columns; new widget defaults to cards (Joe's POC choice via Cursor). Parity-rebuild (raw React + close-to-raw CSS) is owned by [[billy-calladine]] (formalised 2026-05-19). InRisk-side dispatch code (the "which widget to call" logic) also needs the corresponding update.
 - **Proxy-event design has an open InRisk-data-source fork** — for the Phase-1 proxy event to carry the submission/requirement context Boomi/DU expect, MDM either calls an **InRisk endpoint** (Joe's preference; real-time consistency) or pulls from **[[knowledge-graph]]** (eventually consistent; Joe + Alex parked over consistency concerns). Decision deferred to the sanctions session with [[simon-hulbert]]; gates the proxy adapter. See [[open-questions#OQ-041]] and [[strangle-the-graph-via-proxy-events]].
+- **Boomi sanctions write-back contract is undocumented** — [[boomi]] writes the [[ntt]] result back into Party (_"we update our party with that"_, [[alex-sillars]]), but the endpoint / event shape and ID Boomi uses aren't captured anywhere we hold. Symmetric to OQ-041 (which covers Boomi's _inbound_ proxy-event shape) — this covers Boomi's _outbound_ write into Party. Tracked at [[open-questions#OQ-045]]. Phase-1 cutover transparency depends on this.
 
 ## Relationships to other architecture pages
 - [[party-curation-tool-architecture]] — PCT is the primary curation frontend for parties; tightly coupled data model
